@@ -26,6 +26,47 @@ Cada dispositivo mantém uma branch própria até a unificação:
 3. Push de `main` para o GitHub.
 4. Nos outros dispositivos: `git checkout main && git pull` para receber a versão unificada.
 
+## Pacote de Recursos
+
+### Skills
+- `artifact-creator` — Cria artefatos HTML interativos, funcionais e criativos
+- `creative-design` — Evita padrões repetitivos, cada artefato com identidade visual própria
+- `functional-ui` — Garante que todo elemento de UI seja funcional (sem botões mortos)
+- `inline-artifacts` — Artefatos inline (SVG, HTML, Mermaid) + balões criativos
+- `artifact-balloon` — Salva arquivos grandes/interativos no Review pane + balões criativos
+- `opencode-sync` — Conexão, auto-sync, validação progressiva, contribuição
+- `self-upgrade` — Protocolo de auto-aprimoramento contínuo
+
+### Hooks
+- `pre-tool-use-security.sh` — Hook bash portável (PreToolUse: comandos perigosos + segredos)
+- `validate_bash_command.py` — Validação robusta de comandos bash (regex, fail-open)
+- `validate_sensitive_write.py` — Alerta para escrita em arquivos sensíveis
+- `session_start.py` / `session_end.py` — Logging de início/fim de sessão
+- `notification_handler.py` — Logging de notificações
+- `subagent_start.py` / `subagent_stop.py` — Logging de subagentes
+
+### Instruções
+- `AGENTS.md` — Instruções globais (princípios, qualidade, segurança, git workflow, balões criativos)
+- `inline-artifacts.md` — Regras de artefatos inline vs Review pane + balões criativos
+- `artifact-generation.md` — Instrução de geração de artefatos HTML
+
+### Validação Progressiva
+Recursos passam por 4 estados: `raw → marked → validated → proactive`
+- `marked → validated`: 3+ usos sem feedback negativo
+- `validated → proactive`: 7+ usos sem feedback negativo
+- 2+ feedbacks negativos → reverter para `raw`
+
+### Balões de Artifacts (Criativos)
+Ao final da resposta, emitir balão de artifacts com:
+- Paleta contextual por tipo (HTML=indigo, SVG=emerald, MD=amber, etc.)
+- Glassmorphism, glow effects, animações CSS
+- Badges contextuais, descrições ricas, hover interativo
+- Botões inline APENAS para arquivos exibíveis pelo panel
+
+### Regra de Exibibilidade
+- Botão inline: apenas para HTML, SVG, MD, CSV, código
+- Binários (.zip, .exe, .png, .pdf): apenas listar path, sem botão
+
 ## Regras
 
 - Nunca commitar segredos (API keys, tokens, .env). Use `.gitignore`.

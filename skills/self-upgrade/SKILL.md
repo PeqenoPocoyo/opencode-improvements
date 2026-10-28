@@ -163,8 +163,66 @@ test_result: "PASS"
 - [ ] Changelog atualizado
 - [ ] Commit e push
 
+## Feedback-Driven Improvement (CRITICO)
+
+### O que e?
+Melhoria baseada em feedback real do usuario durante o uso. Nao e melhoria teorica — e melhoria que acontece quando o usuario diz "isso nao funciona" ou "pode ser melhor".
+
+### Como funciona?
+1. **Usuario usa o recurso** (skill, hook, instrucao, artefato)
+2. **Usuario da feedback** (positivo, negativo, ou sugestao de melhoria)
+3. **Agente analisa o feedback** e identifica o gap
+4. **Agente implementa a melhoria** no recurso
+5. **Agente testa** se a melhoria resolve o feedback
+6. **Agente marca** o recurso com metadata de melhoria
+7. **Agente commita e pusha** para o repositorio
+
+### Exemplos de feedback-driven improvement:
+- Usuario: "o balao de artifacts e generico" → Agente: adiciona 10 regras de criatividade
+- Usuario: "o botao de explorer nao funciona" → Agente: adiciona regra de exibibilidade
+- Usuario: "nao desperta meu interesse" → Agente: redesign com hero dramático, urgência, gamificação
+- Usuario: "ta todo bugado" → Agente: corrige layout, animações, interatividade
+
+### Regra de ouro:
+> Se o usuario deu feedback, a melhoria DEVE ser implementada no pacote de recursos.
+> Nao apenas respondida na conversa — implementada no repo.
+
+## Multi-Device Contribution Flow
+
+### Cenario: 3 dispositivos em momentos diferentes
+```
+Dispositivo A (manha)     Dispositivo B (tarde)     Dispositivo C (noite)
+       |                        |                        |
+   usa + feedback            usa + feedback          usa + feedback
+       |                        |                        |
+   melhora recurso           melhora recurso         melhora recurso
+       |                        |                        |
+   commit + push staging     commit + push staging    commit + push staging
+       |                        |                        |
+       v                        v                        v
+   origin/staging  <--------  origin/staging  -------->  origin/staging
+       |                        |                        |
+       v                        v                        v
+   origin/main (promovido quando 3+ usos sem feedback negativo)
+```
+
+### Fluxo de contribuicao:
+1. **Dispositivo usa recurso** → identifica gap ou oportunidade
+2. **Agente melhora o recurso** → implementa a melhoria
+3. **Agente marca como `marked`** → commit em `staging`
+4. **Outros dispositivos recebem** → via auto-sync (a cada hora)
+5. **Uso bem-sucedido** → incrementa `usage_count`
+6. **3+ usos sem feedback negativo** → promove para `main` (estado `validated`)
+7. **7+ usos sem feedback negativo** → promove para `proactive` (auto-aplicado)
+
+### Regra de feedback negativo:
+- 2+ feedbacks negativos → reverter para `raw`, notificar dispositivo de origem
+- O dispositivo de origem pode corrigir e re-marcar
+
 ## Metadata
 - **Categoria**: Meta/DevOps
 - **Prioridade**: Crítica
 - **Aplicável a**: Todo o pacote de recursos
 - **Dependências**: Nenhuma (é a skill raiz)
+- **Versão**: 2.0
+- **Melhorado**: 2026-10-28 (feedback-driven improvement, multi-device contribution flow)
