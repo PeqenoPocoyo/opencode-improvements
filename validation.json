@@ -112,6 +112,17 @@
       "usage_count": 1,
       "promotion_threshold": 3,
       "notes": "Exemplo de hooks configurados (placeholders). Complementa mcp.example.json."
+    },
+    "hooks/pre-tool-use-security.sh": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 2,
+      "promotion_threshold": 3,
+      "notes": "Hook bash portável (PreToolUse). Melhorado v1.2 com padrões regex robustos."
     }
   }
 }
