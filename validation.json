@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "description": "Rastreamento de validação de recursos do repositório opencode-improvements",
+  "states": {
+    "raw": "Recém-criado, não revisado pelo agente",
+    "marked": "Agente revisou e marcou como validado (provisório, em staging)",
+    "validated": "Validação final aprovada (sem feedback negativo ao longo do tempo)",
+    "proactive": "Totalmente confiável, auto-aplicado sem intervenção do usuário"
+  },
+  "promotion_rules": {
+    "marked_to_validated": "Uso bem-sucedido em 3+ sessões sem feedback negativo",
+    "validated_to_proactive": "Uso bem-sucedido em 7+ sessões sem feedback negativo",
+    "negative_feedback_threshold": 2,
+    "action_on_negative_feedback": "Reverter para raw, notificar dispositivo de origem"
+  },
+  "resources": {
+    "hooks/validate_bash_command.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Validador robusto de comandos bash (regex, fail-open). Portável entre SOs (requer Python 3)."
+    },
+    "hooks/validate_sensitive_write.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Alerta para escrita em arquivos sensíveis (.env, .pem, .key, etc.). Fail-open permissivo."
+    },
+    "hooks/session_start.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Logging de início de sessão (fail-open). Usa env vars WORKSPACE, SESSION_ID."
+    },
+    "hooks/session_end.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Logging de fim de sessão (fail-open, async)."
+    },
+    "hooks/notification_handler.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Logging de notificações (fail-open, não bloqueante)."
+    },
+    "hooks/subagent_start.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Logging de início de subagente (fail-open)."
+    },
+    "hooks/subagent_stop.py": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Logging de fim de subagente (fail-open, async)."
+    },
+    "instructions/inline-artifacts.md": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Regras de proatividade de visuais inline vs Review pane. Baseado nas regras globais do OpenCode."
+    },
+    "configs/settings.example.json": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Exemplo de hooks configurados (placeholders). Complementa mcp.example.json."
+    }
+  }
+}
