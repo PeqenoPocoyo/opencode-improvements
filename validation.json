@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "description": "Rastreamento de validação de recursos do repositório opencode-improvements",
+  "states": {
+    "raw": "Recém-criado, não revisado pelo agente",
+    "marked": "Agente revisou e marcou como validado (provisório, em staging)",
+    "validated": "Validação final aprovada (sem feedback negativo ao longo do tempo)",
+    "proactive": "Totalmente confiável, auto-aplicado sem intervenção do usuário"
+  },
+  "promotion_rules": {
+    "marked_to_validated": "Uso bem-sucedido em 3+ sessões sem feedback negativo",
+    "validated_to_proactive": "Uso bem-sucedido em 7+ sessões sem feedback negativo",
+    "negative_feedback_threshold": 2,
+    "action_on_negative_feedback": "Reverter para raw, notificar dispositivo de origem"
+  },
+  "resources": {}
+}
