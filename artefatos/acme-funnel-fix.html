@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>acme-funnel-fix</title>
+<style>
+  :root {
+    --bg: #07090d;
+    --panel: rgba(20,24,32,0.55);
+    --card: rgba(30,34,44,0.6);
+    --border: rgba(255,255,255,0.08);
+    --text: #eef1f6;
+    --muted: #8a93a6;
+    --accent: #7c5cff;
+    --accent-2: #4f8cff;
+    --green: #3dd68c;
+    --red: #ff6b6b;
+    --amber: #ffb84d;
+    --glass: rgba(255,255,255,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    background: radial-gradient(1200px 600px at 20% 10%, #1a1f3a 0%, transparent 60%),
+                radial-gradient(900px 500px at 80% 90%, #2a1a3a 0%, transparent 60%),
+                var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 28px;
+    overflow-x: hidden;
+  }
+  /* animated background particles */
+  .bg-particles {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .bg-particles span {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: float 12s linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; }
+
+  /* glass panel */
+  .glass {
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; margin-bottom: 22px;
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .topbar:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(124,92,255,0.15); }
+  .topbar .left { display: flex; align-items: center; gap: 14px; }
+  .topbar .title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .topbar .link { color: var(--muted); font-size: 13px; }
+  .topbar .share {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; border: none; padding: 10px 20px; border-radius: 10px;
+    font-weight: 600; cursor: pointer; position: relative; overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .topbar .share:hover { transform: translateY(-1px) scale(1.02); box-shadow: 0 6px 20px rgba(124,92,255,0.5); }
+  .topbar .share::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform .6s ease;
+  }
+  .topbar .share:hover::after { transform: translateX(100%); }
+
+  .main {
+    display: grid; grid-template-columns: 1fr 400px; gap: 22px; margin-bottom: 22px;
+  }
+
+  .phones-wrap {
+    padding: 30px 20px;
+    display: flex; gap: 34px; justify-content: center; align-items: flex-start;
+    position: relative;
+  }
+  .phones-wrap::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(124,92,255,0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .phone {
+    width: 250px;
+    background: linear-gradient(180deg, #1a1d24, #0a0c10);
+    border-radius: 40px;
+    padding: 12px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05);
+    position: relative;
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  .phone:hover { transform: translateY(-8px) rotateX(2deg) rotateY(-2deg); box-shadow: 0 40px 100px rgba(124,92,255,0.25); }
+  .phone .glow {
+    position: absolute; inset: -2px; border-radius: 42px;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(124,92,255,0.35), transparent 60%);
+    opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 0;
+  }
+  .phone:hover .glow { opacity: 1; }
+  .phone .shine {
+    position: absolute; inset: 0; border-radius: 40px;
+    background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform .8s ease;
+    pointer-events: none; z-index: 3;
+  }
+  .phone:hover .shine { transform: translateX(100%); }
+  .phone .notch {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 96px; height: 26px; background: #000; border-radius: 0 0 16px 16px;
+    z-index: 4; box-shadow: inset 0 -2px 4px rgba(255,255,255,0.05);
+  }
+  .phone .screen {
+    background: linear-gradient(180deg, #f4f5f9, #e9ebf2);
+    border-radius: 30px; overflow: hidden;
+    min-height: 490px; padding: 14px 16px;
+    color: #1a1d24; font-size: 13px; position: relative; z-index: 1;
+  }
+  .phone .status {
+    display: flex; justify-content: space-between;
+    font-size: 11px; font-weight: 600; margin-bottom: 10px; color: #1a1d24;
+  }
+  .toast {
+    background: linear-gradient(135deg, #1a1d24, #2a2f3a); color: #fff;
+    padding: 9px 13px; border-radius: 11px; font-size: 12px; margin-bottom: 11px;
+    display: flex; justify-content: space-between; align-items: center;
+    animation: slideDown .5s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .toast .link { color: var(--accent-2); font-weight: 600; cursor: pointer; }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal {
+    background: #fff; border-radius: 16px; padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    animation: pop .4s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal h3 { font-size: 16px; margin-bottom: 11px; font-weight: 700; }
+  .option {
+    border: 2px solid #e2e4ea; border-radius: 11px;
+    padding: 11px 13px; margin-bottom: 9px;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: all .25s ease; cursor: pointer; position: relative; overflow: hidden;
+  }
+  .option:hover { border-color: var(--accent); transform: translateX(2px); }
+  .option.selected {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, #f3f0ff, #eef4ff);
+    box-shadow: 0 4px 14px rgba(124,92,255,0.15);
+  }
+  .option .name { font-weight: 600; }
+  .option .price { color: var(--accent); font-weight: 700; font-size: 15px; }
+  .option .res { color: var(--muted); font-size: 11px; }
+  .btn {
+    width: 100%; padding: 11px; border: none; border-radius: 11px;
+    font-weight: 700; margin-top: 9px; cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+    position: relative; overflow: hidden;
+  }
+  .btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; box-shadow: 0 6px 18px rgba(124,92,255,0.35);
+  }
+  .btn.primary:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(124,92,255,0.5); }
+  .btn.secondary { background: #e8eaf0; color: #1a1d24; }
+  .btn.secondary:hover { background: #dde0e8; }
+  .note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 9px; }
+
+  .insights {
+    padding: 22px;
+  }
+  .insights h2 { font-size: 20px; margin-bottom: 4px; font-weight: 700; }
+  .insights .tag {
+    display: inline-block; background: var(--glass);
+    border: 1px solid var(--border); padding: 3px 10px; border-radius: 7px;
+    font-size: 11px; color: var(--muted); margin-bottom: 14px;
+  }
+  .insights ul { list-style: none; }
+  .insights li {
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--text);
+    display: flex; gap: 8px; align-items: flex-start;
+    transition: transform .2s ease, color .2s ease;
+  }
+  .insights li:hover { transform: translateX(4px); color: #fff; }
+  .insights li:last-child { border-bottom: none; }
+  .insights li .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); margin-top: 6px; flex-shrink: 0;
+  }
+  .insights li strong { color: var(--accent-2); }
+
+  .metrics { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 22px; }
+  .metric {
+    padding: 18px; position: relative; overflow: hidden;
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .metric:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(124,92,255,0.15); }
+  .metric::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .6s ease;
+  }
+  .metric:hover::before { transform: scaleX(1); }
+  .metric .label { font-size: 11px; color: var(--muted); letter-spacing: .6px; }
+  .metric .value { font-size: 30px; font-weight: 700; margin: 8px 0 4px; }
+  .metric .delta { font-size: 12px; color: var(--green); font-weight: 600; }
+  .metric .bar {
+    height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px;
+    margin-top: 10px; overflow: hidden;
+  }
+  .metric .bar > span {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border-radius: 2px;
+    animation: grow 1.2s cubic-bezier(.2,.8,.2,1) forwards;
+    transform-origin: left; transform: scaleX(0);
+  }
+  @keyframes grow { to { transform: scaleX(1); } }
+
+  .share-dialog { padding: 18px; margin-bottom: 22px; }
+  .share-dialog h3 { font-size: 14px; margin-bottom: 12px; font-weight: 700; }
+  .share-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    transition: background .2s ease; border-radius: 6px;
+  }
+  .share-row:hover { background: rgba(255,255,255,0.02); }
+  .share-row:last-child { border-bottom: none; }
+  .pill {
+    background: var(--glass); border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 9px; font-size: 12px;
+    transition: transform .2s ease, border-color .2s ease;
+  }
+  .pill:hover { transform: scale(1.05); border-color: var(--accent); }
+
+  .bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .bottom .box {
+    padding: 18px; font-size: 13px; color: var(--muted); line-height: 1.6;
+    transition: transform .3s ease;
+  }
+  .bottom .box:hover { transform: translateY(-3px); }
+  .bottom .box strong { color: var(--text); }
+
+  /* cursor follower glow */
+  .cursor-glow {
+    position: fixed; width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,92,255,0.12), transparent 70%);
+    pointer-events: none; z-index: 0;
+    transform: translate(-50%, -50%);
+    transition: left .1s ease, top .1s ease;
+  }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: repeat(2,1fr); }
+    .bottom { grid-template-columns: 1fr; }
+    .phones { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg-particles" id="particles"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <div class="wrap">
+    <div class="topbar glass">
+      <div class="left">
+        <span class="title">acme-funnel-fix</span>
+        <span class="link">claude.ai/c0de/artifact/0d2447a6-6c35-4259-a320-8057c679e2ea</span>
+      </div>
+      <button class="share">Share</button>
+    </div>
+
+    <div class="main">
+      <div class="phones-wrap glass">
+        <!-- Phone 1: Pro upsell -->
+        <div class="phone" data-phone>
+          <div class="glow"></div>
+          <div class="shine"></div>
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+            <div class="modal">
+              <h3>Export</h3>
+              <div class="option selected">
+                <div>
+                  <div class="name">Full resolution</div>
+                  <div class="res">4032×3024·need</div>
+                </div>
+                <div class="price">$3.99/mo</div>
+              </div>
+              <div class="option">
+                <div>
+                  <div class="name">Standard</div>
+                  <div class="res">2048×1536-free</div>
+                </div>
+              </div>
+              <button class="btn primary">Continue Go Pro</button>
+              <button class="btn secondary">Maybe later</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone 2: Free standard -->
+        <div class="phone" data-phone>
+          <div class="glow"></div>
+          <div class="shine"></div>
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+            <div class="toast">
+              <span>Exported to camera</span>
+              <span class="link">full res? Try Pro free</span>
+            </div>
+            <div class="modal">
+              <h3>Export</h3>
+              <div class="option selected">
+                <div>
+                  <div class="name">Standard</div>
+                  <div class="res">2048×1536-free</div>
+                </div>
+              </div>
+              <div class="option">
+                <div>
+                  <div class="name">Full resolution</div>
+                  <div class="res">4032×3024·Pro</div>
+                </div>
+              </div>
+              <button class="btn primary">Export</button>
+              <div class="note">Settings remembers your choice</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insights glass">
+        <h2>The funnel didn't sag — it snapped</h2>
+        <span class="tag">:v4.2-Mar18 · n=5.80M</span>
+        <ul>
+          <li><span class="dot"></span><div><strong>O Pro preselected price is first paint</strong> — price shown before value</div></li>
+          <li><span class="dot"></span><div><strong>@Free default restored no ambush</strong> — free path restored, no surprise paywall</div></li>
+          <li><span class="dot"></span><div><strong>CTA sells the plan, not the export</strong> — button copy sells subscription</div></li>
+          <li><span class="dot"></span><div><strong>The ask moves to after success</strong> — paywall after export completes</div></li>
+          <li><span class="dot"></span><div>v4.1 n=2.61M · v4.2 + n=5.80M · mix ±0.6pt</div></li>
+          <li><span class="dot"></span><div><strong>Cancels are reflexes</strong> — cancellations are impulsive</div></li>
+          <li><span class="dot"></span><div><strong>More than half of exports never complete</strong></div></li>
+          <li><span class="dot"></span><div><strong>68% bail inside three seconds</strong> — most users leave in &lt;3s</div></li>
+          <li><span class="dot"></span><div><strong>no scroll, no option tap</strong> — users don't engage with options</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric glass">
+        <div class="label">EDITOR SESSIONS</div>
+        <div class="value" data-count="8.41" data-suffix="M">0</div>
+        <div class="delta">▲ 3.1%</div>
+        <div class="bar"><span style="width:84%"></span></div>
+      </div>
+      <div class="metric glass">
+        <div class="label">CLASSIC APPLY RATE</div>
+        <div class="value" data-count="76.6" data-suffix="%">0</div>
+        <div class="delta">▲ 1.2pt</div>
+        <div class="bar"><span style="width:77%"></span></div>
+      </div>
+      <div class="metric glass">
+        <div class="label">EXPORT TAPS</div>
+        <div class="value" data-count="4.99" data-suffix="M">0</div>
+        <div class="delta">▲ 2.4%</div>
+        <div class="bar"><span style="width:50%"></span></div>
+      </div>
+      <div class="metric glass">
+        <div class="label">EXPORT COMPLETION</div>
+        <div class="value" data-count="27.8" data-suffix="%">0</div>
+        <div class="delta">▲ 9.4pt</div>
+        <div class="bar"><span style="width:28%"></span></div>
+      </div>
+      <div class="metric glass">
+        <div class="label">PRO CONVERSIONS</div>
+        <div class="value" data-count="188.4" data-suffix="K">0</div>
+        <div class="delta">▲ 1.8%</div>
+        <div class="bar"><span style="width:19%"></span></div>
+      </div>
+    </div>
+
+    <div class="share-dialog glass">
+      <h3>Share dialog</h3>
+      <div class="share-row">
+        <span>Always share latest version</span>
+        <span class="pill">Everyone at Acme</span>
+      </div>
+      <div class="share-row">
+        <span>Versions</span>
+        <div style="display:flex;gap:6px;">
+          <span class="pill">4.2-Current</span>
+          <span class="pill">4.3.1P</span>
+        </div>
+      </div>
+      <div class="share-row">
+        <span>Status</span>
+        <span class="pill">Sharing version 2 (Just now)</span>
+      </div>
+      <div class="share-row">
+        <span>Copy link</span>
+        <span class="pill">8 Copy link</span>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="box glass">
+        <strong>Last 90 days</strong> — export funnel shows &gt;50% of exports never complete; 68% bail within 3 seconds with no scroll and no option tap.
+      </div>
+      <div class="box glass">
+        <strong>Insight:</strong> Cancels are reflexes. Moving the paywall ask to after success and restoring the free default (no ambush) should reduce drop-off.
+      </div>
+    </div>
+  </div>
+
+<script>
+  // background particles
+  const p = document.getElementById('particles');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDelay = Math.random() * 12 + 's';
+    s.style.animationDuration = (8 + Math.random() * 8) + 's';
+    p.appendChild(s);
+  }
+
+  // cursor glow
+  const glow = document.getElementById('cursorGlow');
+  window.addEventListener('mousemove', (e) => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+
+  // phone glow follows mouse
+  document.querySelectorAll('[data-phone]').forEach(phone => {
+    phone.addEventListener('mousemove', (e) => {
+      const r = phone.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      phone.style.setProperty('--mx', x + '%');
+      phone.style.setProperty('--my', y + '%');
+    });
+  });
+
+  // count-up animation for metrics
+  const animateCount = (el) => {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1400;
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = target * eased;
+      el.textContent = (target % 1 === 0 ? Math.round(val) : val.toFixed(2)) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCount(e.target);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('[data-count]').forEach(el => io.observe(el));
+
+  // tilt effect on phones
+  document.querySelectorAll('[data-phone]').forEach(phone => {
+    phone.addEventListener('mousemove', (e) => {
+      const r = phone.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      phone.style.transform = `translateY(-8px) rotateX(${y * -8}deg) rotateY(${x * 8}deg)`;
+    });
+    phone.addEventListener('mouseleave', () => {
+      phone.style.transform = '';
+    });
+  });
+</script>
+</body>
+</html>
