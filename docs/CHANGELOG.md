@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.1] — 2026-10-28
+
+### Melhorado
+- `hooks/pre-tool-use-security.sh` — padrões regex mais robustos (alinhados com validate_bash_command.py), detecção de segredos em Write/Edit, fail-open, mensagens mais claras.
+
 ## [1.2.0] — 2026-10-28
 
 ### Adicionado (contribuição do dispositivo Cesar)
