@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTE — Controle de Estoque</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root{
+    --bg:#0f172a;
+    --panel:#1e293b;
+    --panel-hover:#334155;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --accent:#38bdf8;
+    --accent-2:#818cf8;
+    --ok:#22c55e;
+    --warn:#f59e0b;
+    --bad:#ef4444;
+    --radius:14px;
+    --shadow:0 10px 30px -10px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .app{max-width:1100px;margin:32px auto;padding:0 20px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .brand{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px}
+  .brand .dot{width:10px;height:10px;background:var(--ok);border-radius:50%;box-shadow:0 0 10px var(--ok)}
+  .subtitle{color:var(--muted);font-size:0.9rem;margin-top:4px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px}
+  .kpi{background:var(--panel);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+  .kpi .label{color:var(--muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+  .kpi .value{font-size:1.9rem;font-weight:700;line-height:1.1}
+  .kpi .delta{font-size:0.85rem;font-weight:600;padding:2px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;margin-top:8px}
+  .delta.up{background:rgba(34,197,94,0.15);color:var(--ok);border:1px solid rgba(34,197,94,0.35)}
+  .delta.down{background:rgba(239,68,68,0.15);color:var(--bad);border:1px solid rgba(239,68,68,0.35)}
+  .delta.neutral{background:rgba(245,158,11,0.15);color:var(--warn);border:1px solid rgba(245,158,11,0.35)}
+  .tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;padding-bottom:8px}
+  .tab{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted);padding:10px 18px;border-radius:999px;font-size:0.85rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+  .tab:hover{color:var(--text);border-color:var(--accent)}
+  .tab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:900px){.grid2,.kpi-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:620px){.kpi-grid,.grid2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:20px}
+  .card h3{font-size:1rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.06em}
+  canvas{max-height:320px;width:100%}
+  table{width:100%;border-collapse:collapse;font-size:0.85rem;color:var(--text)}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06)}
+  th{color:var(--muted);font-size:0.75rem;text-transform:uppercase}
+  tr:hover{background:rgba(255,255,255,0.03)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:0.75rem;font-weight:700;text-transform:uppercase}
+  .badge.ok{background:rgba(34,197,94,0.15);color:var(--ok);border:1px solid rgba(34,197,94,0.35)}
+  .badge.warn{background:rgba(245,158,11,0.15);color:var(--warn);border:1px solid rgba(245,158,11,0.35)}
+  .badge.bad{background:rgba(239,68,68,0.15);color:var(--bad);border:1px solid rgba(239,68,68,0.35)}
+  .alert{background:rgba(239,68,68,0.12);border-left:4px solid var(--bad);padding:12px 16px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;color:var(--text)}
+  .alert .t{font-weight:700;color:var(--bad);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  button{background:var(--panel);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px 18px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+  button:hover{background:var(--panel-hover);border-color:var(--accent);color:var(--accent)}
+  button.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;color:#000;box-shadow:0 4px 14px -4px rgba(56,189,248,0.45)}
+  button.primary:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  button.danger{border-color:rgba(239,68,68,0.45);color:var(--bad)}
+  button.danger:hover{background:rgba(239,68,68,0.15)}
+  .muted{color:var(--muted);font-size:0.85rem}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid rgba(255,255,255,0.08);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:var(--muted);margin-right:8px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <div class="brand"><div class="dot"></div>CTE — Controle de Estoque</div>
+      <div class="subtitle">Dashboard de estoque, indicadores e gatilhos de reposição &bull; atualizado em tempo real</div>
+    </div>
+    <div class="chip">Versão 1.0</div>
+    <button class="primary" onclick="exportarCSV()"><span>⬇</span> Exportar CSV</button>
+  </header>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Itens em estoque <span>Total</span></div>
+      <div class="value" id="kpi-total">0</div>
+      <div class="delta up"><span>▲</span> +12 vs mês passado</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Valor total <span>Capital parado</span></div>
+      <div class="value" id="kpi-valor">R$ 0,00</div>
+      <div class="delta down"><span>▼</span> -4,2% vs mês</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Itens abaixo do mínimo <span>Gatilho vermelho</span></div>
+      <div class="value" id="kpi-vermelho">0</div>
+      <div class="delta down"><span>▲</span> necessidade de reposição</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Giro médio <span>Dia(s)</span></div>
+      <div class="value" id="kpi-giro">0</div>
+      <div class="delta up"><span>▲</span> 0,8 dia mais rápido</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="abrirAba(this,'visao')">Visão Geral</button>
+    <button class="tab" onclick="abrirAba(this,'estoque')">Estoque</button>
+    <button class="tab" onclick="abrirAba(this,'gatilhos')">Alertas / Gatilhos</button>
+    <button class="tab" onclick="abrirAba(this,'indicadores')">Indicadores</button>
+    <button class="tab" onclick="abrirAba(this,'acoes')">Ações Sugeridas</button>
+  </div>
+
+  <!-- Visão Geral -->
+  <div class="tabpanel active" id="visao">
+    <div class="grid2">
+      <div class="card">
+        <h3>Receita vs Custo por Categoria</h3>
+        <canvas id="chartReceita"></canvas>
+      </div>
+      <div class="card">
+        <h3>Distribuição de Estoque</h3>
+        <canvas id="chartDistribuicao"></canvas>
+      </div>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <h3>Ultrapassagem de limite por fornecedor</h3>
+      <canvas id="chartFornecedor" style="max-height:260px"></canvas>
+    </div>
+  </div>
+
+  <!-- Estoque -->
+  <div class="tabpanel" id="estoque">
+    <div class="card">
+      <h3>Itens cadastrados</h3>
+      <div class="muted">Use a tabela para ver nível atual, mínimo, custo e status de cada SKU.</div>
+      <table id="tabelaEstoque">
+        <thead><tr><th>SKU</th><th>Produto</th><th>Categoria</th><th>Atual</th><th>Mínimo</th><th>Custo Unit.</th><th>Valor Total</th><th>Status</th><th>Ação</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Gatilhos -->
+  <div class="tabpanel" id="gatilhos">
+    <div class="alert">
+      <div class="t">⚠ Gatilho ativado: 5 itens estão abaixo do estoque mínimo</div>
+      <div class="muted">Sugestão: gerar ordem de compra para repor antes que virem ruptura total. Foque nos itens de maior giro.</div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Reposição crítica (vermelho)</h3>
+        <table>
+          <thead><tr><th>SKU</th><th>Produto</th><th>Atual</th><th>Mínimo</th><th>Falta para</th><th>Prioridade</th></tr></thead>
+          <tbody id="tabelaCritica"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Próximo do limite (amarelo)</h3>
+        <table>
+          <thead><tr><th>SKU</th><th>Produto</th><th>Atual</th><th>Mínimo</th><th>Dias estimados</th></tr></thead>
+          <tbody id="tabelaAmarelo"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card btns" style="grid-column:1/-1">
+      <button class="primary" onclick="gerarOcompra()"><span>📦</span> Gerar ordem de compra sugerida</button>
+      <button onclick="ignorarGatilhos()"><span>⏸</span> Ignorar gatilhos hoje</button>
+      <button class="danger" onclick="exportarRelatorio()"><span>📄</span> Relatório PDF</button>
+    </div>
+  </div>
+
+  <!-- Indicadores -->
+  <div class="tabpanel" id="indicadores">
+    <div class="grid2">
+      <div class="card">
+        <h3>Giro de estoque (últimos 12 meses)</h3>
+        <canvas id="chartGiro"></canvas>
+      </div>
+      <div class="card">
+        <h3>Taxa de ruptura por categoria</h3>
+        <canvas id="chartRuptura"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Indicador de saúde do estoque</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <div style="flex:1;min-width:200px">
+          <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;margin-bottom:8px">
+            <div id="barSaude" style="height:100%;width:72%;background:linear-gradient(90deg,var(--ok),var(--accent))"></div>
+          </div>
+          <div class="muted">Saudável — 72% dos itens acima do mínimo de segurança</div>
+        </div>
+        <div style="min-width:150px;text-align:right">
+          <div style="font-size:2rem;font-weight:800;color:var(--ok)">72%</div>
+          <div class="muted">Índice de saúde</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações -->
+  <div class="tabpanel" id="acoes">
+    <div class="grid2">
+      <div class="card">
+        <h3>Reduzir estoque parado</h3>
+        <ul style="list-style:none;color:var(--muted)">
+          <li style="margin-bottom:8px;display:flex;justify-content:space-between"><span>Produto A — SKU 1002</span><strong>R$ 4.120,00 parado</strong></li>
+          <li style="margin-bottom:8px;display:flex;justify-content:space-between"><span>Produto B — SKU 2011</span><strong>R$ 2.890,00 parado</strong></li>
+          <li style="margin-bottom:8px;display:flex;justify-content:space-between"><span>Produto C — SKU 3005</span><strong>R$ 1.450,00 parado</strong></li>
+        </ul>
+        <div class="muted" style="margin-top:10px">Recomendação: promoção relâmpago ou kit para escoar em 7–14 dias.</div>
+      </div>
+      <div class="card">
+        <h3>Deixar de lado (não fede, não cheira)</h3>
+        <ul style="list-style:none;color:var(--muted)">
+          <li style="margin-bottom:8px;display:flex;justify-content:space-between"><span>SKU 9901 — Baixa saída há 60 dias</span><span class="badge bad">Descartar / Liquidar</span></li>
+          <li style="margin-bottom:8px;display:flex;justify-content:space-between"><span>SKU 9912 — Fornecedor inconsistente</span><span class="badge warn">Reavaliar contrato</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card btns" style="grid-column:1/-1">
+      <button class="primary" onclick="planoAcao()"><span>🎯</span> Gerar plano de ação otimizado</button>
+      <button onclick="salvarPreferencias()"><span>💾</span> Salvar preferências</button>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;color:var(--muted);font-size:0.75rem;text-align:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:16px">
+    Artefato gerado pelo OpenCode &bull; HTML único, sem imagem, apenas código &bull; Exemplos: CTE dashboard, abas, gráficos, gatilhos e botões estilizados
+  </div>
+</div>
+
+<script>
+// Dados simulados (substituir por dados reais do CTE)
+const itens = [
+  {sku:'SKU-1001',produto:'Arroz Tipo 1 5kg',categoria:'Grãos',atual:45,minimo:60,custo:8.90},
+  {sku:'SKU-1002',produto:'Feijão Carioca 1kg',categoria:'Grãos',atual:12,minimo:30,custo:6.50},
+  {sku:'SKU-1003',produto:'Óleo de Soja 900ml',categoria:'Óleos',atual:80,minimo:40,custo:9.80},
+  {sku:'SKU-2001',produto:'Detergente 500ml',categoria:'Limpeza',atual:5,minimo:20,custo:2.90},
+  {sku:'SKU-2002',produto:'Sabão em Pó 1kg',categoria:'Limpeza',atual:22,minimo:25,custo:14.90},
+  {sku:'SKU-3001',produto:'Coca-Cola 2L',categoria:'Bebidas',atual:110,minimo:50,custo:7.50},
+  {sku:'SKU-3002',produto:'Água 500ml',categoria:'Bebidas',atual:200,minimo:80,custo:1.90},
+  {sku:'SKU-9901',produto:'Item Parado X',categoria:'Diversos',atual:5,minimo:10,custo:50.00},
+  {sku:'SKU-9912',produto:'Item Fornec. Y',categoria:'Diversos',atual:3,minimo:8,custo:35.00},
+];
+
+function statusAtual(a,m){return a<=m?'bad':a<=m*1.4?'warn':'ok'}
+function labelStatus(s){return s==='bad'?'Crítico':s==='warn'?'Atenção':'OK'}
+function corStatus(s){return s==='bad'?'#ef4444':s==='warn'?'#f59e0b':'#22c55e'}
+
+function renderTabela(){
+  const tbody=document.querySelector('#tabelaEstoque tbody');
+  tbody.innerHTML='';
+  let totalItens=0,totalValor=0,vermelho=0;
+  itens.forEach(it=>{
+    const s=statusAtual(it.atual,it.minimo);
+    const falta=Math.max(0,it.minimo-it.atual);
+    const valor=(it.atual*it.custo).toFixed(2);
+    totalItens+=it.atual;totalValor+=it.atual*it.custo;if(s==='bad')vermelho++;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><code>${it.sku}</code></td>
+      <td>${it.produto}</td>
+      <td>${it.categoria}</td>
+      <td>${it.atual}</td>
+      <td>${it.minimo}</td>
+      <td>R$ ${it.custo.toFixed(2)}</td>
+      <td>R$ ${valor}</td>
+      <td><span class="badge ${s}">${labelStatus(s)}</span></td>
+      <td><button onclick="repor('${it.sku}')" style="padding:4px 10px;font-size:.75rem">Repor ${falta}</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('kpi-total').textContent=totalItens;
+  document.getElementById('kpi-valor').textContent='R$ '+totalValor.toLocaleString('pt-BR',{minimumFractionDigits:2});
+  document.getElementById('kpi-vermelho').textContent=vermelho;
+  renderCriticos();
+}
+function renderCriticos(){
+  const crit=document.getElementById('tabelaCritica');const ame=document.getElementById('tabelaAmarelo');
+  crit.innerHTML='';ame.innerHTML='';
+  itens.forEach(it=>{
+    const s=statusAtual(it.atual,it.minimo);const falta=Math.max(0,it.minimo-it.atual);
+    const linha=(tr)=>{tr.innerHTML=`<td><code>${it.sku}</code></td><td>${it.produto}</td><td>${it.atual}</td><td>${it.minimo}</td><td>${falta}</td><td>${s==='bad'?'Alta':'Média'}</td>`};
+    if(s==='bad'){const tr=document.createElement('tr');linha(tr);crit.appendChild(tr)}
+    else if(s==='warn'){const tr=document.createElement('tr');linha(tr);ame.appendChild(tr)}
+  });
+}
+function repor(sku){alert('Reposição solicitada para '+sku+' (ação simulada).');}
+function abrirAba(el,id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');document.getElementById(id).classList.add('active');
+}
+function gerarOcompra(){alert('Ordem de compra sugerida gerada com '+document.getElementById('kpi-vermelho').textContent+' itens críticos.');}
+function ignorarGatilhos(){alert('Gatilhos ignorados por 24h.');}
+function exportarRelatorio(){alert('Relatório exportado (simulação).');}
+function exportarCSV(){alert('CSV exportado (simulação).');}
+function planoAcao(){alert('Plano de ação otimizado gerado.');}
+function salvarPreferencias(){alert('Preferências salvas.');}
+
+// Gráficos
+function initCharts(){
+  const commonOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',font:{size:11}}}}};
+  new Chart(document.getElementById('chartReceita'),{type:'bar',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun'],datasets:[{label:'Receita',data:[12,19,15,25,22,30],backgroundColor:'#38bdf8'},{label:'Custo',data:[9,14,11,18,17,24],backgroundColor:'#818cf8'}]},options:{...commonOpts,scales:{y:{grid:{color:'rgba(255,255,255,0.05)},ticks:{color:'#94a3b8'}},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
+  new Chart(document.getElementById('chartDistribuicao'),{type:'doughnut',data:{labels:['Grãos','Óleos','Limpeza','Bebidas','Diversos'],datasets:[{data:[137,180,27,310,8],backgroundColor:['#38bdf8','#818cf8','#f59e0b','#22c55e','#94a3b8']}]},options:{...commonOpts,cutout:'70%'}});
+  new Chart(document.getElementById('chartFornecedor'),{type:'bar',data:{labels:['Fornec A','Fornec B','Fornec C','Fornec D'],datasets:[{label:'Acima do limite',data:[4,2,6,1],backgroundColor:'#ef4444}],options:{...commonOpts,scales:{y:{grid:{color:'rgba(255,255,255,0.05)},ticks:{color:'#94a3b8',beginAtZero:true},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
+  new Chart(document.getElementById('chartGiro'),{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],datasets:[{label:'Giro',data:[4.2,4.5,4.1,4.8,5.0,4.7,5.2,5.5,5.1,5.4,5.8,6.0],borderColor:'#38bdf8',fill:false,tension:0.3}]},options:{...commonOpts,scales:{y:{grid:{color:'rgba(255,255,255,0.05)},ticks:{color:'#94a3b8'}},x:{grid:{display:false},ticks:{color:'#94a3b8'}}}}});
+  new Chart(document.getElementById('chartRuptura'),{type:'pie',data:{labels:['Grãos','Óleos','Limpeza','Bebidas'],datasets:[{data:[15,5,25,2],backgroundColor:['#ef4444','#f59e0b','#38bdf8','#22c55e']}]},options:{...commonOpts}});
+}
+
+renderTabela();initCharts();
+</script>
+</body>
+</html>
