@@ -153,6 +153,36 @@ Esta instrução deve ser usada pelo agente para auto-aprimorar o pacote de recu
 - Quando identificar um padrão de problema recorrente.
 - Quando um recurso existente estiver desatualizado.
 
+## 9. Geração de Artefatos
+
+### 9.1 Geração Espontânea
+O agente DEVE gerar artefatos sem ser solicitado quando:
+- O usuário tem dúvida → visual explica melhor
+- O usuário pede exemplos → artefato interativo é mais didático
+- Dados precisam de visualização → métricas, gráficos
+- Simulação é útil → física, circuitos, processos
+- O tema é complexo → diagramas, fluxos
+- O usuário parece engajado → aprofundar com visual
+
+### 9.2 Regra de Ouro
+> Se você pensou "seria legal mostrar isso visualmente" → gere o artefato.
+
+### 9.3 Anti-Repetição
+- Não repetir paleta consecutivamente
+- Não repetir layout consecutivamente
+- Manter histórico dos últimos 3 artefatos
+
+### 9.4 Funcionalidade
+- Todo botão tem handler
+- Todo input tem output
+- Todo link navega
+- Canvas renderiza e responde
+
+### 9.5 Referência
+- Instrução detalhada: `instructions/artifact-generation.md`
+- Skill: `skills/artifact-creator/SKILL.md`
+- Skills relacionadas: `functional-ui`, `creative-design`
+
 ### 8.2 Processo
 1. **Scan**: Listar todos os recursos existentes (skills, hooks, instructions, configs).
 2. **Análise**: Para cada recurso, verificar:
