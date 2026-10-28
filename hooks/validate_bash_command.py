@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""PreToolUse hook para Bash - Valida comandos perigosos ANTES de executar.
+
+Bloqueia: rm -rf /, curl | bash, wget | sh, chmod 777, mkfs, dd, etc.
+Fail-open: se houver erro na validacao, permite a execucao (saída 0).
+"""
+import sys
+import os
+import json
+
+DANGEROUS_PATTERNS = [
+    r"rm\s+-rf\s+/",
+    r"curl\s+.*\|\s*bash",
+    r"wget\s+.*\|\s*sh",
+    r"chmod\s+777",
+    r"mkfs\.",
+    r"dd\s+if=",
+    r">\s*/dev/(sda|hda|vda)",
+    r":\s*\(\s*\)\s*{\s*:\s*\|:\s*&\s*}\s*;\s*",
+]
+
+def main():
+    try:
+        # Lê o input do stdin (OpenCode envia dados da ferramenta via stdin)
+        raw = sys.stdin.read()
+        if not raw:
+            sys.exit(0)
+        
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            sys.exit(0)
+        
+        command = data.get("command", "") or data.get("tool_input", {}).get("command", "")
+        
+        import re
+        for pattern in DANGEROUS_PATTERNS:
+            if re.search(pattern, command, re.IGNORECASE):
+                # Bloqueia o comando
+                print(f"⚠️  Comando bloqueado por política de segurança: {pattern}", file=sys.stderr)
+                sys.exit(1)
+                
+    except Exception:
+        pass
+    
+    # Fail-open: permite execucao
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0] — 2026-10-28
+
+### Adicionado (contribuição do dispositivo Cesar)
+- `hooks/validate_bash_command.py` — validação robusta de comandos bash (regex, fail-open)
+- `hooks/validate_sensitive_write.py` — alerta para escrita em arquivos sensíveis
+- `hooks/session_start.py` / `session_end.py` — logging de início/fim de sessão
+- `hooks/notification_handler.py` — logging de notificações
+- `hooks/subagent_start.py` / `subagent_stop.py` — logging de subagentes
+- `instructions/inline-artifacts.md` — regras de proatividade de visuais inline vs Review pane
+- `configs/settings.example.json` — exemplo de hooks configurados (placeholders)
+- Atualizado `configs/mcp.example.json` — adicionado MCP rea (reverse engineering) como exemplo opcional
+- Atualizado `instructions/AGENTS.md` — seção 10 (hooks e observabilidade) + referência inline-artifacts
+
+### Melhorado
+- Hooks: de 1 hook bash para 8 hooks (1 bash + 7 Python) cobrindo mais eventos
+- Instruções: proatividade de artefatos inline documentada
+
 ## [1.1.0] — 2026-10-28
 
 ### Adicionado

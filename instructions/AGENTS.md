@@ -180,8 +180,27 @@ O agente DEVE gerar artefatos sem ser solicitado quando:
 
 ### 9.5 Referência
 - Instrução detalhada: `instructions/artifact-generation.md`
+- Instrução de inline vs Review pane: `instructions/inline-artifacts.md`
 - Skill: `skills/artifact-creator/SKILL.md`
-- Skills relacionadas: `functional-ui`, `creative-design`
+- Skills relacionadas: `functional-ui`, `creative-design`, `inline-artifacts`, `artifact-balloon`
+
+## 10. Hooks e Observabilidade
+
+### 10.1 Hooks Disponíveis
+- `hooks/pre-tool-use-security.sh` — Hook bash portável (PreToolUse: comandos perigosos + segredos).
+- `hooks/validate_bash_command.py` — Validação robusta de comandos bash (regex, fail-open).
+- `hooks/validate_sensitive_write.py` — Alerta para escrita em arquivos sensíveis (.env, .pem, etc.).
+- `hooks/session_start.py` / `session_end.py` — Logging de início/fim de sessão.
+- `hooks/notification_handler.py` — Logging de notificações.
+- `hooks/subagent_start.py` / `subagent_stop.py` — Logging de subagentes.
+
+### 10.2 Configuração
+- Exemplo de settings com hooks: `configs/settings.example.json` (substitua `<hooks>` pelo caminho real).
+- Os hooks Python usam variáveis de ambiente (`WORKSPACE`, `SESSION_ID`, `AGENT_ID`) e stdin/stdout. São portáveis entre SOs (requer Python 3).
+
+### 10.3 Princípio Fail-Open
+- Todos os hooks devem ser fail-open: nunca quebrar a sessão por erro interno.
+- Preferir alertas (stderr) a bloqueios, exceto para comandos claramente destrutivos.
 
 ### 8.2 Processo
 1. **Scan**: Listar todos os recursos existentes (skills, hooks, instructions, configs).

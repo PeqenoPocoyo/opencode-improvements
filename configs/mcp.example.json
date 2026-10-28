@@ -20,6 +20,11 @@
         "BRAVE_API_KEY": "<SET_VIA_ENV>"
       },
       "description": "Busca web via Brave Search API"
+    },
+    "rea": {
+      "command": "node",
+      "args": ["<path-to-rea>/scripts/rea.mjs", "mcp"],
+      "description": "Reverse Engineering Agent (REA) — análise de binários, managed code, browser pages e runtimes. Opcional; requer instalação do pacote rea-agents."
     }
   },
   "_notes": {
