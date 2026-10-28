@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IIoT 4.0 — Arquitetura Industrial Interativa</title>
+<style>
+  :root {
+    --bg: #050a0e;
+    --panel: rgba(8,16,24,0.8);
+    --card: rgba(12,24,36,0.7);
+    --border: rgba(52,211,153,0.18);
+    --text: #e0f2f1;
+    --muted: #6b8a8a;
+    --green: #34d399;
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --violet: #a78bfa;
+    --blue: #60a5fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    background: radial-gradient(ellipse at 20% 30%, rgba(52,211,153,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(34,211,238,0.06) 0%, transparent 50%), var(--bg);
+    color: var(--text);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(52,211,153,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52,211,153,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; height: 100vh; display: grid; grid-template-columns: 280px 1fr 320px; grid-template-rows: 52px 1fr; }
+  .topbar { grid-column: 1/-1; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--panel); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .topbar .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 15px; letter-spacing: -0.3px; }
+  .topbar .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .topbar .stats { display: flex; gap: 20px; font-size: 10px; color: var(--muted); }
+  .topbar .stats b { color: var(--text); font-size: 13px; }
+  .topbar button { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; letter-spacing: .5px; }
+  .topbar button:hover { background: rgba(52,211,153,0.12); border-color: var(--green); }
+  .topbar button.active { background: var(--green); color: #050a0e; border-color: var(--green); }
+
+  /* LEFT: node palette */
+  .palette { background: var(--panel); backdrop-filter: blur(12px); border-right: 1px solid var(--border); overflow-y: auto; padding: 14px; }
+  .palette h2 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 10px; }
+  .node-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 7px; cursor: pointer; transition: all .15s; border: 1px solid transparent; margin-bottom: 4px; }
+  .node-item:hover { background: rgba(255,255,255,0.04); border-color: var(--border); }
+  .node-item.active { background: rgba(52,211,153,0.1); border-color: var(--green); }
+  .node-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .node-info { flex: 1; min-width: 0; }
+  .node-name { font-size: 11px; font-weight: 600; }
+  .node-desc { font-size: 9px; color: var(--muted); }
+  .layer-group { margin-bottom: 14px; }
+  .layer-group h3 { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+
+  /* CENTER: canvas */
+  .canvas-wrap { position: relative; overflow: hidden; }
+  .canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+  .canvas-overlay { position: absolute; top: 12px; left: 12px; font-size: 9px; color: var(--muted); letter-spacing: 1px; background: rgba(0,0,0,0.5); padding: 5px 9px; border-radius: 5px; backdrop-filter: blur(6px); }
+  .canvas-legend { position: absolute; bottom: 12px; left: 12px; display: flex; gap: 12px; font-size: 9px; color: var(--muted); background: rgba(0,0,0,0.5); padding: 5px 9px; border-radius: 5px; backdrop-filter: blur(6px); }
+  .canvas-legend span { display: flex; align-items: center; gap: 4px; }
+  .canvas-legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* RIGHT: details */
+  .details { background: var(--panel); backdrop-filter: blur(12px); border-left: 1px solid var(--border); overflow-y: auto; padding: 14px; }
+  .details h2 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 10px; }
+  .detail-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .detail-card h3 { font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .detail-card p { font-size: 10px; color: var(--muted); line-height: 1.6; }
+  .detail-card .spec { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .spec-chip { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: rgba(52,211,153,0.08); border: 1px solid var(--border); color: var(--green); }
+  .metric-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 10px; }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-row .label { color: var(--muted); }
+  .metric-row .value { color: var(--text); font-weight: 600; }
+  .metric-row .value.good { color: var(--green); }
+  .metric-row .value.warn { color: var(--amber); }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--panel); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; font-size: 11px; z-index: 100; transition: transform .3s ease; backdrop-filter: blur(12px); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <span>IIoT 4.0 — Arquitetura Industrial Interativa</span>
+    </div>
+    <div class="stats">
+      <div>Nós: <b id="nodeCount">0</b></div>
+      <div>Pacotes/s: <b id="pps">0</b></div>
+      <div>Latência: <b id="latency">--</b>ms</div>
+    </div>
+    <div class="actions" style="display:flex;gap:8px;">
+      <button onclick="toggleFlow()" id="flowBtn" class="active">Fluxo ON</button>
+      <button onclick="resetNetwork()">Reset</button>
+      <button onclick="addRandomNode()">+ Nó</button>
+    </div>
+  </header>
+
+  <!-- LEFT PALETTE -->
+  <aside class="palette">
+    <h2>Camadas IIoT</h2>
+    <div class="layer-group">
+      <h3>Nível 0 — Campo</h3>
+      <div class="node-item" onclick="selectNodeType('sensor')" data-type="sensor">
+        <div class="node-icon" style="background:rgba(251,191,36,0.15);">📡</div>
+        <div class="node-info"><div class="node-name">Sensor</div><div class="node-desc">Temp, pressão, vibração</div></div>
+      </div>
+      <div class="node-item" onclick="selectNodeType('actuator')" data-type="actuator">
+        <div class="node-icon" style="background:rgba(248,113,113,0.15);">⚙️</div>
+        <div class="node-info"><div class="node-name">Atuador</div><div class="node-desc">Válvula, motor, relé</div></div>
+      </div>
+      <div class="node-item" onclick="selectNodeType('plc')" data-type="plc">
+        <div class="node-icon" style="background:rgba(96,165,250,0.15);">🔲</div>
+        <div class="node-info"><div class="node-name">CLP</div><div class="node-desc">Controlador lógico</div></div>
+      </div>
+    </div>
+    <div class="layer-group">
+      <h3>Nível 1-2 — Edge</h3>
+      <div class="node-item" onclick="selectNodeType('gateway')" data-type="gateway">
+        <div class="node-icon" style="background:rgba(167,139,250,0.15);">🌐</div>
+        <div class="node-info"><div class="node-name">Gateway</div><div class="node-desc">Protocolo converter</div></div>
+      </div>
+      <div class="node-item" onclick="selectNodeType('edge')" data-type="edge">
+        <div class="node-icon" style="background:rgba(34,211,238,0.15);">💻</div>
+        <div class="node-info"><div class="node-name">Edge Node</div><div class="node-desc">Processamento local</div></div>
+      </div>
+    </div>
+    <div class="layer-group">
+      <h3>Nível 3-4 — Cloud</h3>
+      <div class="node-item" onclick="selectNodeType('broker')" data-type="broker">
+        <div class="node-icon" style="background:rgba(52,211,153,0.15);">📡</div>
+        <div class="node-info"><div class="node-name">Broker MQTT</div><div class="node-desc">Mosquitto/HiveMQ</div></div>
+      </div>
+      <div class="node-item" onclick="selectNodeType('cloud')" data-type="cloud">
+        <div class="node-icon" style="background:rgba(96,165,250,0.15);">☁️</div>
+        <div class="node-info"><div class="node-name">Cloud IoT</div><div class="node-desc">AWS/Azure/GCP</div></div>
+      </div>
+      <div class="node-item" onclick="selectNodeType('dashboard')" data-type="dashboard">
+        <div class="node-icon" style="background:rgba(251,191,36,0.15);">📊</div>
+        <div class="node-info"><div class="node-name">Dashboard</div><div class="node-desc">Grafana/Power BI</div></div>
+      </div>
+      <div class="node-item" onclick="selectNodeType('twin')" data-type="twin">
+        <div class="node-icon" style="background:rgba(167,139,250,0.15);">🪞</div>
+        <div class="node-info"><div class="node-name">Digital Twin</div><div class="node-desc">Réplica virtual</div></div>
+      </div>
+    </div>
+    <div style="margin-top:14px; padding:10px; border-radius:7px; background:rgba(52,211,153,0.05); border:1px solid var(--border); font-size:9px; color:var(--muted); line-height:1.6;">
+      <b style="color:var(--green);">Dica:</b> Selecione um tipo e clique no canvas para adicionar. Arraste para mover. Clique direito para remover.
+    </div>
+  </aside>
+
+  <!-- CENTER CANVAS -->
+  <main class="canvas-wrap">
+    <canvas id="netCanvas"></canvas>
+    <div class="canvas-overlay">REDE IIoT — CLIQUE PARA ADICIONAR NÓS</div>
+    <div class="canvas-legend">
+      <span><span class="dot" style="background:#fbbf24;"></span>Sensor</span>
+      <span><span class="dot" style="background:#f87171;"></span>Atuador</span>
+      <span><span class="dot" style="background:#60a5fa;"></span>CLP</span>
+      <span><span class="dot" style="background:#a78bfa;"></span>Gateway</span>
+      <span><span class="dot" style="background:#22d3ee;"></span>Edge</span>
+      <span><span class="dot" style="background:#34d399;"></span>Broker</span>
+      <span><span class="dot" style="background:#60a5fa;"></span>Cloud</span>
+    </div>
+  </main>
+
+  <!-- RIGHT DETAILS -->
+  <aside class="details">
+    <h2>Detalhes do Nó</h2>
+    <div id="nodeDetails">
+      <div class="detail-card">
+        <h3>Selecione um nó</h3>
+        <p>Clique em um nó no canvas para ver detalhes, métricas e protocolo.</p>
+      </div>
+    </div>
+    <h2 style="margin-top:14px;">Métricas da Rede</h2>
+    <div class="detail-card">
+      <div class="metric-row"><span class="label">Total de Nós</span><span class="value" id="mNodes">0</span></div>
+      <div class="metric-row"><span class="label">Conexões</span><span class="value" id="mLinks">0</span></div>
+      <div class="metric-row"><span class="label">Pacotes/s</span><span class="value good" id="mPps">0</span></div>
+      <div class="metric-row"><span class="label">Latência média</span><span class="value" id="mLat">-- ms</span></div>
+      <div class="metric-row"><span class="label">Disponibilidade</span><span class="value good" id="mUptime">99.9%</span></div>
+      <div class="metric-row"><span class="label">Banda usada</span><span class="value" id="mBand">0 KB/s</span></div>
+    </div>
+    <h2 style="margin-top:14px;">Protocolos Ativos</h2>
+    <div class="detail-card">
+      <div class="metric-row"><span class="label">OPC-UA</span><span class="value good">Ativo</span></div>
+      <div class="metric-row"><span class="label">MQTT</span><span class="value good">Ativo</span></div>
+      <div class="metric-row"><span class="label">PROFINET</span><span class="value good">Ativo</span></div>
+      <div class="metric-row"><span class="label">Modbus TCP</span><span class="value warn">Legado</span></div>
+    </div>
+    <h2 style="margin-top:14px;">Casos de Uso</h2>
+    <div class="detail-card">
+      <div class="metric-row"><span class="label">Manutenção Preditiva</span><span class="value good">Ativo</span></div>
+      <div class="metric-row"><span class="label">Digital Twin</span><span class="value good">Ativo</span></div>
+      <div class="metric-row"><span class="label">Rastreabilidade</span><span class="value good">Ativo</span></div>
+      <div class="metric-row"><span class="label">Otimização Energia</span><span class="value warn">Config</span></div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== NODE TYPES =====
+const NODE_TYPES = {
+  sensor: { icon:'📡', color:'#fbbf24', label:'Sensor', layer:'Nível 0 — Campo', desc:'Sensor de temperatura, pressão, vibração, nível. Protocolo: 4-20mA, IO-Link, Modbus.', power:0.5, latency:2, proto:'Modbus/IO-Link' },
+  actuator: { icon:'⚙️', color:'#f87171', label:'Atuador', layer:'Nível 0 — Campo', desc:'Válvula, motor, cilindro pneumático. Controle via CLP.', power:2, latency:5, proto:'Digital/Analog' },
+  plc: { icon:'🔲', color:'#60a5fa', label:'CLP', layer:'Nível 1 — Controle', desc:'Controlador Lógico Programável. Executa lógica de controle em tempo real.', power:15, latency:1, proto:'PROFINET/EtherCAT' },
+  gateway: { icon:'🌐', color:'#a78bfa', label:'Gateway', layer:'Nível 1-2 — Edge', desc:'Converte protocolos de campo para Ethernet/IP. Ponte entre OT e IT.', power:8, latency:3, proto:'OPC-UA/MQTT' },
+  edge: { icon:'💻', color:'#22d3ee', label:'Edge Node', layer:'Nível 2 — Edge', desc:'Processamento local, filtragem de dados, pré-análise. Reduz tráfego para cloud.', power:25, latency:5, proto:'MQTT/HTTPS' },
+  broker: { icon:'📡', color:'#34d399', label:'Broker MQTT', layer:'Nível 3 — Integração', desc:'Mosquitto/HiveMQ. Mensageria pub/sub entre dispositivos e cloud.', power:10, latency:2, proto:'MQTT' },
+  cloud: { icon:'☁️', color:'#60a5fa', label:'Cloud IoT', layer:'Nível 4 — Cloud', desc:'AWS IoT / Azure IoT Hub / GCP. Armazenamento, analytics, ML.', power:0, latency:50, proto:'MQTT/HTTPS' },
+  dashboard: { icon:'📊', color:'#fbbf24', label:'Dashboard', layer:'Nível 4 — Cloud', desc:'Grafana, Power BI. Visualização de métricas em tempo real.', power:0, latency:100, proto:'HTTPS/REST' },
+  twin: { icon:'🪞', color:'#a78bfa', label:'Digital Twin', layer:'Nível 4 — Cloud', desc:'Réplica virtual da máquina. Simulação e otimização.', power:0, latency:80, proto:'OPC-UA/MQTT' },
+};
+
+let nodes = [];
+let links = [];
+let packets = [];
+let selectedType = 'sensor';
+let selectedNode = null;
+let flowActive = true;
+let nodeIdCounter = 1;
+
+// canvas
+const canvas = document.getElementById('netCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){ const r = canvas.parentElement.getBoundingClientRect(); W=canvas.width=r.width*(window.devicePixelRatio||1); H=canvas.height=r.height*(window.devicePixelRatio||1); canvas.style.width=r.width+'px'; canvas.style.height=r.height+'px'; ctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0); W=r.width; H=r.height; }
+window.addEventListener('resize', resize);
+setTimeout(resize, 100);
+
+function addNode(type, x, y){
+  const t = NODE_TYPES[type];
+  const node = { id: nodeIdCounter++, type, x, y, color: t.color, icon: t.icon, label: t.label, vx:0, vy:0, pulse: Math.random()*Math.PI*2 };
+  nodes.push(node);
+  // auto-connect to nearest node of previous layer
+  autoConnect(node);
+  updateStats();
+  showToast(`${t.label} adicionado`);
+}
+
+function autoConnect(node){
+  const order = ['sensor','actuator','plc','gateway','edge','broker','cloud','dashboard','twin'];
+  const idx = order.indexOf(node.type);
+  // connect to nearest node of adjacent layer
+  let best = null, bestD = Infinity;
+  nodes.forEach(n => {
+    if (n.id === node.id) return;
+    const nIdx = order.indexOf(n.type);
+    if (Math.abs(nIdx - idx) !== 1) return;
+    const d = Math.hypot(n.x - node.x, n.y - node.y);
+    if (d < bestD) { bestD = d; best = n; }
+  });
+  if (best && bestD < 300){
+    links.push({ from: node.id, to: best.id, packets: [] });
+  }
+}
+
+function selectNodeType(type){
+  selectedType = type;
+  document.querySelectorAll('.node-item').forEach(el => el.classList.toggle('active', el.dataset.type === type));
+}
+
+function resetNetwork(){
+  nodes = []; links = []; packets = [];
+  updateStats(); showToast('Rede resetada');
+}
+
+function addRandomNode(){
+  const types = Object.keys(NODE_TYPES);
+  const t = types[Math.floor(Math.random()*types.length)];
+  addNode(t, 100 + Math.random()*(W-200), 100 + Math.random()*(H-200));
+}
+
+canvas.addEventListener('click', (e) => {
+  const r = canvas.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  // check if clicking existing node
+  const hit = nodes.find(n => Math.hypot(n.x-x, n.y-y) < 22);
+  if (hit){ selectNode(hit); return; }
+  addNode(selectedType, x, y);
+});
+canvas.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  const idx = nodes.findIndex(n => Math.hypot(n.x-x, n.y-y) < 22);
+  if (idx >= 0){ const n = nodes[idx]; nodes.splice(idx,1); links = links.filter(l => l.from!==n.id && l.to!==n.id); updateStats(); showToast(`${n.label} removido`); }
+});
+// drag
+let dragging = null;
+canvas.addEventListener('mousedown', (e) => {
+  const r = canvas.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  const hit = nodes.find(n => Math.hypot(n.x-x, n.y-y) < 22);
+  if (hit && e.button === 0){ dragging = hit; canvas.style.cursor = 'grabbing'; }
+});
+canvas.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  const r = canvas.getBoundingClientRect();
+  dragging.x = e.clientX - r.left;
+  dragging.y = e.clientY - r.top;
+});
+canvas.addEventListener('mouseup', () => { dragging = null; canvas.style.cursor = 'crosshair'; });
+
+function selectNode(node){
+  selectedNode = node;
+  const t = NODE_TYPES[node.type];
+  const info = `
+    <div class="detail-card">
+      <h3>${t.icon} ${t.label}</h3>
+      <p>${t.desc}</p>
+      <div class="spec">
+        <span class="spec-chip">${t.layer}</span>
+        <span class="spec-chip">${t.proto}</span>
+        <span class="spec-chip">${t.power}W</span>
+        <span class="spec-chip">${t.latency}ms</span>
+      </div>
+    </div>
+    <div class="detail-card">
+      <div class="metric-row"><span class="label">ID</span><span class="value">#${node.id}</span></div>
+      <div class="metric-row"><span class="label">Tipo</span><span class="value">${t.label}</span></div>
+      <div class="metric-row"><span class="label">Camada</span><span class="value">${t.layer}</span></div>
+      <div class="metric-row"><span class="label">Protocolo</span><span class="value">${t.proto}</span></div>
+      <div class="metric-row"><span class="label">Consumo</span><span class="value">${t.power} W</span></div>
+      <div class="metric-row"><span class="label">Latência</span><span class="value">${t.latency} ms</span></div>
+      <div class="metric-row"><span class="label">Posição</span><span class="value">${Math.round(node.x)}, ${Math.round(node.y)}</span></div>
+    </div>
+  `;
+  document.getElementById('nodeDetails').innerHTML = info;
+}
+
+function toggleFlow(){
+  flowActive = !flowActive;
+  const btn = document.getElementById('flowBtn');
+  btn.classList.toggle('active', flowActive);
+  btn.textContent = flowActive ? 'Fluxo ON' : 'Fluxo OFF';
+}
+
+function updateStats(){
+  document.getElementById('nodeCount').textContent = nodes.length;
+  document.getElementById('mNodes').textContent = nodes.length;
+  document.getElementById('mLinks').textContent = links.length;
+  const pps = Math.round(nodes.length * 2.5 + Math.random()*10);
+  document.getElementById('pps').textContent = pps;
+  document.getElementById('mPps').textContent = pps;
+  const lat = nodes.length ? Math.round(nodes.reduce((s,n)=>s+NODE_TYPES[n.type].latency,0)/nodes.length) : 0;
+  document.getElementById('latency').textContent = lat;
+  document.getElementById('mLat').textContent = lat + ' ms';
+  const band = (nodes.length * 0.5 + links.length * 0.2).toFixed(1);
+  document.getElementById('mBand').textContent = band + ' KB/s';
+}
+
+// ===== RENDER LOOP =====
+let lastT = performance.now();
+let packetTimer = 0;
+function loop(now){
+  const dt = Math.min(0.05, (now-lastT)/1000); lastT = now;
+  if (flowActive){
+    packetTimer += dt;
+    if (packetTimer > 0.3){
+      packetTimer = 0;
+      links.forEach(l => {
+        if (Math.random() < 0.4){
+          const from = nodes.find(n=>n.id===l.from);
+          const to = nodes.find(n=>n.id===l.to);
+          if (from && to) packets.push({ from, to, progress:0, speed: 0.02+Math.random()*0.03, color: from.color });
+        }
+      });
+    }
+    // update packets
+    for (let i=packets.length-1;i>=0;i--){
+      const p = packets[i];
+      p.progress += p.speed;
+      if (p.progress >= 1) packets.splice(i,1);
+    }
+  }
+  // node pulse
+  nodes.forEach(n => n.pulse += dt*2);
+
+  // draw
+  ctx.fillStyle = 'rgba(5,10,14,0.15)';
+  ctx.fillRect(0,0,W,H);
+
+  // links
+  links.forEach(l => {
+    const from = nodes.find(n=>n.id===l.from);
+    const to = nodes.find(n=>n.id===l.to);
+    if (!from || !to) return;
+    ctx.strokeStyle = 'rgba(52,211,153,0.2)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.lineTo(to.x, to.y); ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // packets
+  packets.forEach(p => {
+    const x = p.from.x + (p.to.x - p.from.x)*p.progress;
+    const y = p.from.y + (p.to.y - p.from.y)*p.progress;
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+
+  // nodes
+  nodes.forEach(n => {
+    const t = NODE_TYPES[n.type];
+    // glow
+    const glow = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,30);
+    glow.addColorStop(0, t.color+'55'); glow.addColorStop(1, t.color+'00');
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(n.x,n.y,30,0,Math.PI*2); ctx.fill();
+    // pulse ring
+    const pr = 18 + Math.sin(n.pulse)*3;
+    ctx.strokeStyle = t.color+'44'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(n.x,n.y,pr,0,Math.PI*2); ctx.stroke();
+    // body
+    ctx.fillStyle = t.color;
+    ctx.beginPath(); ctx.arc(n.x,n.y,14,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(5,10,14,0.8)';
+    ctx.font = '14px Inter'; ctx.textAlign='center';
+    ctx.fillText(t.icon, n.x, n.y+5);
+    ctx.textAlign='left';
+    // label
+    ctx.fillStyle = 'rgba(224,242,241,0.9)'; ctx.font = '9px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText(t.label, n.x, n.y+28);
+    ctx.textAlign='left';
+  });
+
+  // update stats periodically
+  if (Math.random() < 0.05) updateStats();
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// init with a sample network
+setTimeout(() => {
+  const cx = W/2, cy = H/2;
+  addNode('sensor', cx-200, cy-100);
+  addNode('sensor', cx-200, cy+100);
+  addNode('actuator', cx-200, cy);
+  addNode('plc', cx-50, cy);
+  addNode('gateway', cx+80, cy);
+  addNode('edge', cx+180, cy-60);
+  addNode('broker', cx+180, cy+60);
+  addNode('cloud', cx+280, cy);
+  addNode('dashboard', cx+280, cy-80);
+  addNode('twin', cx+280, cy+80);
+  updateStats();
+  showToast('Rede IIoT de exemplo carregada');
+}, 300);
+
+selectNodeType('sensor');
+</script>
+</body>
+</html>
