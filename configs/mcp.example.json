@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:/Users/drici/Documents"],
+      "description": "Acesso ao sistema de arquivos local"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<SET_VIA_ENV>"
+      },
+      "description": "Integração com GitHub (issues, PRs, repos)"
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "<SET_VIA_ENV>"
+      },
+      "description": "Busca web via Brave Search API"
+    },
+    "rea": {
+      "command": "node",
+      "args": ["<path-to-rea>/scripts/rea.mjs", "mcp"],
+      "description": "Reverse Engineering Agent (REA) — análise de binários, managed code, browser pages e runtimes. Opcional; requer instalação do pacote rea-agents."
+    }
+  },
+  "_notes": {
+    "security": "Nunca commitar tokens. Use variáveis de ambiente.",
+    "updated": "2026-10-28"
+  }
+}

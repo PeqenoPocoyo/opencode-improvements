@@ -1,0 +1,135 @@
+{
+  "version": "1.0",
+  "description": "Rastreamento de validacao de recursos do pacote code-dev-pack",
+  "states": {
+    "raw": "Recem-criado, nao revisado",
+    "marked": "Agente revisou e marcou como validado (provisorio)",
+    "validated": "Validacao final aprovada (sem feedback negativo em 3+ usos)",
+    "proactive": "Totalmente confiavel, auto-aplicado sem intervencao"
+  },
+  "promotion_rules": {
+    "marked_to_validated": "Uso bem-sucedido em 3+ sessoes sem feedback negativo",
+    "validated_to_proactive": "Uso bem-sucedido em 7+ sessoes sem feedback negativo",
+    "negative_feedback_threshold": 2,
+    "action_on_negative_feedback": "Reverter para raw, notificar dispositivo de origem"
+  },
+  "resources": {
+    "skills/code-tdd/SKILL.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Skill de TDD. Ciclo Red-Green-Refactor. Marcado para validacao."
+    },
+    "skills/code-review/SKILL.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Skill de code review. Checklist + severidade + formato. Marcado para validacao."
+    },
+    "skills/code-refactor/SKILL.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Skill de refactoring. Code smells + catalogo de refactorings. Marcado para validacao."
+    },
+    "skills/code-debug/SKILL.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Skill de debugging. Metodo cientifico + tecnicas + tipos de bugs. Marcado para validacao."
+    },
+    "skills/code-test-gen/SKILL.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Skill de geracao de testes. Templates + cobertura + edge cases. Marcado para validacao."
+    },
+    "hooks/pre-write-quality.py": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Hook de qualidade pre-escrita. Secrets, complexidade, testes. Fail-open."
+    },
+    "hooks/post-write-test.py": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Hook de teste pos-escrita. Encontra e roda testes. Fail-open."
+    },
+    "scripts/autotest.py": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Runner de autoteste. Testa skills, hooks, recursos. PASS/FAIL."
+    },
+    "instructions/code-quality.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Instrucoes de qualidade de codigo. Nomenclatura, estrutura, erros, testes, performance, seguranca, git."
+    },
+    "instructions/testing-standards.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Padroes de teste. Tipos, estrutura, cobertura, mocking, fixtures, edge cases."
+    },
+    "instructions/review-standards.md": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Padroes de code review. Checklist, severidade, formato, regras."
+    },
+    "configs/test-config.json": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Config de teste. pytest, cobertura, timeouts, reporters."
+    },
+    "configs/quality-config.json": {
+      "state": "marked",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "feedback_negative": 0,
+      "usage_count": 0,
+      "promotion_threshold": 3,
+      "notes": "Config de qualidade. Linting, seguranca, cobertura, formatting, imports."
+    }
+  }
+}

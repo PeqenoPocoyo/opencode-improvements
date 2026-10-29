@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYNTHESIA — generative step sequencer</title>
+<style>
+  :root { --bg: #0a0612; --ink: #f4f0fa; --muted: #7a7290; --violet: #c084fc; --cyan: #67e8f9; --pink: #f472b6; --amber: #fcd34d; --green: #86efac; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Inter", -apple-system, system-ui, sans-serif;
+    background: radial-gradient(ellipse at 30% 20%, #1a0f2e 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, #0f1a2e 0%, transparent 50%), var(--bg);
+    color: var(--ink); cursor: default;
+  }
+  canvas { position: fixed; inset: 0; z-index: 0; }
+
+  .hud { position: fixed; z-index: 10; inset: 0; pointer-events: none; }
+  .hud .top { position: absolute; top: 24px; left: 28px; right: 28px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: auto; }
+  .hud .title { font-size: 24px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff, var(--violet), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hud .sub { font-size: 11px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+  .hud .stats { text-align: right; font-variant-numeric: tabular-nums; }
+  .hud .stats .big { font-size: 20px; font-weight: 700; }
+  .hud .stats .small { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+
+  .sequencer {
+    position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+    pointer-events: auto;
+    background: rgba(10,6,18,0.6); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+    padding: 18px 22px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .seq-grid { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; }
+  .cell {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer; transition: all .15s ease; position: relative;
+  }
+  .cell:hover { background: rgba(255,255,255,0.12); transform: scale(1.1); }
+  .cell.active { background: var(--violet); border-color: var(--violet); box-shadow: 0 0 12px rgba(192,132,252,0.6); }
+  .cell.playhead { box-shadow: inset 0 0 0 2px var(--cyan); }
+  .cell.active.playhead { box-shadow: 0 0 16px rgba(192,132,252,0.9), inset 0 0 0 2px var(--cyan); }
+  .row-label { font-size: 9px; color: var(--muted); text-align: right; padding-right: 8px; align-self: center; letter-spacing: 1px; }
+
+  .seq-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .seq-row:last-child { margin-bottom: 0; }
+
+  .transport {
+    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; pointer-events: auto;
+  }
+  .transport button {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: var(--ink); padding: 10px 18px; border-radius: 10px;
+    font-size: 12px; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px);
+    transition: all .2s ease; letter-spacing: .5px;
+  }
+  .transport button:hover { background: rgba(192,132,252,0.15); border-color: var(--violet); }
+  .transport button.active { background: var(--violet); color: #0a0612; border-color: var(--violet); }
+  .transport .bpm { display: flex; align-items: center; gap: 8px; padding: 0 12px; }
+  .transport input[type=range] { width: 100px; accent-color: var(--violet); }
+
+  .hud .hint {
+    position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; color: var(--muted); letter-spacing: 1px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(10px);
+    pointer-events: auto;
+  }
+
+  .note-labels { position: absolute; left: -60px; top: 18px; }
+  .note-labels div { height: 30px; font-size: 10px; color: var(--muted); display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; letter-spacing: 1px; }
+
+  .flash { position: fixed; inset: 0; pointer-events: none; z-index: 5; opacity: 0; transition: opacity .3s; }
+  .flash.show { opacity: 1; transition: opacity .05s; }
+</style>
+</head>
+<body>
+
+  <canvas id="c"></canvas>
+  <div class="flash" id="flash"></div>
+
+  <div class="hud">
+    <div class="top">
+      <div>
+        <div class="title">SYNTHESIA</div>
+        <div class="sub">generative step sequencer · 8 voices</div>
+      </div>
+      <div class="stats">
+        <div class="big" id="noteCount">0</div>
+        <div class="small">ACTIVE NOTES</div>
+        <div class="small" style="margin-top:6px;" id="stepInfo">step 1/16</div>
+      </div>
+    </div>
+    <div class="hint">Click cells to toggle notes · Space play/pause · arrows change pattern</div>
+
+    <div class="sequencer">
+      <div id="seq"></div>
+    </div>
+
+    <div class="transport">
+      <button id="playBtn" class="active">Play</button>
+      <button id="clearBtn">Clear</button>
+      <button id="randomBtn">Random</button>
+      <button id="presetBtn">Preset</button>
+      <div class="bpm">
+        <span style="font-size:11px;color:var(--muted)">BPM</span>
+        <input type="range" id="bpm" min="60" max="200" value="120">
+        <span id="bpmVal" style="font-size:11px;color:var(--ink);min-width:28px;">120</span>
+      </div>
+    </div>
+  </div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+// audio
+let audioCtx = null;
+function ensureAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+const notes = [523.25, 493.88, 440, 392, 349.23, 329.63, 293.66, 261.63]; // C5..C4
+const colors = ['#c084fc','#a78bfa','#818cf8','#67e8f9','#5eead4','#86efac','#fcd34d','#f472b6'];
+const noteNames = ['C5','B4','A4','G4','F4','E4','D4','C4'];
+
+function playNote(idx, gain=0.3){
+  ensureAudio();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'triangle';
+  o.frequency.value = notes[idx];
+  g.gain.setValueAtTime(0, audioCtx.currentTime);
+  g.gain.linearRampToValueAtTime(gain, audioCtx.currentTime+0.01);
+  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+0.4);
+  o.connect(g).connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime+0.45);
+  // particle burst
+  burst(notes[idx], colors[idx]);
+}
+
+// sequencer state
+const ROWS = 8, COLS = 16;
+let grid = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+let step = 0;
+let playing = true;
+let bpm = 120;
+let stepInterval = 60000/bpm/2; // 8th notes
+let lastStep = performance.now();
+
+// particles
+const particles = [];
+function burst(freq, color){
+  const hue = color;
+  for (let i=0;i<18;i++){
+    const ang = Math.random()*Math.PI*2;
+    const sp = 1.5 + Math.random()*3;
+    particles.push({
+      x: W/2, y: H/2,
+      vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp,
+      r: 2+Math.random()*3,
+      color: hue, life: 1, decay: 0.012+Math.random()*0.01
+    });
+  }
+}
+
+// build UI
+const seqEl = document.getElementById('seq');
+for (let r=0;r<ROWS;r++){
+  const row = document.createElement('div');
+  row.className = 'seq-row';
+  const lbl = document.createElement('div');
+  lbl.className = 'row-label';
+  lbl.style.color = colors[r];
+  lbl.textContent = noteNames[r];
+  row.appendChild(lbl);
+  const gridRow = document.createElement('div');
+  gridRow.className = 'seq-grid';
+  for (let c=0;c<COLS;c++){
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.r = r; cell.dataset.c = c;
+    cell.addEventListener('click', () => {
+      grid[r][c] = !grid[r][c];
+      cell.classList.toggle('active', grid[r][c]);
+      if (grid[r][c]) playNote(r, 0.15);
+    });
+    gridRow.appendChild(cell);
+  }
+  row.appendChild(gridRow);
+  seqEl.appendChild(row);
+}
+
+function updatePlayhead(){
+  document.querySelectorAll('.cell.playhead').forEach(c=>c.classList.remove('playhead'));
+  for (let r=0;r<ROWS;r++){
+    const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${step}"]`);
+    if (cell) cell.classList.add('playhead');
+  }
+  document.getElementById('stepInfo').textContent = `step ${step+1}/16`;
+}
+
+function tick(){
+  if (!playing) return;
+  // play all active notes in this column
+  let count = 0;
+  for (let r=0;r<ROWS;r++){
+    if (grid[r][step]) { playNote(r); count++; }
+  }
+  document.getElementById('noteCount').textContent = count + (count===1?' note':' notes');
+  updatePlayhead();
+  step = (step+1)%COLS;
+}
+
+// main loop
+let lastStepTime = performance.now();
+function loop(now){
+  // step timing
+  if (playing && now - lastStepTime >= stepInterval) {
+    tick();
+    lastStepTime = now;
+  }
+  // update particles
+  for (let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.98; p.vy *= 0.98;
+    p.vy += 0.02;
+    p.life -= p.decay;
+    if (p.life <= 0) particles.splice(i,1);
+  }
+  // draw
+  ctx.fillStyle = 'rgba(10,6,18,0.12)';
+  ctx.fillRect(0,0,W,H);
+
+  // background glow orbs
+  const t = now*0.0003;
+  for (let i=0;i<3;i++){
+    const x = W*(0.3 + 0.4*Math.sin(t+i));
+    const y = H*(0.4 + 0.3*Math.cos(t*1.3+i*2));
+    const g = ctx.createRadialGradient(x,y,0,x,y,280);
+    g.addColorStop(0, `rgba(192,132,252,0.08)`);
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // particles
+  particles.forEach(p => {
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r*p.life, 0, Math.PI*2); ctx.fill();
+    // trail
+    ctx.globalAlpha = p.life*0.3;
+    ctx.strokeStyle = p.color; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x-p.vx*4, p.y-p.vy*4); ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// controls
+document.getElementById('playBtn').addEventListener('click', () => {
+  playing = !playing;
+  const b = document.getElementById('playBtn');
+  b.classList.toggle('active', playing);
+  b.textContent = playing ? 'Pause' : 'Play';
+  if (playing) lastStepTime = performance.now();
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  grid = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+  document.querySelectorAll('.cell.active').forEach(c=>c.classList.remove('active'));
+});
+document.getElementById('randomBtn').addEventListener('click', () => {
+  for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++){
+    grid[r][c] = Math.random() < 0.18;
+    const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    cell.classList.toggle('active', grid[r][c]);
+  }
+});
+document.getElementById('presetBtn').addEventListener('click', () => {
+  // a little melody
+  const preset = [
+    [0,4,8,12], [2,6,10,14], [1,5,9,13], [3,7,11,15],
+    [0,2,4,6,8,10,12,14], [], [4,12], [0,8]
+  ];
+  document.getElementById('clearBtn').click();
+  preset.forEach((cols, r) => cols.forEach(c => {
+    grid[r][c] = true;
+    document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`).classList.add('active');
+  }));
+});
+document.getElementById('bpm').addEventListener('input', (e) => {
+  bpm = +e.target.value;
+  stepInterval = 60000/bpm/2;
+  document.getElementById('bpmVal').textContent = bpm;
+});
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') { e.preventDefault(); document.getElementById('playBtn').click(); }
+});
+
+// start with a preset
+setTimeout(() => document.getElementById('presetBtn').click(), 400);
+</script>
+</body>
+</html>

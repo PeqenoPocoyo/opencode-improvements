@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elétrica Técnica — Training Lab</title>
+<style>
+  :root {
+    --bg: #0c1117;
+    --panel: rgba(14,22,34,0.75);
+    --card: rgba(20,30,46,0.6);
+    --border: rgba(255,200,80,0.15);
+    --text: #f0f4f8;
+    --muted: #8a9bb0;
+    --amber: #ffc850;
+    --cyan: #5eead4;
+    --red: #ff6b6b;
+    --green: #3dd68c;
+    --violet: #a78bfa;
+    --blue: #60a5fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Inter", -apple-system, system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(255,200,80,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, rgba(94,234,212,0.05) 0%, transparent 50%),
+      var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  /* blueprint grid */
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,200,80,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,200,80,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+  /* header */
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 22px; margin-bottom: 18px;
+    background: var(--panel); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 10px;
+  }
+  .header .left { display: flex; align-items: center; gap: 14px; }
+  .header .logo {
+    width: 42px; height: 42px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--amber), var(--red));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #0c1117;
+    box-shadow: 0 0 18px rgba(255,200,80,0.4);
+  }
+  .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .header .sub { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .header .right { display: flex; gap: 10px; align-items: center; }
+  .badge { padding: 5px 11px; border-radius: 6px; font-size: 10px; font-weight: 600; background: rgba(255,200,80,0.1); border: 1px solid var(--border); color: var(--amber); letter-spacing: 1px; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab {
+    padding: 9px 16px; border-radius: 7px; font-size: 11px; font-weight: 600;
+    background: var(--panel); border: 1px solid var(--border); color: var(--muted);
+    cursor: pointer; transition: all .2s ease; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .tab:hover { color: var(--text); border-color: var(--amber); }
+  .tab.active { background: var(--amber); color: #0c1117; border-color: var(--amber); box-shadow: 0 0 16px rgba(255,200,80,0.35); }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--card); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; transition: transform .25s ease, border-color .25s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--amber); }
+  .card .icon { font-size: 26px; margin-bottom: 10px; }
+  .card h3 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .card p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .card .formula { margin-top: 10px; padding: 8px 10px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--amber); text-align: center; }
+
+  /* tool */
+  .tool {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; margin-bottom: 14px;
+  }
+  .tool h3 { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--amber); letter-spacing: 1px; text-transform: uppercase; }
+  .tool .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .tool label { font-size: 11px; color: var(--muted); min-width: 150px; }
+  .tool input, .tool select {
+    background: rgba(0,0,0,0.35); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 11px; border-radius: 6px; font-family: inherit; font-size: 12px;
+    flex: 1; min-width: 90px;
+  }
+  .tool input:focus, .tool select:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 2px rgba(255,200,80,0.15); }
+  .tool button {
+    background: var(--amber); color: #0c1117; border: none; padding: 7px 14px;
+    border-radius: 6px; font-family: inherit; font-size: 11px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.5px; transition: box-shadow .2s ease;
+  }
+  .tool button:hover { box-shadow: 0 0 14px rgba(255,200,80,0.4); }
+  .tool button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .tool .result {
+    margin-top: 10px; padding: 10px 14px; border-radius: 7px;
+    background: rgba(255,200,80,0.05); border: 1px solid var(--border);
+    font-size: 12px; line-height: 1.7;
+  }
+  .tool .result b { color: var(--amber); }
+  .tool .result .err { color: var(--red); }
+
+  /* canvas */
+  .canvas-wrap {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; margin-bottom: 14px; position: relative;
+  }
+  .canvas-wrap canvas { display: block; width: 100%; border-radius: 6px; background: #050810; }
+  .canvas-wrap .controls { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  .canvas-wrap label { font-size: 11px; color: var(--muted); }
+  .canvas-wrap input[type=range] { accent-color: var(--amber); width: 120px; }
+  .canvas-wrap .val { font-size: 11px; color: var(--amber); min-width: 40px; }
+
+  /* reference */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .ref-table th, .ref-table td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .ref-table th { color: var(--amber); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; background: rgba(255,200,80,0.05); }
+  .ref-table tr:hover td { background: rgba(255,200,80,0.03); }
+  .ref-table td b { color: var(--cyan); }
+
+  .section-title {
+    font-size: 13px; font-weight: 700; margin: 20px 0 10px;
+    color: var(--amber); letter-spacing: 2px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::before { content: '//'; color: var(--muted); }
+
+  .statusbar {
+    margin-top: 18px; padding: 9px 14px; border-radius: 7px;
+    background: var(--panel); border: 1px solid var(--border);
+    display: flex; justify-content: space-between; font-size: 10px; color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .statusbar .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* law cards */
+  .law-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 12px;
+  }
+  .law-card h4 { font-size: 13px; font-weight: 700; color: var(--amber); margin-bottom: 6px; }
+  .law-card .formula { font-family: "JetBrains Mono", monospace; font-size: 14px; color: var(--cyan); padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 6px; margin: 8px 0; text-align: center; }
+  .law-card p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .law-card .example { margin-top: 8px; padding: 8px 10px; border-left: 2px solid var(--amber); font-size: 11px; color: var(--text); background: rgba(255,200,80,0.03); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="header">
+    <div class="left">
+      <div class="logo">⚡</div>
+      <div>
+        <h1>Elétrica Técnica — Training Lab</h1>
+        <div class="sub">Leis · Ondas · Matemática Aplicada · Ferramentas</div>
+      </div>
+    </div>
+    <div class="right">
+      <span class="badge">NÍVEL TÉCNICO</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="leis">Leis</button>
+    <button class="tab" data-tab="ondas">Ondas</button>
+    <button class="tab" data-tab="matematica">Matemática</button>
+    <button class="tab" data-tab="ferramentas">Ferramentas</button>
+    <button class="tab" data-tab="referencia">Referência</button>
+  </nav>
+
+  <!-- LEIS -->
+  <div class="panel active" id="leis">
+    <div class="law-card">
+      <h4>Lei de Ohm</h4>
+      <div class="formula">V = R · I</div>
+      <p>Tensão (V) é diretamente proporcional à corrente (I) e à resistência (R). Base de toda análise de circuitos.</p>
+      <div class="example">Ex: R = 100Ω, I = 0.5A → V = 50V</div>
+    </div>
+    <div class="law-card">
+      <h4>1ª Lei de Kirchhoff — Lei dos Nós (KCL)</h4>
+      <div class="formula">Σ I_entrada = Σ I_saída</div>
+      <p>A soma algébrica das correntes em um nó é zero. Conservação de carga.</p>
+      <div class="example">Ex: I1 = 3A entra, I2 = 1A e I3 = 2A saem → 3 = 1 + 2 ✓</div>
+    </div>
+    <div class="law-card">
+      <h4>2ª Lei de Kirchhoff — Lei das Malhas (KVL)</h4>
+      <div class="formula">Σ V = 0 (em malha fechada)</div>
+      <p>A soma algébrica das tensões ao longo de qualquer malha fechada é zero. Conservação de energia.</p>
+      <div class="example">Ex: V_fonte − V_R1 − V_R2 = 0</div>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Joule (Potência)</h4>
+      <div class="formula">P = V·I = I²·R = V²/R</div>
+      <p>Potência dissipada em um resistor. Energia convertida em calor.</p>
+      <div class="example">Ex: I = 2A, R = 5Ω → P = 4·5 = 20W</div>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Faraday (Indução)</h4>
+      <div class="formula">ε = −N · dΦ/dt</div>
+      <p>Tensão induzida é proporcional à taxa de variação do fluxo magnético. Base dos transformadores e geradores.</p>
+      <div class="example">Ex: N = 100 espiras, dΦ/dt = 0.05 Wb/s → ε = −5V</div>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Lenz</h4>
+      <div class="formula">I_induzida se opõe à variação de Φ</div>
+      <p>A corrente induzida cria campo magnético que se opõe à variação do fluxo que a gerou.</p>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Coulomb</h4>
+      <div class="formula">F = k · |q1·q2| / r²</div>
+      <p>Força entre cargas elétricas. k = 8.99×10⁹ N·m²/C².</p>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Ampère</h4>
+      <div class="formula">∮ B·dl = μ₀ · I_enc</div>
+      <p>Campo magnético ao redor de um condutor é proporcional à corrente que o atravessa.</p>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Gauss (Eletricidade)</h4>
+      <div class="formula">∮ E·dA = Q_enc/ε₀</div>
+      <p>Fluxo elétrico através de superfície fechada é proporcional à carga encerrada.</p>
+    </div>
+    <div class="law-card">
+      <h4>Teorema de Thévenin</h4>
+      <div class="formula">V_Th = V_ab (circuito aberto) · R_Th = V_Th/I_cc</div>
+      <p>Qualquer rede linear pode ser substituída por fonte de tensão + resistor em série.</p>
+    </div>
+    <div class="law-card">
+      <h4>Teorema de Norton</h4>
+      <div class="formula">I_N = I_cc · R_N = V_Th/I_N</div>
+      <p>Dual do Thévenin: fonte de corrente + resistor em paralelo.</p>
+    </div>
+    <div class="law-card">
+      <h4>Princípio da Superposição</h4>
+      <div class="formula">V_total = V1 + V2 + ... (fontes independentes)</div>
+      <p>Em circuitos lineares, a resposta total é a soma das respostas individuais de cada fonte.</p>
+    </div>
+    <div class="law-card">
+      <h4>Teorema de Millman</h4>
+      <div class="formula">V = Σ(Vi/Ri) / Σ(1/Ri)</div>
+      <p>Tensão em nó com múltiplas fontes em paralelo. Útil para análise rápida.</p>
+    </div>
+    <div class="law-card">
+      <h4>Lei das Potências (AC)</h4>
+      <div class="formula">S = P + jQ · |S| = V·I · fp = P/S = cos(φ)</div>
+      <p>Potência aparente (S), ativa (P), reativa (Q). Fator de potência = cos(φ).</p>
+    </div>
+    <div class="law-card">
+      <h4>Lei de Biot-Savart</h4>
+      <div class="formula">dB = (μ₀/4π) · (I·dl × r̂)/r²</div>
+      <p>Campo magnético gerado por elemento de corrente. Base do eletromagnetismo.</p>
+    </div>
+  </div>
+
+  <!-- ONDAS -->
+  <div class="panel" id="ondas">
+    <div class="section-title">Gerador de Forma de Onda</div>
+    <div class="canvas-wrap">
+      <canvas id="waveCanvas" width="1200" height="320"></canvas>
+      <div class="controls">
+        <label>Tipo:</label>
+        <select id="waveType" onchange="drawWave()">
+          <option value="sine">Senóide</option>
+          <option value="square">Quadrada</option>
+          <option value="triangle">Triangular</option>
+          <option value="sawtooth">Dente de serra</option>
+          <option value="pulse">Pulso</option>
+        </select>
+        <label>Freq:</label>
+        <input type="range" id="waveFreq" min="1" max="10" value="2" oninput="drawWave()">
+        <span class="val" id="waveFreqVal">2 Hz</span>
+        <label>Amp:</label>
+        <input type="range" id="waveAmp" min="10" max="100" value="80" oninput="drawWave()">
+        <span class="val" id="waveAmpVal">80%</span>
+        <label>Fase:</label>
+        <input type="range" id="wavePhase" min="0" max="360" value="0" oninput="drawWave()">
+        <span class="val" id="wavePhaseVal">0°</span>
+        <label>DC:</label>
+        <input type="range" id="waveDC" min="-50" max="50" value="0" oninput="drawWave()">
+        <span class="val" id="waveDCVal">0</span>
+      </div>
+    </div>
+
+    <div class="section-title">Composição de Harmônicos (Série de Fourier)</div>
+    <div class="canvas-wrap">
+      <canvas id="fourierCanvas" width="1200" height="320"></canvas>
+      <div class="controls">
+        <label>Harmônicos:</label>
+        <input type="range" id="harmCount" min="1" max="15" value="5" oninput="drawFourier()">
+        <span class="val" id="harmCountVal">5</span>
+        <label>Tipo:</label>
+        <select id="harmType" onchange="drawFourier()">
+          <option value="square">Quadrada</option>
+          <option value="sawtooth">Dente de serra</option>
+          <option value="triangle">Triangular</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-title">Defasagem (Fasores)</div>
+    <div class="canvas-wrap">
+      <canvas id="phasorCanvas" width="600" height="400"></canvas>
+      <div class="controls">
+        <label>φ (graus):</label>
+        <input type="range" id="phaseAngle" min="-180" max="180" value="30" oninput="drawPhasor()">
+        <span class="val" id="phaseAngleVal">30°</span>
+        <label>V:</label>
+        <input type="range" id="phasorV" min="10" max="100" value="70" oninput="drawPhasor()">
+        <span class="val" id="phasorVVal">70</span>
+        <label>I:</label>
+        <input type="range" id="phasorI" min="10" max="100" value="50" oninput="drawPhasor()">
+        <span class="val" id="phasorIVal">50</span>
+      </div>
+    </div>
+
+    <div class="section-title">Triângulo de Potências</div>
+    <div class="canvas-wrap">
+      <canvas id="powerCanvas" width="600" height="400"></canvas>
+      <div class="controls">
+        <label>P (W):</label>
+        <input type="range" id="powP" min="10" max="200" value="120" oninput="drawPower()">
+        <span class="val" id="powPVal">120</span>
+        <label>Q (VAR):</label>
+        <input type="range" id="powQ" min="0" max="200" value="80" oninput="drawPower()">
+        <span class="val" id="powQVal">80</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATEMÁTICA -->
+  <div class="panel" id="matematica">
+    <div class="section-title">Números Complexos (Fasores)</div>
+    <div class="tool">
+      <h3>Conversão Retangular ↔ Polar</h3>
+      <div class="row"><label>Parte Real (a)</label><input type="number" id="cx-a" value="3" step="0.1"></div>
+      <div class="row"><label>Parte Imag (b)</label><input type="number" id="cx-b" value="4" step="0.1"></div>
+      <button onclick="calcComplex()">Converter</button>
+      <div class="result" id="cx-result">—</div>
+    </div>
+
+    <div class="section-title">Impedância de Circuitos AC</div>
+    <div class="tool">
+      <h3>Série RLC</h3>
+      <div class="row"><label>R (Ω)</label><input type="number" id="rlc-r" value="10" step="1"></div>
+      <div class="row"><label>L (mH)</label><input type="number" id="rlc-l" value="50" step="1"></div>
+      <div class="row"><label>C (µF)</label><input type="number" id="rlc-c" value="100" step="1"></div>
+      <div class="row"><label>f (Hz)</label><input type="number" id="rlc-f" value="60" step="1"></div>
+      <button onclick="calcRLC()">Calcular</button>
+      <div class="result" id="rlc-result">—</div>
+    </div>
+
+    <div class="section-title">Divisor de Tensão / Corrente</div>
+    <div class="tool">
+      <h3>Divisor de Tensão (série)</h3>
+      <div class="row"><label>V_in (V)</label><input type="number" id="div-vin" value="12" step="0.1"></div>
+      <div class="row"><label>R1 (Ω)</label><input type="number" id="div-r1" value="1000" step="1"></div>
+      <div class="row"><label>R2 (Ω)</label><input type="number" id="div-r2" value="2000" step="1"></div>
+      <button onclick="calcDivisor()">Calcular V_out</button>
+      <div class="result" id="div-result">—</div>
+    </div>
+
+    <div class="section-title">Resposta Transitória RC</div>
+    <div class="canvas-wrap">
+      <canvas id="rcCanvas" width="1200" height="320"></canvas>
+      <div class="controls">
+        <label>R (kΩ):</label>
+        <input type="range" id="rc-r" min="1" max="100" value="10" oninput="drawRC()">
+        <span class="val" id="rc-rVal">10</span>
+        <label>C (µF):</label>
+        <input type="range" id="rc-c" min="1" max="100" value="100" oninput="drawRC()">
+        <span class="val" id="rc-cVal">100</span>
+        <label>V (V):</label>
+        <input type="range" id="rc-v" min="1" max="24" value="12" oninput="drawRC()">
+        <span class="val" id="rc-vVal">12</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FERRAMENTAS -->
+  <div class="panel" id="ferramentas">
+    <div class="section-title">Lei de Ohm — Calculadora Interativa</div>
+    <div class="tool">
+      <h3>Resolva V, I ou R (preencha 2 de 3)</h3>
+      <div class="row"><label>Tensão V (V)</label><input type="number" id="ohm-v" placeholder="?" step="0.1"></div>
+      <div class="row"><label>Corrente I (A)</label><input type="number" id="ohm-i" placeholder="?" step="0.01"></div>
+      <div class="row"><label>Resistência R (Ω)</label><input type="number" id="ohm-r" placeholder="?" step="0.1"></div>
+      <button onclick="calcOhm()">Calcular</button>
+      <div class="result" id="ohm-result">Preencha 2 valores, deixe o 3º vazio</div>
+    </div>
+
+    <div class="section-title">Código de Cores — Resistor</div>
+    <div class="tool">
+      <h3>Decodificar resistor (4 faixas)</h3>
+      <div class="row">
+        <label>Faixa 1</label>
+        <select id="rc1">
+          <option value="0">Preto (0)</option><option value="1">Marrom (1)</option>
+          <option value="2">Vermelho (2)</option><option value="3">Laranja (3)</option>
+          <option value="4">Amarelo (4)</option><option value="5">Verde (5)</option>
+          <option value="6">Azul (6)</option><option value="7">Violeta (7)</option>
+          <option value="8">Cinza (8)</option><option value="9">Branco (9)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>Faixa 2</label>
+        <select id="rc2">
+          <option value="0">Preto (0)</option><option value="1">Marrom (1)</option>
+          <option value="2" selected>Vermelho (2)</option>
+          <option value="3">Laranja (3)</option>
+          <option value="4">Amarelo (4)</option>
+          <option value="5">Verde (5)</option>
+          <option value="6">Azul (6)</option>
+          <option value="7">Violeta (7)</option>
+          <option value="8">Cinza (8)</option>
+          <option value="9">Branco (9)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>Multiplicador</label>
+        <select id="rcm">
+          <option value="1">Preto (×1)</option><option value="10">Marrom (×10)</option>
+          <option value="100" selected>Vermelho (×100)</option>
+          <option value="1000">Laranja (×1000)</option>
+          <option value="10000">Amarelo (×10000)</option>
+          <option value="100000">Verde (×100000)</option>
+          <option value="1000000">Azul (×1000000)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>Tolerância</label>
+        <select id="rct">
+          <option value="1">Marrom (±1%)</option>
+          <option value="2" selected>Vermelho (±2%)</option>
+          <option value="0.5">Verde (±0.5%)</option>
+          <option value="0.25">Azul (±0.25%)</option>
+          <option value="5">Dourado (±5%)</option>
+          <option value="10">Prata (±10%)</option>
+        </select>
+      </div>
+      <button onclick="decodeResistor()">Decodificar</button>
+      <div class="result" id="resistor-result">—</div>
+    </div>
+
+    <div class="section-title">Associação de Resistores</div>
+    <div class="tool">
+      <h3>Série e Paralelo</h3>
+      <div class="row"><label>R1 (Ω)</label><input type="number" id="assoc-r1" value="100" step="1"></div>
+      <div class="row"><label>R2 (Ω)</label><input type="number" id="assoc-r2" value="200" step="1"></div>
+      <div class="row"><label>R3 (Ω, opcional)</label><input type="number" id="assoc-r3" placeholder="—" step="1"></div>
+      <button onclick="calcAssoc()">Calcular</button>
+      <div class="result" id="assoc-result">—</div>
+    </div>
+
+    <div class="section-title">Conversão de Unidades Elétricas</div>
+    <div class="tool">
+      <h3>Potência / Energia</h3>
+      <div class="row"><label>Valor</label><input type="number" id="conv2-val" value="1"></div>
+      <div class="row"><label>Conversão</label>
+        <select id="conv2-type">
+          <option value="kw-w">kW → W</option>
+          <option value="w-kw">W → kW</option>
+          <option value="kwh-wh">kWh → Wh</option>
+          <option value="wh-kwh">Wh → kWh</option>
+          <option value="hp-w">cv → W</option>
+          <option value="w-hp">W → cv</option>
+          <option value="db-v">dB → razão de tensão</option>
+        </select>
+      </div>
+      <button onclick="convert2()">Converter</button>
+      <div class="result" id="conv2-result">—</div>
+    </div>
+  </div>
+
+  <!-- REFERÊNCIA -->
+  <div class="panel" id="referencia">
+    <div class="section-title">Tabela de Cores — Resistor</div>
+    <table class="ref-table">
+      <thead><tr><th>Cor</th><th>Dígito</th><th>Multiplicador</th><th>Tolerância</th></tr></thead>
+      <tbody>
+        <tr><td style="color:#000;background:#888;">Preto</td><td>0</td><td>×1</td><td>—</td></tr>
+        <tr><td style="color:#fff;background:#8B4513;">Marrom</td><td>1</td><td>×10</td><td>±1%</td></tr>
+        <tr><td style="color:#fff;background:#c00;">Vermelho</td><td>2</td><td>×100</td><td>±2%</td></tr>
+        <tr><td style="color:#000;background:#ffa500;">Laranja</td><td>3</td><td>×1k</td><td>—</td></tr>
+        <tr><td style="color:#000;background:#ff0;">Amarelo</td><td>4</td><td>×10k</td><td>—</td></tr>
+        <tr><td style="color:#fff;background:#0a0;">Verde</td><td>5</td><td>×100k</td><td>±0.5%</td></tr>
+        <tr><td style="color:#fff;background:#00f;">Azul</td><td>6</td><td>×1M</td><td>±0.25%</td></tr>
+        <tr><td style="color:#fff;background:#800080;">Violeta</td><td>7</td><td>×10M</td><td>±0.1%</td></tr>
+        <tr><td style="color:#fff;background:#808080;">Cinza</td><td>8</td><td>—</td><td>±0.05%</td></tr>
+        <tr><td style="color:#000;background:#fff;">Branco</td><td>9</td><td>—</td><td>—</td></tr>
+        <tr><td style="color:#000;background:gold;">Dourado</td><td>—</td><td>×0.1</td><td>±5%</td></tr>
+        <tr><td style="color:#fff;background:silver;">Prata</td><td>—</td><td>×0.01</td><td>±10%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title" style="margin-top:24px;">Fórmulas Essenciais</div>
+    <table class="ref-table">
+      <thead><tr><th>Fórmula</th><th>Nome</th><th>Aplicação</th></tr></thead>
+      <tbody>
+        <tr><td><b>V = R·I</b></td><td>Ohm</td><td>Circuitos DC/AC</td></tr>
+        <tr><td><b>P = V·I</b></td><td>Potência</td><td>Carga elétrica</td></tr>
+        <tr><td><b>E = P·t</b></td><td>Energia</td><td>Consumo (kWh)</td></tr>
+        <tr><td><b>X_L = 2πfL</b></td><td>Reatância indutiva</td><td>Bobinas</td></tr>
+        <tr><td><b>X_C = 1/(2πfC)</b></td><td>Reatância capacitiva</td><td>Capacitores</td></tr>
+        <tr><td><b>Z = √(R²+X²)</b></td><td>Impedância</td><td>AC</td></tr>
+        <tr><td><b>fp = cos(φ)</b></td><td>Fator de potência</td><td>Eficiência</td></tr>
+        <tr><td><b>λ = c/f</b></td><td>Comprimento de onda</td><td>Ondas EM</td></tr>
+        <tr><td><b>τ = R·C</b></td><td>Constante de tempo</td><td>RC</td></tr>
+        <tr><td><b>f_r = 1/(2π√LC)</b></td><td>Frequência de ressonância</td><td>RLC</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title" style="margin-top:24px;">Valores Padrão de Rede</div>
+    <table class="ref-table">
+      <thead><tr><th>Grandeza</th><th>Valor</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Tensão residencial (BR)</td><td><b>127/220V</b></td><td>Monofásico</td></tr>
+        <tr><td>Tensão industrial (BR)</td><td><b>220/380/440V</b></td><td>Trifásico</td></tr>
+        <tr><td>Frequência (BR)</td><td><b>60 Hz</b></td><td>Rede elétrica</td></tr>
+        <tr><td>Frequência (EU/US)</td><td><b>50/60 Hz</b></td><td>Varia por país</td></tr>
+        <tr><td>Tensão de segurança</td><td><b>≤ 50V AC / 120V DC</b></td><td>Baixa tensão</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="statusbar">
+    <div><span class="dot"></span> LAB ONLINE · 12 LEIS · 5 FERRAMENTAS · 4 CANVAS</div>
+    <div>ELÉTRICA TÉCNICA · NÍVEL TÉCNICO</div>
+  </div>
+</div>
+
+<script>
+// tabs
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+// ===== WAVE =====
+function drawWave(){
+  const canvas = document.getElementById('waveCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050810'; ctx.fillRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle = 'rgba(255,200,80,0.08)'; ctx.lineWidth = 1;
+  for (let x=0;x<W;x+=60){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  // axes
+  ctx.strokeStyle = 'rgba(255,200,80,0.3)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40,0); ctx.lineTo(40,H); ctx.stroke();
+
+  const type = document.getElementById('waveType').value;
+  const freq = +document.getElementById('waveFreq').value;
+  const amp = +document.getElementById('waveAmp').value/100;
+  const phase = +document.getElementById('wavePhase').value * Math.PI/180;
+  const dc = +document.getElementById('waveDC').value;
+  document.getElementById('waveFreqVal').textContent = freq+' Hz';
+  document.getElementById('waveAmpVal').textContent = Math.round(amp*100)+'%';
+  document.getElementById('wavePhaseVal').textContent = document.getElementById('wavePhase').value+'°';
+  document.getElementById('waveDCVal').textContent = dc;
+
+  ctx.strokeStyle = '#ffc850'; ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#ffc850'; ctx.shadowBlur = 8;
+  ctx.beginPath();
+  for (let x=0;x<W;x++){
+    const t = (x-40)/(W-80) * Math.PI*2 * freq + phase;
+    let y;
+    switch(type){
+      case 'sine': y = Math.sin(t); break;
+      case 'square': y = Math.sin(t) >= 0 ? 1 : -1; break;
+      case 'triangle': y = (2/Math.PI)*Math.asin(Math.sin(t)); break;
+      case 'sawtooth': y = 2*((t/(2*Math.PI)) - Math.floor(t/(2*Math.PI)+0.5)); break;
+      case 'pulse': y = (t%(2*Math.PI)) < Math.PI/4 ? 1 : 0; break;
+    }
+    const py = H/2 - (y*amp*H/2.5) - (dc*H/100);
+    if (x===0) ctx.moveTo(x,py); else ctx.lineTo(x,py);
+  }
+  ctx.stroke(); ctx.shadowBlur = 0;
+  // labels
+  ctx.fillStyle = '#8a9bb0'; ctx.font = '11px Inter';
+  ctx.fillText('0', 30, H/2-4);
+  ctx.fillText('+V', 10, 20);
+  ctx.fillText('-V', 10, H-8);
+}
+drawWave();
+
+// ===== FOURIER =====
+function drawFourier(){
+  const canvas = document.getElementById('fourierCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050810'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(255,200,80,0.08)'; ctx.lineWidth = 1;
+  for (let x=0;x<W;x+=60){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(255,200,80,0.3)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+
+  const n = +document.getElementById('harmCount').value;
+  const type = document.getElementById('harmType').value;
+  document.getElementById('harmCountVal').textContent = n;
+
+  ctx.strokeStyle = '#5eead4'; ctx.lineWidth = 2.5; ctx.shadowColor = '#5eead4'; ctx.shadowBlur = 8;
+  ctx.beginPath();
+  for (let x=0;x<W;x++){
+    const t = (x/(W))*Math.PI*2;
+    let sum = 0;
+    for (let k=1;k<=n;k++){
+      let coeff = 0;
+      if (type === 'square') { if (k%2===1) coeff = 4/(Math.PI*k); }
+      else if (type === 'sawtooth') { coeff = 2/(Math.PI*k)*Math.pow(-1,k+1); }
+      else if (type === 'triangle') { if (k%2===1) coeff = 8/(Math.PI*Math.PI*k*k)*Math.pow(-1,(k-1)/2); }
+      sum += coeff * Math.sin(k*t);
+    }
+    const py = H/2 - sum*H/2.5;
+    if (x===0) ctx.moveTo(x,py); else ctx.lineTo(x,py);
+  }
+  ctx.stroke(); ctx.shadowBlur = 0;
+  // show individual harmonics faintly
+  ctx.strokeStyle = 'rgba(255,200,80,0.15)'; ctx.lineWidth = 1;
+  for (let k=1;k<=Math.min(n,5);k++){
+    ctx.beginPath();
+    for (let x=0;x<W;x++){
+      const t = (x/(W))*Math.PI*2;
+      let coeff = 0;
+      if (type === 'square') { if (k%2===1) coeff = 4/(Math.PI*k); }
+      else if (type === 'sawtooth') { coeff = 2/(Math.PI*k)*Math.pow(-1,k+1); }
+      else if (type === 'triangle') { if (k%2===1) coeff = 8/(Math.PI*Math.PI*k*k)*Math.pow(-1,(k-1)/2); }
+      const py = H/2 - coeff*Math.sin(k*t)*H/2.5;
+      if (x===0) ctx.moveTo(x,py); else ctx.lineTo(x,py);
+    }
+    ctx.stroke();
+  }
+}
+drawFourier();
+
+// ===== PHASOR =====
+function drawPhasor(){
+  const canvas = document.getElementById('phasorCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050810'; ctx.fillRect(0,0,W,H);
+  const cx = W/2, cy = H/2;
+  // grid
+  ctx.strokeStyle = 'rgba(255,200,80,0.06)'; ctx.lineWidth = 1;
+  for (let r=40;r<180;r+=40){ ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+
+  const phi = +document.getElementById('phaseAngle').value;
+  const V = +document.getElementById('phasorV').value;
+  const I = +document.getElementById('phasorI').value;
+  document.getElementById('phaseAngleVal').textContent = phi+'°';
+  document.getElementById('phasorVVal').textContent = V;
+  document.getElementById('phasorIVal').textContent = I;
+
+  const scale = 1.5;
+  // V phasor (reference, angle 0)
+  const vx = cx + V*scale, vy = cy;
+  ctx.strokeStyle = '#ffc850'; ctx.lineWidth = 3; ctx.shadowColor='#ffc850'; ctx.shadowBlur=10;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(vx,vy); ctx.stroke();
+  ctx.shadowBlur = 0;
+  // arrowhead
+  ctx.fillStyle = '#ffc850';
+  ctx.beginPath(); ctx.moveTo(vx,vy); ctx.lineTo(vx-8,vy-5); ctx.lineTo(vx-8,vy+5); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#ffc850'; ctx.font = 'bold 12px Inter'; ctx.fillText('V', vx+6, vy-6);
+
+  // I phasor (angle -phi, lagging)
+  const rad = -phi * Math.PI/180;
+  const ix = cx + I*scale*Math.cos(rad);
+  const iy = cy + I*scale*Math.sin(rad);
+  ctx.strokeStyle = '#5eead4'; ctx.lineWidth = 3; ctx.shadowColor='#5eead4'; ctx.shadowBlur=10;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ix,iy); ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#5eead4';
+  ctx.beginPath(); ctx.moveTo(ix,iy); ctx.lineTo(ix-8*Math.cos(rad)-5*Math.sin(rad), iy-8*Math.sin(rad)+5*Math.cos(rad)); ctx.lineTo(ix-8*Math.cos(rad)+5*Math.sin(rad), iy-8*Math.sin(rad)-5*Math.cos(rad)); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#5eead4'; ctx.font = 'bold 12px Inter'; ctx.fillText('I', ix+6, iy-6);
+
+  // angle arc
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.arc(cx,cy,30, 0, rad, rad>0); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = '#8a9bb0'; ctx.font = '11px Inter';
+  ctx.fillText('φ='+phi+'°', cx+36, cy-12);
+
+  // info
+  ctx.fillStyle = '#8a9bb0'; ctx.font = '11px Inter';
+  ctx.fillText('Z = V/I = '+(V/I).toFixed(2)+' Ω', 10, H-20);
+  ctx.fillText('fp = cos(φ) = '+Math.cos(rad).toFixed(3), 10, H-6);
+}
+drawPhasor();
+
+// ===== POWER TRIANGLE =====
+function drawPower(){
+  const canvas = document.getElementById('powerCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050810'; ctx.fillRect(0,0,W,H);
+  const cx = 60, cy = H-60;
+  const P = +document.getElementById('powP').value;
+  const Q = +document.getElementById('powQ').value;
+  document.getElementById('powPVal').textContent = P;
+  document.getElementById('powQVal').textContent = Q;
+  const S = Math.sqrt(P*P+Q*Q);
+  const fp = P/S;
+  const scale = 1.2;
+  // axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+W-80,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy-(H-80)); ctx.stroke();
+  ctx.fillStyle = '#8a9bb0'; ctx.font = '11px Inter';
+  ctx.fillText('P (W)', cx+W-90, cy+14);
+  ctx.fillText('Q (VAR)', cx-40, 20);
+
+  // triangle
+  const px = cx + P*scale, py = cy;
+  const qx = cx + P*scale, qy = cy - Q*scale;
+  // P leg
+  ctx.strokeStyle = '#ffc850'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,py); ctx.stroke();
+  // Q leg
+  ctx.strokeStyle = '#5eead4'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(qx,qy); ctx.stroke();
+  // S hypotenuse
+  ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 3; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(qx,qy); ctx.stroke();
+  ctx.setLineDash([]);
+  // labels
+  ctx.fillStyle = '#ffc850'; ctx.font = 'bold 12px Inter'; ctx.fillText('P='+P+'W', (cx+px)/2-20, py+16);
+  ctx.fillStyle = '#5eead4'; ctx.fillText('Q='+Q+'VAR', qx+6, (py+qy)/2);
+  ctx.fillStyle = '#a78bfa'; ctx.fillText('S='+S.toFixed(1)+'VA', (cx+qx)/2+6, (cy+qy)/2-6);
+  // info
+  ctx.fillStyle = '#8a9bb0'; ctx.font = '11px Inter';
+  ctx.fillText('fp = cos(φ) = '+fp.toFixed(3), 10, 20);
+  ctx.fillText('φ = '+Math.atan2(Q,P)*180/Math.PI .toFixed(1)+'°', 10, 36);
+}
+drawPower();
+
+// ===== RC TRANSIENT =====
+function drawRC(){
+  const canvas = document.getElementById('rcCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#050810'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(255,200,80,0.08)'; ctx.lineWidth = 1;
+  for (let x=0;x<W;x+=60){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(255,200,80,0.3)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,H-40); ctx.lineTo(W,H-40); ctx.stroke();
+
+  const R = +document.getElementById('rc-r').value * 1000;
+  const C = +document.getElementById('rc-c').value * 1e-6;
+  const V = +document.getElementById('rc-v').value;
+  const tau = R*C;
+  document.getElementById('rc-rVal').textContent = document.getElementById('rc-r').value;
+  document.getElementById('rc-cVal').textContent = document.getElementById('rc-c').value;
+  document.getElementById('rc-vVal').textContent = V;
+
+  // charging curve
+  ctx.strokeStyle = '#ffc850'; ctx.lineWidth = 2.5; ctx.shadowColor='#ffc850'; ctx.shadowBlur=8;
+  ctx.beginPath();
+  for (let x=0;x<W;x++){
+    const t = x/(W)*5*tau;
+    const v = V*(1 - Math.exp(-t/tau));
+    const py = H-40 - (v/V)*(H-80);
+    if (x===0) ctx.moveTo(x,py); else ctx.lineTo(x,py);
+  }
+  ctx.stroke(); ctx.shadowBlur = 0;
+  // discharging curve
+  ctx.strokeStyle = '#5eead4'; ctx.lineWidth = 2; ctx.setLineDash([5,4]);
+  ctx.beginPath();
+  for (let x=0;x<W;x++){
+    const t = x/(W)*5*tau;
+    const v = V*Math.exp(-t/tau);
+    const py = H-40 - (v/V)*(H-80);
+    if (x===0) ctx.moveTo(x,py); else ctx.lineTo(x,py);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  // tau line
+  const tauX = (tau/(5*tau))*W;
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(tauX,0); ctx.lineTo(tauX,H-40); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = '#8a9bb0'; ctx.font = '11px Inter';
+  ctx.fillText('τ = '+tau.toFixed(3)+'s', tauX+4, 20);
+  ctx.fillStyle = '#ffc850'; ctx.fillText('Carga', 10, 20);
+  ctx.fillStyle = '#5eead4'; ctx.fillText('Descarga', 10, 36);
+  ctx.fillStyle = '#8a9bb0'; ctx.fillText('63.2% em τ', tauX+4, H-44);
+}
+drawRC();
+
+// ===== TOOLS =====
+function calcOhm(){
+  const v = document.getElementById('ohm-v').value;
+  const i = document.getElementById('ohm-i').value;
+  const r = document.getElementById('ohm-r').value;
+  const V = v===''?null:+v, I = i===''?null:+i, R = r===''?null:+r;
+  const filled = [V,I,R].filter(x=>x!==null).length;
+  if (filled !== 2){ document.getElementById('ohm-result').innerHTML = '<span class="err">Preencha exatamente 2 valores</span>'; return; }
+  let res = '';
+  if (V===null){ const nv = I*R; document.getElementById('ohm-v').value = nv.toFixed(4); res = `V = I·R = ${I}·${R} = <b>${nv.toFixed(4)} V</b>`; }
+  else if (I===null){ const ni = V/R; document.getElementById('ohm-i').value = ni.toFixed(4); res = `I = V/R = ${V}/${R} = <b>${ni.toFixed(4)} A</b>`; }
+  else { const nr = V/I; document.getElementById('ohm-r').value = nr.toFixed(4); res = `R = V/I = ${V}/${I} = <b>${nr.toFixed(4)} Ω</b>`; }
+  document.getElementById('ohm-result').innerHTML = res;
+}
+
+function decodeResistor(){
+  const d1 = +document.getElementById('rc1').value;
+  const d2 = +document.getElementById('rc2').value;
+  const mult = +document.getElementById('rcm').value;
+  const tol = document.getElementById('rct').value;
+  const val = (d1*10 + d2) * mult;
+  let str = val >= 1e6 ? (val/1e6).toFixed(2)+' MΩ' : val >= 1000 ? (val/1000).toFixed(2)+' kΩ' : val+' Ω';
+  document.getElementById('resistor-result').innerHTML = `Valor: <b>${str}</b> · Tolerância: ±${tol}%<br>Faixa: ${d1} ${d2} ×${mult}`;
+}
+
+function calcAssoc(){
+  const r1 = +document.getElementById('assoc-r1').value;
+  const r2 = +document.getElementById('assoc-r2').value;
+  const r3v = document.getElementById('assoc-r3').value;
+  const r3 = r3v===''?null:+r3v;
+  const serie2 = r1+r2;
+  const par2 = (r1*r2)/(r1+r2);
+  let res = `Série (R1+R2) = <b>${serie2.toFixed(2)} Ω</b><br>Paralelo (R1∥R2) = <b>${par2.toFixed(2)} Ω</b>`;
+  if (r3 !== null){
+    const serie3 = r1+r2+r3;
+    const par3 = 1/(1/r1+1/r2+1/r3);
+    res += `<br>Série (3) = <b>${serie3.toFixed(2)} Ω</b><br>Paralelo (3) = <b>${par3.toFixed(2)} Ω</b>`;
+  }
+  document.getElementById('assoc-result').innerHTML = res;
+}
+
+function convert2(){
+  const v = +document.getElementById('conv2-val').value;
+  const type = document.getElementById('conv2-type').value;
+  const map = {
+    'kw-w': v*1000, 'w-kw': v/1000,
+    'kwh-wh': v*1000, 'wh-kwh': v/1000,
+    'hp-w': v*735.5, 'w-hp': v/735.5,
+    'db-v': Math.pow(10, v/20)
+  };
+  const labels = {'kw-w':'W','w-kw':'kW','kwh-wh':'Wh','wh-kwh':'kWh','hp-w':'W','w-hp':'cv','db-v':'×'};
+  document.getElementById('conv2-result').innerHTML = `Resultado: <b>${map[type].toFixed(4)} ${labels[type]}</b>`;
+}
+
+function calcComplex(){
+  const a = +document.getElementById('cx-a').value;
+  const b = +document.getElementById('cx-b').value;
+  const mag = Math.sqrt(a*a+b*b);
+  const ang = Math.atan2(b,a)*180/Math.PI;
+  document.getElementById('cx-result').innerHTML =
+    `Retangular: <b>${a} + j${b}</b><br>` +
+    `Polar: <b>${mag.toFixed(3)} ∠ ${ang.toFixed(2)}°</b><br>` +
+    `Magnitude = ${mag.toFixed(3)} · Fase = ${ang.toFixed(2)}°`;
+}
+
+function calcRLC(){
+  const R = +document.getElementById('rlc-r').value;
+  const L = +document.getElementById('rlc-l').value/1000;
+  const C = +document.getElementById('rlc-c').value/1e6;
+  const f = +document.getElementById('rlc-f').value;
+  const w = 2*Math.PI*f;
+  const XL = w*L;
+  const XC = 1/(w*C);
+  const X = XL - XC;
+  const Z = Math.sqrt(R*R + X*X);
+  const phi = Math.atan2(X,R)*180/Math.PI;
+  const fp = Math.cos(phi*Math.PI/180);
+  document.getElementById('rlc-result').innerHTML =
+    `XL = ${XL.toFixed(2)} Ω · XC = ${XC.toFixed(2)} Ω<br>` +
+    `X = XL − XC = <b>${X.toFixed(2)} Ω</b><br>` +
+    `Z = √(R²+X²) = <b>${Z.toFixed(2)} Ω</b><br>` +
+    `φ = ${phi.toFixed(2)}° · fp = ${fp.toFixed(3)}<br>` +
+    `f_ressonância = ${(1/(2*Math.PI*Math.sqrt(L*C))).toFixed(2)} Hz`;
+}
+
+function calcDivisor(){
+  const vin = +document.getElementById('div-vin').value;
+  const r1 = +document.getElementById('div-r1').value;
+  const r2 = +document.getElementById('div-r2').value;
+  const vout = vin * r2/(r1+r2);
+  document.getElementById('div-result').innerHTML =
+    `V_out = V_in · R2/(R1+R2) = ${vin}·${r2}/(${r1}+${r2}) = <b>${vout.toFixed(4)} V</b>`;
+}
+
+// redraw on tab switch
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    setTimeout(() => {
+      drawWave(); drawFourier(); drawPhasor(); drawPower(); drawRC();
+    }, 50);
+  });
+});
+</script>
+</body>
+</html>

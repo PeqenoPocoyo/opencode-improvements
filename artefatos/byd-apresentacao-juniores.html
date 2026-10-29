@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYD — Apresentação para Novatos Juniores</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+    font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    color:#e0e0e0;
+    overflow-x:hidden;
+  }
+  :root {
+    --byd-blue: #0033a0;
+    --byd-red: #e60012;
+    --byd-silver: #c0c0c0;
+    --byd-dark: #0a0a0a;
+    --byd-light: #f5f5f5;
+  }
+  .hero {
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(ellipse at 50% 20%, rgba(0,51,160,0.3) 0%, transparent 60%),
+                linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+    overflow:hidden;
+    padding:40px 20px;
+  }
+  .hero::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230033a0' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity:0.5;
+  }
+  .byd-logo {
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:linear-gradient(135deg, #0033a0, #0055cc);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:48px;
+    font-weight:900;
+    color:#fff;
+    box-shadow:0 0 60px rgba(0,51,160,0.5), 0 0 120px rgba(0,51,160,0.2);
+    margin-bottom:30px;
+    animation: logoFloat 3s ease-in-out infinite;
+    position:relative;
+    z-index:2;
+  }
+  .byd-logo::after {
+    content:'';
+    position:absolute;
+    inset:-4px;
+    border-radius:50%;
+    border:2px solid rgba(0,51,160,0.3);
+    animation: ringPulse 2s ease-in-out infinite;
+  }
+  @keyframes logoFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+  @keyframes ringPulse { 0%,100% { transform:scale(1); opacity:0.5; } 50% { transform:scale(1.1); opacity:0.2; } }
+  .hero h1 {
+    font-size:42px;
+    font-weight:900;
+    color:#fff;
+    letter-spacing:-1.5px;
+    text-align:center;
+    position:relative;
+    z-index:2;
+    line-height:1.1;
+  }
+  .hero h1 span {
+    background:linear-gradient(135deg, #0033a0, #e60012);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero .subtitle {
+    font-size:16px;
+    color:#888;
+    margin-top:12px;
+    text-align:center;
+    position:relative;
+    z-index:2;
+    max-width:500px;
+    line-height:1.5;
+  }
+  .hero .cta-group {
+    display:flex;
+    gap:12px;
+    margin-top:30px;
+    position:relative;
+    z-index:2;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .cta-primary {
+    background:linear-gradient(135deg, #0033a0, #0055cc);
+    color:#fff;
+    border:none;
+    padding:14px 28px;
+    border-radius:12px;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,51,160,0.4);
+    transition:transform 0.2s, box-shadow 0.2s;
+  }
+  .cta-primary:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,51,160,0.5); }
+  .cta-secondary {
+    background:transparent;
+    color:#c0c0c0;
+    border:1px solid rgba(255,255,255,0.2);
+    padding:14px 28px;
+    border-radius:12px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:background 0.2s, border-color 0.2s;
+  }
+  .cta-secondary:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.4); }
+  .section {
+    padding:60px 20px;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .section-title {
+    font-size:28px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:8px;
+    letter-spacing:-0.5px;
+  }
+  .section-subtitle {
+    font-size:14px;
+    color:#888;
+    margin-bottom:30px;
+    line-height:1.5;
+  }
+  .cards-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:16px;
+  }
+  .card {
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:24px;
+    transition:transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position:relative;
+    overflow:hidden;
+  }
+  .card:hover {
+    transform:translateY(-4px);
+    border-color:rgba(0,51,160,0.4);
+    box-shadow:0 12px 32px rgba(0,51,160,0.15);
+  }
+  .card::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:linear-gradient(90deg, #0033a0, #e60012);
+    opacity:0;
+    transition:opacity 0.3s;
+  }
+  .card:hover::before { opacity:1; }
+  .card-icon {
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    margin-bottom:14px;
+    background:rgba(0,51,160,0.15);
+    border:1px solid rgba(0,51,160,0.2);
+  }
+  .card h3 {
+    font-size:16px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:6px;
+  }
+  .card p {
+    font-size:13px;
+    color:#999;
+    line-height:1.5;
+  }
+  .timeline {
+    position:relative;
+    padding-left:30px;
+  }
+  .timeline::before {
+    content:'';
+    position:absolute;
+    left:10px;
+    top:0;
+    bottom:0;
+    width:2px;
+    background:linear-gradient(180deg, #0033a0, #e60012, #0033a0);
+  }
+  .tl-item {
+    position:relative;
+    padding:16px 0 16px 20px;
+    opacity:0;
+    transform:translateX(-20px);
+    animation: tlSlide 0.6s ease-out forwards;
+  }
+  .tl-item:nth-child(1) { animation-delay:0.1s; }
+  .tl-item:nth-child(2) { animation-delay:0.2s; }
+  .tl-item:nth-child(3) { animation-delay:0.3s; }
+  .tl-item:nth-child(4) { animation-delay:0.4s; }
+  .tl-item:nth-child(5) { animation-delay:0.5s; }
+  @keyframes tlSlide { to { opacity:1; transform:translateX(0); } }
+  .tl-item::before {
+    content:'';
+    position:absolute;
+    left:-24px;
+    top:20px;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#0033a0;
+    border:2px solid #0a0a0a;
+    box-shadow:0 0 8px rgba(0,51,160,0.5);
+  }
+  .tl-item h4 {
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:4px;
+  }
+  .tl-item p {
+    font-size:13px;
+    color:#999;
+    line-height:1.5;
+  }
+  .tl-item .tag {
+    display:inline-block;
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:4px;
+    background:rgba(0,51,160,0.2);
+    color:#6699ff;
+    margin-top:6px;
+    font-weight:600;
+  }
+  .values-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:12px;
+  }
+  .value-card {
+    background:linear-gradient(135deg, rgba(0,51,160,0.1), rgba(230,0,18,0.05));
+    border:1px solid rgba(0,51,160,0.15);
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    transition:transform 0.3s;
+  }
+  .value-card:hover { transform:scale(1.03); }
+  .value-card .icon { font-size:32px; margin-bottom:10px; }
+  .value-card h4 { font-size:14px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .value-card p { font-size:12px; color:#999; line-height:1.4; }
+  .footer {
+    padding:40px 20px;
+    text-align:center;
+    border-top:1px solid rgba(255,255,255,0.05);
+  }
+  .footer .logo {
+    font-size:24px;
+    font-weight:900;
+    color:#0033a0;
+    margin-bottom:8px;
+  }
+  .footer p { font-size:12px; color:#666; }
+  .fade-in {
+    opacity:0;
+    transform:translateY(30px);
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  @keyframes fadeIn { to { opacity:1; transform:translateY(0); } }
+  .delay-1 { animation-delay:0.2s; }
+  .delay-2 { animation-delay:0.4s; }
+  .delay-3 { animation-delay:0.6s; }
+  .particles {
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .particle {
+    position:absolute;
+    width:2px; height:2px;
+    background:rgba(0,51,160,0.4);
+    border-radius:50%;
+    animation: particleFloat linear infinite;
+  }
+  @keyframes particleFloat {
+    0% { transform:translateY(100vh); opacity:0; }
+    10% { opacity:1; }
+    90% { opacity:1; }
+    100% { transform:translateY(-10vh) translateX(20px); opacity:0; }
+  }
+  @media (max-width:600px) {
+    .hero h1 { font-size:32px; }
+    .section { padding:40px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+
+<section class="hero">
+  <div class="byd-logo">BYD</div>
+  <h1>Bem-vindo à <span>BYD</span></h1>
+  <p class="subtitle">Build Your Dreams — Construindo o futuro da mobilidade elétrica. Esta é sua jornada de onboarding.</p>
+  <div class="cta-group">
+    <button class="cta-primary" onclick="scrollToSection('inicio')">Começar Jornada →</button>
+    <button class="cta-secondary" onclick="scrollToSection('valores')">Nossos Valores</button>
+  </div>
+</section>
+
+<section class="section" id="inicio">
+  <h2 class="section-title fade-in">Quem somos</h2>
+  <p class="section-subtitle fade-in delay-1">A BYD (Build Your Dreams) é líder global em veículos elétricos, baterias e energia renovável. Fundada em 1995, hoje é uma das maiores empresas de tecnologia do mundo.</p>
+  <div class="cards-grid">
+    <div class="card fade-in delay-1">
+      <div class="card-icon">🔋</div>
+      <h3>Baterias</h3>
+      <p>Líder mundial em baterias de lítio-ferro-fosfato (Blade Battery). Tecnologia segura, durável e eficiente.</p>
+    </div>
+    <div class="card fade-in delay-2">
+      <div class="card-icon">🚗</div>
+      <h3>Veículos Elétricos</h3>
+      <p>Carros, ônibus e caminhões 100% elétricos. De sedans a SUVs, a BYD tem o veículo certo para cada necessidade.</p>
+    </div>
+    <div class="card fade-in delay-3">
+      <div class="card-icon">⚡</div>
+      <h3>Energia Renovável</h3>
+      <p>Painéis solares, sistemas de armazenamento e soluções completas de energia limpa.</p>
+    </div>
+    <div class="card fade-in delay-1">
+      <div class="card-icon">🏭</div>
+      <h3>Manufatura</h3>
+      <p>Fábricas no Brasil (Camaçari-BA), China e outros países. Produção local com tecnologia de ponta.</p>
+    </div>
+    <div class="card fade-in delay-2">
+      <div class="card-icon">📱</div>
+      <h3>Tecnologia</h3>
+      <p>Software, semicondutores, eletrônicos. A BYD é uma empresa de tecnologia que também fabrica veículos.</p>
+    </div>
+    <div class="card fade-in delay-3">
+      <div class="card-icon">🌍</div>
+      <h3>Global</h3>
+      <p>Presente em mais de 70 países. Mais de 600.000 funcionários worldwide. A maior empresa de NEV do mundo.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="jornada">
+  <h2 class="section-title fade-in">Sua Jornada na BYD</h2>
+  <p class="section-subtitle fade-in delay-1">O que você pode esperar nos primeiros meses.</p>
+  <div class="timeline">
+    <div class="tl-item">
+      <h4>📅 Semana 1 — Onboarding</h4>
+      <p>Integração, conhecer a equipe, entender a cultura BYD, acesso aos sistemas, treinamento de segurança.</p>
+      <span class="tag">Integração</span>
+    </div>
+    <div class="tl-item">
+      <h4>📚 Semana 2-4 — Treinamento</h4>
+      <p>Treinamentos técnicos específicos da área, mentoria com colegas experientes, participação em projetos piloto.</p>
+      <span class="tag">Capacitação</span>
+    </div>
+    <div class="tl-item">
+      <h4>🚀 Mês 2-3 — Autonomia</h4>
+      <p>Assumir responsabilidades, contribuir em projetos reais, feedback contínuo com gestor.</p>
+      <span class="tag">Desenvolvimento</span>
+    </div>
+    <div class="tl-item">
+      <h4>🎯 Mês 6 — Avaliação</h4>
+      <p>Avaliação de desempenho, definição de metas, plano de carreira, oportunidades de crescimento.</p>
+      <span class="tag">Crescimento</span>
+    </div>
+    <div class="tl-item">
+      <h4>🏆 Ano 1 — Consolidação</h4>
+      <p>Domínio da função, contribuição estratégica, possibilidade de liderança de projetos.</p>
+      <span class="tag">Excelência</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="valores">
+  <h2 class="section-title fade-in">Nossos Valores</h2>
+  <p class="section-subtitle fade-in delay-1">Os pilares que guiam tudo o que fazemos na BYD.</p>
+  <div class="values-grid">
+    <div class="value-card fade-in delay-1">
+      <div class="icon">💡</div>
+      <h4>Inovação</h4>
+      <p>Pesquisa e desenvolvimento contínuo. A BYD investe mais de 5% da receita em P&D.</p>
+    </div>
+    <div class="value-card fade-in delay-2">
+      <div class="icon">🌱</div>
+      <h4>Sustentabilidade</h4>
+      <p>Compromisso com zero emissões. Energia limpa para um planeta melhor.</p>
+    </div>
+    <div class="value-card fade-in delay-3">
+      <div class="icon">🤝</div>
+      <h4>Colaboração</h4>
+      <p>Trabalho em equipe. Juntos construímos algo maior do que individualmente.</p>
+    </div>
+    <div class="value-card fade-in delay-1">
+      <div class="icon">🎯</div>
+      <h4>Excelência</h4>
+      <p>Qualidade em tudo. Do produto ao atendimento, buscamos o melhor.</p>
+    </div>
+    <div class="value-card fade-in delay-2">
+      <div class="icon">🚀</div>
+      <h4>Velocidade</h4>
+      <p>Decisões rápidas, execução ágil. O mercado não espera.</p>
+    </div>
+    <div class="value-card fade-in delay-3">
+      <div class="icon">🔒</div>
+      <h4>Integridade</h4>
+      <p>Ética e transparência em todas as relações. Confiança é nosso ativo.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="dicas">
+  <h2 class="section-title fade-in">Dicas para Novatos</h2>
+  <p class="section-subtitle fade-in delay-1">O que todo júnior deveria saber no primeiro dia.</p>
+  <div class="cards-grid">
+    <div class="card fade-in delay-1">
+      <div class="card-icon">❓</div>
+      <h3>Pergunte sempre</h3>
+      <p>Não tenha medo de perguntar. Todo mundo já foi júnior. Perguntar é aprender.</p>
+    </div>
+    <div class="card fade-in delay-2">
+      <div class="card-icon">📝</div>
+      <h3>Anote tudo</h3>
+      <p>Use um caderno ou app. Anote processos, nomes, sistemas. Sua memória agradecerá.</p>
+    </div>
+    <div class="card fade-in delay-3">
+      <div class="card-icon">🤝</div>
+      <h3>Conheça pessoas</h3>
+      <p>Networking interno é essencial. Converse com colegas de outras áreas.</p>
+    </div>
+    <div class="card fade-in delay-1">
+      <div class="card-icon">⏰</div>
+      <h3>Pontualidade</h3>
+      <p>Chegar no horário (ou antes) mostra comprometimento e respeito.</p>
+    </div>
+    <div class="card fade-in delay-2">
+      <div class="card-icon">📚</div>
+      <h3>Estude a BYD</h3>
+      <p>Leia sobre a empresa, seus produtos, sua história. Conhecimento é poder.</p>
+    </div>
+    <div class="card fade-in delay-3">
+      <div class="card-icon">🎯</div>
+      <h3>Defina metas</h3>
+      <p>Estabeleça objetivos claros para os primeiros 30/60/90 dias.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="logo">BYD</div>
+  <p>Build Your Dreams — Onboarding para Novatos Juniores</p>
+  <p style="margin-top:8px; font-size:10px; color:#444;">© 2026 BYD. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  }
+  const container = document.querySelector('.particles');
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2.5) + 'px';
+    container.appendChild(p);
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

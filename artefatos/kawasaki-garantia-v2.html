@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kawasaki — Garantia que vale a pena</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: #000;
+    font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    overflow:hidden;
+  }
+  .phone {
+    width:360px;
+    height:720px;
+    background:#0a0a0a;
+    border-radius:52px;
+    padding:14px;
+    box-shadow: 0 0 0 2px #1a1a1a, 0 50px 120px rgba(0,0,0,0.8);
+    position:relative;
+  }
+  .phone::before {
+    content:'';
+    position:absolute;
+    top:22px; left:50%;
+    transform:translateX(-50%);
+    width:130px; height:34px;
+    background:#000; border-radius:24px; z-index:10;
+  }
+  .screen {
+    width:100%; height:100%;
+    background:#000; border-radius:40px;
+    overflow:hidden; position:relative;
+  }
+  .status {
+    position:absolute; top:0; left:0; right:0; height:50px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 30px; color:#fff; font-size:13px; font-weight:600; z-index:5; pointer-events:none;
+  }
+  .app {
+    position:absolute; inset:0;
+    background: #000;
+    padding-top:50px;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  /* Hero: moto + garantia */
+  .hero {
+    position:relative;
+    height:220px;
+    background: linear-gradient(180deg, #0a1a0e 0%, #000 100%);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: radial-gradient(ellipse at 50% 80%, rgba(0,200,83,0.25) 0%, transparent 60%);
+  }
+  .hero .moto {
+    font-size:80px;
+    filter: drop-shadow(0 0 30px rgba(0,200,83,0.4));
+    animation: motoFloat 3s ease-in-out infinite;
+    z-index:2;
+  }
+  .hero .garantia-ring {
+    position:absolute;
+    width:160px; height:160px;
+    border-radius:50%;
+    border:2px solid rgba(0,200,83,0.3);
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    animation: ringPulse 2s ease-in-out infinite;
+  }
+  .hero .garantia-ring::after {
+    content:'';
+    position:absolute;
+    inset:8px;
+    border-radius:50%;
+    border:1px solid rgba(0,200,83,0.15);
+  }
+  .hero .title {
+    position:absolute;
+    bottom:16px;
+    text-align:center;
+    z-index:3;
+  }
+  .hero .title h1 {
+    font-size:20px;
+    font-weight:900;
+    color:#fff;
+    letter-spacing:-0.5px;
+    text-shadow:0 2px 10px rgba(0,0,0,0.5);
+  }
+  .hero .title p {
+    font-size:11px;
+    color:#00e676;
+    margin-top:4px;
+    font-weight:600;
+  }
+  /* Stats row */
+  .stats {
+    display:flex;
+    gap:8px;
+    padding:12px 16px;
+    background:rgba(0,0,0,0.5);
+    border-bottom:1px solid rgba(0,200,83,0.1);
+  }
+  .stat {
+    flex:1;
+    text-align:center;
+    padding:8px 4px;
+    border-radius:12px;
+    background:rgba(0,200,83,0.06);
+    border:1px solid rgba(0,200,83,0.1);
+  }
+  .stat .val {
+    font-size:18px;
+    font-weight:900;
+    color:#00e676;
+  }
+  .stat .lbl {
+    font-size:9px;
+    color:#81c784;
+    margin-top:2px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  /* Benefits - horizontal scroll */
+  .benefits-scroll {
+    padding:12px 0 8px 16px;
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .benefits-scroll::-webkit-scrollbar { display:none; }
+  .benefit-card {
+    min-width:140px;
+    background:linear-gradient(135deg,rgba(0,200,83,0.1),rgba(0,0,0,0.3));
+    border:1px solid rgba(0,200,83,0.2);
+    border-radius:16px;
+    padding:14px;
+    flex-shrink:0;
+    position:relative;
+    overflow:hidden;
+  }
+  .benefit-card .icon { font-size:24px; margin-bottom:6px; }
+  .benefit-card .title { font-size:12px; font-weight:700; color:#fff; margin-bottom:2px; }
+  .benefit-card .desc { font-size:10px; color:#81c784; line-height:1.3; }
+  .benefit-card .highlight {
+    position:absolute;
+    top:8px; right:8px;
+    font-size:9px;
+    padding:2px 6px;
+    border-radius:4px;
+    background:rgba(0,230,118,0.2);
+    color:#00e676;
+    font-weight:800;
+  }
+  /* Main CTA section */
+  .cta-section {
+    flex:1;
+    padding:12px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    overflow-y:auto;
+  }
+  .cta-section::-webkit-scrollbar { width:0; }
+  .cta-primary {
+    background:linear-gradient(135deg,#00c853,#00e676);
+    border:none;
+    border-radius:16px;
+    padding:16px;
+    color:#000;
+    font-weight:800;
+    font-size:14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow:0 8px 24px rgba(0,200,83,0.4);
+    transition:transform 0.2s, box-shadow 0.2s;
+    position:relative;
+    overflow:hidden;
+  }
+  .cta-primary:hover {
+    transform:translateY(-2px);
+    box-shadow:0 12px 32px rgba(0,200,83,0.5);
+  }
+  .cta-primary::after {
+    content:'';
+    position:absolute;
+    top:-50%; left:-50%;
+    width:200%; height:200%;
+    background:linear-gradient(45deg,transparent,rgba(255,255,255,0.3),transparent);
+    transform:rotate(45deg);
+    animation: shimmer 3s infinite;
+  }
+  .cta-secondary {
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(0,200,83,0.2);
+    border-radius:16px;
+    padding:14px 16px;
+    color:#fff;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:background 0.2s;
+  }
+  .cta-secondary:hover { background:rgba(0,200,83,0.08); }
+  .cta-secondary .icon { font-size:20px; }
+  /* Timeline */
+  .timeline {
+    background:rgba(0,0,0,0.3);
+    border:1px solid rgba(0,200,83,0.1);
+    border-radius:16px;
+    padding:14px;
+  }
+  .timeline .tl-title {
+    font-size:12px;
+    font-weight:700;
+    color:#81c784;
+    margin-bottom:10px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .tl-item {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid rgba(0,200,83,0.06);
+  }
+  .tl-item:last-child { border-bottom:none; }
+  .tl-dot {
+    width:10px; height:10px;
+    border-radius:50%;
+    flex-shrink:0;
+  }
+  .tl-dot.done { background:#00e676; box-shadow:0 0 6px rgba(0,230,118,0.5); }
+  .tl-dot.next { background:#ff9100; box-shadow:0 0 6px rgba(255,145,0,0.5); animation: pulseDot 1.5s infinite; }
+  .tl-dot.pending { background:#37474f; }
+  .tl-text { flex:1; }
+  .tl-text .name { font-size:12px; font-weight:600; color:#fff; }
+  .tl-text .date { font-size:10px; color:#81c784; margin-top:1px; }
+  .tl-badge {
+    font-size:9px;
+    padding:2px 6px;
+    border-radius:4px;
+    font-weight:700;
+  }
+  .tl-badge.done { background:rgba(0,230,118,0.15); color:#00e676; }
+  .tl-badge.next { background:rgba(255,145,0,0.15); color:#ff9100; }
+  /* Bottom nav */
+  .bottom-nav {
+    height:72px;
+    background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(20px);
+    border-top:1px solid rgba(0,200,83,0.1);
+    display:flex; align-items:center; justify-content:space-around;
+    padding:0 8px 8px;
+  }
+  .nav-item {
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    color:#546e7a; font-size:9px; cursor:pointer;
+    transition:color 0.2s; padding:6px 12px; border-radius:10px;
+  }
+  .nav-item.active { color:#00e676; }
+  .nav-item .nav-icon { font-size:18px; }
+  .nav-item.active .nav-icon { filter:drop-shadow(0 0 6px rgba(0,230,118,0.5)); }
+  /* Toast */
+  .toast {
+    position:absolute;
+    bottom:80px; left:16px; right:16px;
+    background:rgba(0,200,83,0.15);
+    border:1px solid rgba(0,200,83,0.3);
+    border-radius:14px;
+    padding:12px 16px;
+    display:flex; align-items:center; gap:10px;
+    z-index:15;
+    transform:translateY(120px);
+    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    font-size:12px; color:#a5d6a7;
+  }
+  .toast.show { transform:translateY(0); }
+  /* Animations */
+  @keyframes motoFloat { 0%,100% { transform:translateY(0) rotate(-2deg); } 50% { transform:translateY(-8px) rotate(2deg); } }
+  @keyframes ringPulse { 0%,100% { transform:translate(-50%,-50%) scale(1); opacity:0.6; } 50% { transform:translate(-50%,-50%) scale(1.1); opacity:0.3; } }
+  @keyframes shimmer { 0% { transform:translateX(-100%) rotate(45deg); } 100% { transform:translateX(100%) rotate(45deg); } }
+  @keyframes pulseDot { 0%,100% { transform:scale(1); } 50% { transform:scale(1.4); } }
+  @keyframes pulseBadge { 0%,100% { transform:scale(1); } 50% { transform:scale(1.3); } }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .hero { animation: slideUp 0.6s ease-out; }
+  .stats .stat { animation: slideUp 0.5s ease-out; }
+  .stats .stat:nth-child(2) { animation-delay:0.1s; }
+  .stats .stat:nth-child(3) { animation-delay:0.2s; }
+  .cta-primary { animation: slideUp 0.6s ease-out 0.3s both; }
+  .cta-secondary { animation: slideUp 0.5s ease-out 0.4s both; }
+  .timeline { animation: slideUp 0.6s ease-out 0.5s both; }
+  .benefit-card { animation: slideUp 0.5s ease-out; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="status">
+      <span class="time" id="clock">9:41</span>
+      <span class="icons">📶 📡 🔋</span>
+    </div>
+    <div class="app">
+      <!-- Hero: moto + garantia -->
+      <div class="hero">
+        <div class="garantia-ring"></div>
+        <div class="moto">🏍️</div>
+        <div class="title">
+          <h1>Sua Ninja 400</h1>
+          <p>🛡️ Garantia ativa • 8 meses restantes</p>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat"><div class="val">72%</div><div class="lbl">Garantia</div></div>
+        <div class="stat"><div class="val">3</div><div class="lbl">Revisões</div></div>
+        <div class="stat"><div class="val">1.250</div><div class="lbl">Pontos</div></div>
+      </div>
+
+      <!-- Benefits horizontal scroll -->
+      <div class="benefits-scroll">
+        <div class="benefit-card">
+          <div class="icon">🔧</div>
+          <div class="title">Revisão Grátis</div>
+          <div class="desc">1ª revisão sem custo na rede autorizada</div>
+          <div class="highlight">GRÁTIS</div>
+        </div>
+        <div class="benefit-card">
+          <div class="icon">📋</div>
+          <div class="title">Histórico Digital</div>
+          <div class="desc">Todas as revisões registradas automaticamente</div>
+        </div>
+        <div class="benefit-card">
+          <div class="icon">🏆</div>
+          <div class="title">Pontos Kawasaki</div>
+          <div class="desc">Ganhe pontos a cada revisão feita</div>
+          <div class="highlight">+50 pts</div>
+        </div>
+        <div class="benefit-card">
+          <div class="icon">🎁</div>
+          <div class="title">Brindes Exclusivos</div>
+          <div class="desc">Troque pontos por acessórios e equipamentos</div>
+        </div>
+        <div class="benefit-card">
+          <div class="icon">🛡️</div>
+          <div class="title">Garantia Estendida</div>
+          <div class="desc">Mantenha a garantia com revisões em dia</div>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="cta-section">
+        <button class="cta-primary" onclick="showToast('📅 Agendamento aberto! +50 pontos')">AGENDAR REVISÃO AGORA</button>
+        <div class="cta-secondary" onclick="showToast('📋 Histórico de revisões')">
+          <span class="icon">📋</span>
+          <span>Ver histórico de revisões</span>
+        </div>
+        <div class="cta-secondary" onclick="showToast('🗺️ Concessionárias próximas')">
+          <span class="icon">🗺️</span>
+          <span>Encontrar concessionária próxima</span>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+          <div class="tl-title">📅 Linha do Tempo</div>
+          <div class="tl-item">
+            <div class="tl-dot done"></div>
+            <div class="tl-text">
+              <div class="name">1ª Revisão (1.000 km)</div>
+              <div class="date">Concluída • 15/01/2025</div>
+            </div>
+            <span class="tl-badge done">FEITO</span>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done"></div>
+            <div class="tl-text">
+              <div class="name">2ª Revisão (6.000 km)</div>
+              <div class="date">Concluída • 20/06/2025</div>
+            </div>
+            <span class="tl-badge done">FEITO</span>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot next"></div>
+            <div class="tl-text">
+              <div class="name">3ª Revisão (12.000 km)</div>
+              <div class="date">Próxima • Agendar agora</div>
+            </div>
+            <span class="tl-badge next">AGENDAR</span>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot pending"></div>
+            <div class="tl-text">
+              <div class="name">4ª Revisão (18.000 km)</div>
+              <div class="date">Futura</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></div>
+        <div class="nav-item active"><span class="nav-icon">🛡️</span><span>Garantia</span></div>
+        <div class="nav-item"><span class="nav-icon">📅</span><span>Agendar</span></div>
+        <div class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></div>
+      </div>
+    </div>
+    <div class="toast" id="toast">
+      <span>✅</span>
+      <span id="toastText">Ação realizada</span>
+    </div>
+  </div>
+</div>
+<script>
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes().toString().padStart(2,'0');
+    document.querySelector('.time').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  let toastTimeout;
+  function showToast(text) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastText').textContent = text;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

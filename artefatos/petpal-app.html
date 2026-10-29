@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetPal — App de Pets no iPhone</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(ellipse at 30% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+    font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    overflow:hidden;
+  }
+  /* iPhone frame */
+  .phone {
+    width:320px;
+    height:660px;
+    background:#1a1a1a;
+    border-radius:44px;
+    padding:10px;
+    box-shadow: 0 0 0 2px #3a3a3a, 0 30px 80px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.3);
+    position:relative;
+  }
+  .phone::before {
+    content:'';
+    position:absolute;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    width:100px;
+    height:28px;
+    background:#000;
+    border-radius:20px;
+    z-index:10;
+  }
+  .screen {
+    width:100%;
+    height:100%;
+    background:#000;
+    border-radius:36px;
+    overflow:hidden;
+    position:relative;
+  }
+  /* Status bar */
+  .status {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 24px;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    z-index:5;
+    pointer-events:none;
+  }
+  .status .time { font-size:15px; }
+  .status .icons { display:flex; gap:6px; font-size:12px; }
+  /* App content */
+  .app {
+    position:absolute;
+    inset:0;
+    background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+    padding-top:44px;
+    display:flex;
+    flex-direction:column;
+  }
+  /* Header */
+  .app-header {
+    padding:12px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .app-header h1 {
+    font-size:22px;
+    font-weight:800;
+    background:linear-gradient(135deg,#f472b6,#c084fc);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .app-header .avatar {
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#f472b6,#fbbf24);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    border:2px solid rgba(255,255,255,0.2);
+  }
+  /* Pet cards */
+  .pets {
+    flex:1;
+    padding:8px 16px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    overflow-y:auto;
+  }
+  .pet-card {
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    cursor:pointer;
+    transition:transform 0.2s, background 0.2s;
+    backdrop-filter:blur(10px);
+    position:relative;
+    overflow:hidden;
+  }
+  .pet-card:hover { transform:scale(1.02); background:rgba(255,255,255,0.1); }
+  .pet-card .pet-emoji {
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    position:relative;
+    flex-shrink:0;
+  }
+  .pet-card .pet-info { flex:1; }
+  .pet-card .pet-name { font-size:16px; font-weight:700; color:#fff; }
+  .pet-card .pet-breed { font-size:12px; color:#94a3b8; margin-top:2px; }
+  .pet-card .pet-status {
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:8px;
+    margin-top:6px;
+    display:inline-block;
+  }
+  .pet-card .pet-heart {
+    position:absolute;
+    top:10px;
+    right:12px;
+    font-size:14px;
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+  /* Paw print trail */
+  .paw-trail {
+    position:absolute;
+    bottom:80px;
+    left:0;
+    right:0;
+    height:40px;
+    overflow:hidden;
+    pointer-events:none;
+  }
+  .paw {
+    position:absolute;
+    font-size:16px;
+    opacity:0.15;
+    animation: pawWalk 4s linear infinite;
+  }
+  /* Bottom nav */
+  .bottom-nav {
+    height:72px;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(20px);
+    border-top:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:0 8px 8px;
+  }
+  .nav-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:#64748b;
+    font-size:10px;
+    cursor:pointer;
+    transition:color 0.2s;
+    padding:6px 12px;
+    border-radius:12px;
+  }
+  .nav-item.active { color:#f472b6; background:rgba(244,114,182,0.1); }
+  .nav-item .nav-icon { font-size:20px; }
+  /* Floating pet */
+  .floating-pet {
+    position:absolute;
+    bottom:90px;
+    right:20px;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#f472b6,#c084fc);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    box-shadow:0 8px 24px rgba(244,114,182,0.5);
+    cursor:pointer;
+    animation: floatBtn 2.5s ease-in-out infinite;
+    z-index:6;
+  }
+  /* Add pet modal */
+  .modal-overlay {
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(8px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:20;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.3s;
+  }
+  .modal-overlay.active { opacity:1; pointer-events:all; }
+  .modal {
+    background:linear-gradient(180deg,#1e1b4b,#0f172a);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:24px;
+    padding:24px;
+    width:260px;
+    text-align:center;
+    transform:scale(0.8);
+    transition:transform 0.3s;
+  }
+  .modal-overlay.active .modal { transform:scale(1); }
+  .modal h2 { font-size:18px; margin-bottom:8px; color:#fff; }
+  .modal p { font-size:12px; color:#94a3b8; margin-bottom:16px; }
+  .modal .pet-options { display:flex; gap:8px; justify-content:center; margin-bottom:16px; }
+  .modal .pet-opt {
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    cursor:pointer;
+    transition:transform 0.2s, background 0.2s;
+  }
+  .modal .pet-opt:hover { transform:scale(1.15); background:rgba(255,255,255,0.15); }
+  .modal .close-btn {
+    background:linear-gradient(135deg,#f472b6,#c084fc);
+    color:#fff;
+    border:none;
+    padding:10px 24px;
+    border-radius:12px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:13px;
+  }
+  /* Notifications */
+  .notification {
+    position:absolute;
+    top:50px;
+    left:16px;
+    right:16px;
+    background:rgba(16,185,129,0.15);
+    border:1px solid rgba(16,185,129,0.3);
+    border-radius:14px;
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    z-index:15;
+    transform:translateY(-100px);
+    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    font-size:12px;
+  }
+  .notification.show { transform:translateY(0); }
+  /* Animations */
+  @keyframes heartbeat { 0%,100% { transform:scale(1); } 50% { transform:scale(1.2); } }
+  @keyframes pawWalk { 0% { transform:translateX(-20px); } 100% { transform:translateX(340px); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+  @keyframes floatBtn { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-8px) scale(1.05); } }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  @keyframes slideIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .pet-card { animation: slideIn 0.5s ease-out; }
+  .pet-card:nth-child(2) { animation-delay:0.1s; }
+  .pet-card:nth-child(3) { animation-delay:0.2s; }
+  .pet-card:nth-child(4) { animation-delay:0.3s; }
+  /* Scrollbar */
+  .pets::-webkit-scrollbar { width:4px; }
+  .pets::-webkit-scrollbar-track { background:transparent; }
+  .pets::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:2px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="status">
+      <span class="time" id="clock">9:41</span>
+      <span class="icons">📶 📡 🔋</span>
+    </div>
+    <div class="app">
+      <div class="app-header">
+        <h1>PetPal</h1>
+        <div class="avatar">🐾</div>
+      </div>
+      <div class="pets" id="pets">
+        <div class="pet-card" onclick="showNotif('🐶 Rex está com fome!')">
+          <div class="pet-emoji" style="background:linear-gradient(135deg,#fbbf24,#f97316);">🐶</div>
+          <div class="pet-info">
+            <div class="pet-name">Rex</div>
+            <div class="pet-breed">Golden Retriever • 3 anos</div>
+            <span class="pet-status" style="background:rgba(251,191,36,0.2);color:#fbbf24;">🟡 Com fome</span>
+          </div>
+          <div class="pet-heart">❤️</div>
+        </div>
+        <div class="pet-card" onclick="showNotif('🐱 Luna quer brincar!')">
+          <div class="pet-emoji" style="background:linear-gradient(135deg,#c084fc,#a855f7);">🐱</div>
+          <div class="pet-info">
+            <div class="pet-name">Luna</div>
+            <div class="pet-breed">Siamês • 2 anos</div>
+            <span class="pet-status" style="background:rgba(16,185,129,0.2);color:#10b981;">🟢 Feliz</span>
+          </div>
+          <div class="pet-heart">❤️</div>
+        </div>
+        <div class="pet-card" onclick="showNotif('🐰 Pipoca precisa de água!')">
+          <div class="pet-emoji" style="background:linear-gradient(135deg,#34d399,#059669);">🐰</div>
+          <div class="pet-info">
+            <div class="pet-name">Pipoca</div>
+            <div class="pet-breed">Coelho • 1 ano</div>
+            <span class="pet-status" style="background:rgba(59,130,246,0.2);color:#60a5fa;">🔵 Hidratado</span>
+          </div>
+          <div class="pet-heart">❤️</div>
+        </div>
+        <div class="pet-card" onclick="showNotif('🐦 Tweety está cantando!')">
+          <div class="pet-emoji" style="background:linear-gradient(135deg,#fbbf24,#eab308);">🐦</div>
+          <div class="pet-info">
+            <div class="pet-name">Tweety</div>
+            <div class="pet-breed">Canário • 6 meses</div>
+            <span class="pet-status" style="background:rgba(16,185,129,0.2);color:#10b981;">🟢 Cantando</span>
+          </div>
+          <div class="pet-heart">❤️</div>
+        </div>
+      </div>
+      <div class="paw-trail">
+        <span class="paw" style="left:10px;animation-delay:0s;">🐾</span>
+        <span class="paw" style="left:40px;animation-delay:0.5s;">🐾</span>
+        <span class="paw" style="left:70px;animation-delay:1s;">🐾</span>
+        <span class="paw" style="left:100px;animation-delay:1.5s;">🐾</span>
+        <span class="paw" style="left:130px;animation-delay:2s;">🐾</span>
+        <span class="paw" style="left:160px;animation-delay:2.5s;">🐾</span>
+        <span class="paw" style="left:190px;animation-delay:3s;">🐾</span>
+        <span class="paw" style="left:220px;animation-delay:3.5s;">🐾</span>
+      </div>
+      <div class="floating-pet" onclick="openModal()">🐾</div>
+      <div class="bottom-nav">
+        <div class="nav-item active"><span class="nav-icon">🏠</span><span>Início</span></div>
+        <div class="nav-item"><span class="nav-icon">📅</span><span>Rotina</span></div>
+        <div class="nav-item"><span class="nav-icon">🛒</span><span>Loja</span></div>
+        <div class="nav-item"><span class="nav-icon">⚙️</span><span>Config</span></div>
+      </div>
+    </div>
+    <div class="notification" id="notif">
+      <span>🐾</span>
+      <span id="notifText">Notificação</span>
+    </div>
+    <div class="modal-overlay" id="modal">
+      <div class="modal">
+        <h2>Adicionar Pet 🐾</h2>
+        <p>Escolha o tipo de animal para adicionar ao seu PetPal</p>
+        <div class="pet-options">
+          <div class="pet-opt" onclick="addPet('🐶','Cachorro')">🐶</div>
+          <div class="pet-opt" onclick="addPet('🐱','Gato')">🐱</div>
+          <div class="pet-opt" onclick="addPet('🐰','Coelho')">🐰</div>
+          <div class="pet-opt" onclick="addPet('🐦','Pássaro')">🐦</div>
+          <div class="pet-opt" onclick="addPet('🐹','Hamster')">🐹</div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes().toString().padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // Notification
+  let notifTimeout;
+  function showNotif(text) {
+    const n = document.getElementById('notif');
+    document.getElementById('notifText').textContent = text;
+    n.classList.add('show');
+    clearTimeout(notifTimeout);
+    notifTimeout = setTimeout(() => n.classList.remove('show'), 2500);
+  }
+
+  // Modal
+  function openModal() { document.getElementById('modal').classList.add('active'); }
+  function closeModal() { document.getElementById('modal').classList.remove('active'); }
+  function addPet(emoji, tipo) {
+    showNotif(emoji + ' ' + tipo + ' adicionado com sucesso!');
+    closeModal();
+  }
+
+  // Nav items
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/quality-config.json",
+  "description": "Configuração de qualidade de código para o pacote code-dev-pack",
+  "linting": {
+    "enabled": true,
+    "tools": ["ruff", "mypy", "bandit"],
+    "max_line_length": 120,
+    "max_complexity": 10,
+    "max_function_lines": 20,
+    "max_class_lines": 300,
+    "max_params": 3
+  },
+  "security": {
+    "enabled": true,
+    "tools": ["bandit", "safety"],
+    "check_secrets": true,
+    "check_injection": true,
+    "check_dependencies": true
+  },
+  "coverage": {
+    "minimum": 80,
+    "branch_minimum": 70,
+    "fail_under": 80
+  },
+  "formatting": {
+    "tool": "black",
+    "line_length": 120,
+    "string_quotes": "double"
+  },
+  "imports": {
+    "tool": "isort",
+    "profile": "black",
+    "sort_strategy": "alphabetical"
+  },
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-10-28",
+    "pack": "code-dev-pack"
+  }
+}

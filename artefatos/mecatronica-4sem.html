@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mecatrônica · 4º Semestre — Training Hub</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --panel: rgba(16,22,32,0.7);
+    --card: rgba(22,30,44,0.6);
+    --border: rgba(0,220,255,0.12);
+    --text: #e6f0f8;
+    --muted: #7a8fa8;
+    --cyan: #00dcff;
+    --amber: #ffb347;
+    --green: #3dd68c;
+    --red: #ff6b6b;
+    --violet: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(0,220,255,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(255,179,71,0.06) 0%, transparent 50%),
+      var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  /* grid background */
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,220,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,220,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 24px; }
+
+  /* header */
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 24px; margin-bottom: 24px;
+    background: var(--panel); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 12px;
+    position: relative; overflow: hidden;
+  }
+  .header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--amber), var(--green));
+  }
+  .header .left { display: flex; align-items: center; gap: 16px; }
+  .header .logo {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #0a0e14;
+    box-shadow: 0 0 20px rgba(0,220,255,0.4);
+  }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+  .header .sub { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .header .right { display: flex; gap: 12px; align-items: center; }
+  .badge {
+    padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600;
+    background: rgba(0,220,255,0.1); border: 1px solid var(--border); color: var(--cyan);
+    letter-spacing: 1px;
+  }
+  .progress-ring { position: relative; width: 52px; height: 52px; }
+  .progress-ring svg { transform: rotate(-90deg); }
+  .progress-ring .label {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--cyan);
+  }
+
+  /* tabs */
+  .tabs {
+    display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .tab {
+    padding: 10px 18px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: var(--panel); border: 1px solid var(--border); color: var(--muted);
+    cursor: pointer; transition: all .2s ease; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .tab:hover { color: var(--text); border-color: var(--cyan); }
+  .tab.active { background: var(--cyan); color: #0a0e14; border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,220,255,0.4); }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* cards grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; position: relative; overflow: hidden;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--cyan); box-shadow: 0 12px 30px rgba(0,220,255,0.12); }
+  .card .icon { font-size: 28px; margin-bottom: 12px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .card .meta { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    font-size: 10px; padding: 3px 8px; border-radius: 4px;
+    background: rgba(0,220,255,0.08); border: 1px solid var(--border); color: var(--cyan);
+    letter-spacing: 0.5px;
+  }
+  .chip.amber { background: rgba(255,179,71,0.08); border-color: rgba(255,179,71,0.2); color: var(--amber); }
+  .chip.green { background: rgba(61,214,140,0.08); border-color: rgba(61,214,140,0.2); color: var(--green); }
+
+  /* tools section */
+  .tool {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .tool h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
+  .tool .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  .tool label { font-size: 11px; color: var(--muted); min-width: 120px; letter-spacing: 0.5px; }
+  .tool input, .tool select {
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; border-radius: 6px; font-family: inherit; font-size: 12px;
+    flex: 1; min-width: 120px;
+  }
+  .tool input:focus, .tool select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(0,220,255,0.15); }
+  .tool button {
+    background: var(--cyan); color: #0a0e14; border: none; padding: 8px 16px;
+    border-radius: 6px; font-family: inherit; font-size: 12px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.5px;
+  }
+  .tool button:hover { box-shadow: 0 0 16px rgba(0,220,255,0.4); }
+  .tool .result {
+    margin-top: 12px; padding: 12px 16px; border-radius: 8px;
+    background: rgba(0,220,255,0.05); border: 1px solid var(--border);
+    font-size: 13px; color: var(--text);
+  }
+  .tool .result b { color: var(--cyan); }
+
+  /* checklist */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 10px 14px; margin-bottom: 6px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px; font-size: 12px;
+    cursor: pointer; transition: all .2s ease;
+  }
+  .checklist li:hover { border-color: var(--cyan); }
+  .checklist li.done { background: rgba(61,214,140,0.08); border-color: rgba(61,214,140,0.3); color: var(--muted); text-decoration: line-through; }
+  .checklist li .box {
+    width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: all .2s ease;
+  }
+  .checklist li.done .box { background: var(--green); border-color: var(--green); color: #0a0e14; }
+  .checklist li .box::after { content: '✓'; opacity: 0; }
+  .checklist li.done .box::after { opacity: 1; }
+
+  /* reference table */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ref-table th, .ref-table td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  .ref-table th { color: var(--cyan); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; background: rgba(0,220,255,0.05); }
+  .ref-table tr:hover td { background: rgba(0,220,255,0.03); }
+  .ref-table td b { color: var(--amber); }
+
+  /* terminal */
+  .terminal {
+    background: #050810; border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; font-size: 12px; line-height: 1.7;
+    font-family: "JetBrains Mono", monospace;
+    max-height: 320px; overflow-y: auto;
+  }
+  .terminal .line { color: var(--muted); }
+  .terminal .line .prompt { color: var(--green); }
+  .terminal .line .cmd { color: var(--cyan); }
+  .terminal .line .out { color: var(--text); }
+  .terminal .line .warn { color: var(--amber); }
+  .terminal .line .err { color: var(--red); }
+
+  /* status bar */
+  .statusbar {
+    margin-top: 24px; padding: 10px 16px; border-radius: 8px;
+    background: var(--panel); border: 1px solid var(--border);
+    display: flex; justify-content: space-between; font-size: 11px; color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .statusbar .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .section-title {
+    font-size: 16px; font-weight: 700; margin: 24px 0 12px;
+    color: var(--cyan); letter-spacing: 2px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title::before { content: '//'; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="header">
+    <div class="left">
+      <div class="logo">M4</div>
+      <div>
+        <h1>Mecatrônica · 4º Semestre</h1>
+        <div class="sub">Training Hub · Integração & Comissionamento</div>
+      </div>
+    </div>
+    <div class="right">
+      <span class="badge">ÚLTIMO SEMESTRE</span>
+      <div class="progress-ring">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(0,220,255,0.1)" stroke-width="4"/>
+          <circle cx="26" cy="26" r="22" fill="none" stroke="var(--cyan)" stroke-width="4"
+            stroke-dasharray="138" stroke-dashoffset="30" stroke-linecap="round"/>
+        </svg>
+        <div class="label">75%</div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="modulos">Módulos</button>
+    <button class="tab" data-tab="ferramentas">Ferramentas</button>
+    <button class="tab" data-tab="checklist">Checklist</button>
+    <button class="tab" data-tab="referencia">Referência</button>
+    <button class="tab" data-tab="terminal">Terminal</button>
+  </nav>
+
+  <!-- MÓDULOS -->
+  <div class="panel active" id="modulos">
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🤖</div>
+        <h3>Integração de Sistemas</h3>
+        <p>Conectar sensores, atuadores, CLP e supervisório. Protocolos: Modbus, PROFINET, EtherCAT. Topologia de rede industrial.</p>
+        <div class="meta"><span class="chip">Modbus RTU/TCP</span><span class="chip">PROFINET</span><span class="chip amber">Projeto Final</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">⚙️</div>
+        <h3>Controle Avançado</h3>
+        <p>PID em cascata, feedforward, anti-windup. Sintonia por Ziegler-Nichols e Cohen-Coon. Estabilidade e margem de fase.</p>
+        <div class="meta"><span class="chip">PID</span><span class="chip">Z-N</span><span class="chip">Bode</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🌐</div>
+        <h3>Indústria 4.0 / IoT</h3>
+        <p>MQTT, OPC-UA, edge computing. Digital twin básico. Dashboards em tempo real. Cibersegurança OT.</p>
+        <div class="meta"><span class="chip">MQTT</span><span class="chip">OPC-UA</span><span class="chip green">Tendência</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🔧</div>
+        <h3>Comissionamento</h3>
+        <p>FAT/SAT. Loop checking. Calibração de sensores. Documentação as-built. Handover para operação.</p>
+        <div class="meta"><span class="chip">FAT/SAT</span><span class="chip">Loop Check</span><span class="chip amber">Crítico</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🛡️</div>
+        <h3>Segurança Funcional</h3>
+        <p>NR-12, SIL/PL. Análise de risco (HAZOP). Circuitos de segurança: relés, cortinas de luz, E-stops.</p>
+        <div class="meta"><span class="chip">NR-12</span><span class="chip">SIL/PL</span><span class="chip red">Obrigatório</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">📊</div>
+        <h3>Manutenção Preditiva</h3>
+        <p>Vibração, temperatura, corrente. Análise de espectro (FFT). CMMS. Indicadores: MTBF, MTTR, OEE.</p>
+        <div class="meta"><span class="chip">FFT</span><span class="chip">OEE</span><span class="chip green">Valor</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">📐</div>
+        <h3>Desenho & Documentação</h3>
+        <p>Diagramas elétricos (EPLAN). Pneumáticos. Layout de painel. Lista de materiais (BOM). Gestão de versões.</p>
+        <div class="meta"><span class="chip">EPLAN</span><span class="chip">BOM</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🎓</div>
+        <h3>Projeto Final</h3>
+        <p>Integração completa de um sistema mecatrônico. Documentação, apresentação, defesa. Gestão de projeto e cronograma.</p>
+        <div class="meta"><span class="chip amber">Capstone</span><span class="chip">Gantt</span><span class="chip">Defesa</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FERRAMENTAS -->
+  <div class="panel" id="ferramentas">
+    <div class="section-title">Calculadora PID (Ziegler-Nichols)</div>
+    <div class="tool">
+      <h3>Malha Aberta — Cohen-Coon</h3>
+      <div class="row"><label>Kp (ganho)</label><input type="number" id="cc-kp" value="2.5" step="0.1"></div>
+      <div class="row"><label>τ (constante de tempo)</label><input type="number" id="cc-tau" value="10" step="0.5"></div>
+      <div class="row"><label>θ (atraso)</label><input type="number" id="cc-theta" value="2" step="0.5"></div>
+      <button onclick="calcCohenCoon()">Calcular</button>
+      <div class="result" id="cc-result">Preencha e clique Calcular</div>
+    </div>
+
+    <div class="section-title">Conversão de Unidades</div>
+    <div class="tool">
+      <h3>Pressão / Vazão / Velocidade</h3>
+      <div class="row"><label>Valor</label><input type="number" id="conv-val" value="1"></div>
+      <div class="row"><label>De</label>
+        <select id="conv-from">
+          <option value="bar-psi">bar → psi</option>
+          <option value="psi-bar">psi → bar</option>
+          <option value="m3h-lmin">m³/h → L/min</option>
+          <option value="lmin-m3h">L/min → m³/h</option>
+          <option value="rpm-rads">rpm → rad/s</option>
+          <option value="rads-rpm">rad/s → rpm</option>
+          <option value="nm-kgfm">N·m → kgf·m</option>
+          <option value="kgfm-nm">kgf·m → N·m</option>
+        </select>
+      </div>
+      <button onclick="convert()">Converter</button>
+      <div class="result" id="conv-result">—</div>
+    </div>
+
+    <div class="section-title">Cálculo de Redução</div>
+    <div class="tool">
+      <h3>Relação de Transmissão</h3>
+      <div class="row"><label>RPM motor</label><input type="number" id="red-rpm" value="1750"></div>
+      <div class="row"><label>Dentes pinhão (Z1)</label><input type="number" id="red-z1" value="20"></div>
+      <div class="row"><label>Dentes coroa (Z2)</label><input type="number" id="red-z2" value="60"></div>
+      <button onclick="calcReducao()">Calcular</button>
+      <div class="result" id="red-result">—</div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="panel" id="checklist">
+    <div class="section-title">Comissionamento — Checklist FAT/SAT</div>
+    <ul class="checklist" id="cl-fatsat">
+      <li onclick="toggle(this)"><span class="box"></span>Documentação recebida e revisada (P&ID, elétrico, pneumático)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Inspeção visual do painel (fiação, aterramento, proteções)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Teste de isolação (megômetro) dos motores</li>
+      <li onclick="toggle(this)"><span class="box"></span>Verificação de alimentação (tensão, fase, sequência)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Loop check — cada E/S mapeada e testada</li>
+      <li onclick="toggle(this)"><span class="box"></span>Calibração de sensores (4-20mA, PT100, encoder)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Teste de atuadores (válvulas, contatores, VFDs)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Intertravamentos e E-stops funcionando</li>
+      <li onclick="toggle(this)"><span class="box"></span>Comunicação CLP ↔ supervisório (tags, alarmes)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Teste de carga / operação em automático</li>
+      <li onclick="toggle(this)"><span class="box"></span>Documentação as-built atualizada</li>
+      <li onclick="toggle(this)"><span class="box"></span>Treinamento da equipe de operação</li>
+      <li onclick="toggle(this)"><span class="box"></span>Termo de aceite (SAT) assinado</li>
+    </ul>
+
+    <div class="section-title" style="margin-top:24px;">Segurança (NR-12) — Pré-operação</div>
+    <ul class="checklist" id="cl-safety">
+      <li onclick="toggle(this)"><span class="box"></span>Cortina de luz / scanner de área instalado e alinhado</li>
+      <li onclick="toggle(this)"><span class="box"></span>E-stop de categoria apropriada (Cat. 3/4)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Relé de segurança com monitoramento de contatos</li>
+      <li onclick="toggle(this)"><span class="box"></span>Enclausuramento / proteção física das zonas de perigo</li>
+      <li onclick="toggle(this)"><span class="box"></span>Sinalização de segurança (pictogramas NR-12)</li>
+      <li onclick="toggle(this)"><span class="box"></span>Procedimento de bloqueio/etiquetagem (LOTO) definido</li>
+      <li onclick="toggle(this)"><span class="box"></span>Análise de risco (HAZOP/PHA) documentada</li>
+    </ul>
+  </div>
+
+  <!-- REFERÊNCIA -->
+  <div class="panel" id="referencia">
+    <div class="section-title">Pinagem — CLP Siemens S7-1200 (CPU 1214C)</div>
+    <table class="ref-table">
+      <thead><tr><th>Pino</th><th>Sinal</th><th>Função</th><th>Tensão</th></tr></thead>
+      <tbody>
+        <tr><td>1L+</td><td>24V DC</td><td>Alimentação E/S digitais</td><td>24V</td></tr>
+        <tr><td>M</td><td>GND</td><td>Referência 0V</td><td>0V</td></tr>
+        <tr><td>I0.0–I0.7</td><td>DI</td><td>Entradas digitais (sourcing)</td><td>24V</td></tr>
+        <tr><td>I1.0–I1.1</td><td>DI HSC</td><td>Contador rápido</td><td>24V</td></tr>
+        <tr><td>Q0.0–Q0.5</td><td>DO</td><td>Saídas digitais (relé/transistor)</td><td>24V</td></tr>
+        <tr><td>AI0–AI1</td><td>AI</td><td>Entradas analógicas</td><td>0–10V / 4–20mA</td></tr>
+        <tr><td>AQ0</td><td>AO</td><td>Saída analógica</td><td>0–10V / 4–20mA</td></tr>
+        <tr><td>X1 (PROFINET)</td><td>Ethernet</td><td>Comunicação industrial</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title" style="margin-top:24px;">Códigos de Erro Comuns — VFD (Danfoss FC302)</div>
+    <table class="ref-table">
+      <thead><tr><th>Código</th><th>Descrição</th><th>Ação</th></tr></thead>
+      <tbody>
+        <tr><td><b>AL 14</b></td><td>Earth fault (fuga à terra)</td><td>Verificar isolamento do motor</td></tr>
+        <tr><td><b>AL 15</b></td><td>Switch on back channel</td><td>Verificar contator principal</td></tr>
+        <tr><td><b>AL 16</b></td><td>Short circuit (curto)</td><td>Verificar cabos do motor</td></tr>
+        <tr><td><b>AL 29</b></td><td>Drive overtemp</td><td>Verificar ventilação / carga</td></tr>
+        <tr><td><b>AL 38</b></td><td>Internal fault</td><td>Reset / contatar suporte</td></tr>
+        <tr><td><b>WRN 59</b></td><td>Current limit</td><td>Reduzir carga / ajustar rampa</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title" style="margin-top:24px;">Fórmulas Rápidas</div>
+    <table class="ref-table">
+      <thead><tr><th>Fórmula</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td><b>P = τ · ω</b></td><td>Potência = torque × velocidade angular</td></tr>
+        <tr><td><b>i = Z2/Z1</b></td><td>Relação de transmissão</td></tr>
+        <tr><td><b>η = P_out/P_in</b></td><td>Eficiência</td></tr>
+        <tr><td><b>τ = J · α</b></td><td>Torque = inércia × aceleração angular</td></tr>
+        <tr><td><b>ω = 2π·n/60</b></td><td>rad/s a partir de rpm</td></tr>
+        <tr><td><b>OEE = A·P·Q</b></td><td>Disponibilidade × Performance × Qualidade</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TERMINAL -->
+  <div class="panel" id="terminal">
+    <div class="terminal" id="term">
+      <div class="line"><span class="prompt">mec@lab:~$</span> <span class="cmd">systemctl status plc.service</span></div>
+      <div class="line"><span class="out">● plc.service - Siemens S7-1200 Runtime</span></div>
+      <div class="line"><span class="out">   Loaded: loaded (/etc/systemd/system/plc.service; enabled)</span></div>
+      <div class="line"><span class="out">   Active: active (running) since Mon 2026-10-26 08:14:22</span></div>
+      <div class="line"><span class="out">   Main PID: 1842 (s7runtime)</span></div>
+      <div class="line"><span class="out">   Memory: 42.1M</span></div>
+      <div class="line"><span class="prompt">mec@lab:~$</span> <span class="cmd">ping 192.168.0.10</span></div>
+      <div class="line"><span class="out">PING 192.168.0.10: 56 bytes, time=2.3ms ✓</span></div>
+      <div class="line"><span class="prompt">mec@lab:~$</span> <span class="cmd">modbus-cli read --addr 40001 --count 4</span></div>
+      <div class="line"><span class="out">[40001] 1024  [40002] 512  [40003] 256  [40004] 128</span></div>
+      <div class="line"><span class="warn">⚠  Tag AI0 (4-20mA) fora de faixa: 3.8mA</span></div>
+      <div class="line"><span class="prompt">mec@lab:~$</span> <span class="cmd">_</span></div>
+    </div>
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <input type="text" id="termInput" placeholder="Digite um comando (help, status, clear, ping, modbus)" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:8px; font-family:inherit; font-size:12px;">
+      <button onclick="runTerm()" style="background:var(--cyan); color:#0a0e14; border:none; padding:10px 16px; border-radius:8px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer;">Executar</button>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div><span class="dot"></span> SISTEMA ONLINE · CLP S7-1200 · PROFINET OK</div>
+    <div>4º SEMESTRE · 12/16 SEMANAS CONCLUÍDAS</div>
+  </div>
+</div>
+
+<script>
+// tabs
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+// checklist toggle
+function toggle(li){ li.classList.toggle('done'); }
+
+// tools
+function calcCohenCoon(){
+  const Kp = +document.getElementById('cc-kp').value;
+  const tau = +document.getElementById('cc-tau').value;
+  const theta = +document.getElementById('cc-theta').value;
+  const Kc = (tau/(Kp*theta))*(1 + theta/(3*tau));
+  const Ti = theta*(30*tau+3*theta)/(9*tau+20*theta); // simplified
+  const Td = (theta*tau*6)/(20*tau+3*theta); // simplified
+  const Ki = Kc/Ti;
+  const Kd = Kc*Td;
+  document.getElementById('cc-result').innerHTML =
+    `Kc (proporcional) = <b>${Kc.toFixed(3)}</b><br>` +
+    `Ti (integral) = <b>${Ti.toFixed(3)} s</b><br>` +
+    `Td (derivativo) = <b>${Td.toFixed(3)} s</b><br>` +
+    `Ki = ${Ki.toFixed(3)} · Kd = ${Kd.toFixed(3)}`;
+}
+
+function convert(){
+  const v = +document.getElementById('conv-val').value;
+  const from = document.getElementById('conv-from').value;
+  const map = {
+    'bar-psi': v*14.5038, 'psi-bar': v/14.5038,
+    'm3h-lmin': v*16.6667, 'lmin-m3h': v/16.6667,
+    'rpm-rads': v*0.10472, 'rads-rpm': v/0.10472,
+    'nm-kgfm': v/9.80665, 'kgfm-nm': v*9.80665
+  };
+  document.getElementById('conv-result').innerHTML = `Resultado: <b>${map[from].toFixed(4)}</b>`;
+}
+
+function calcReducao(){
+  const rpm = +document.getElementById('red-rpm').value;
+  const z1 = +document.getElementById('red-z1').value;
+  const z2 = +document.getElementById('red-z2').value;
+  const i = z2/z1;
+  const rpmOut = rpm/i;
+  document.getElementById('red-result').innerHTML =
+    `Relação i = <b>${i.toFixed(2)}:1</b><br>` +
+    `RPM saída = <b>${rpmOut.toFixed(1)} rpm</b><br>` +
+    `Torque multiplicado por ${i.toFixed(2)}×`;
+}
+
+// terminal
+function runTerm(){
+  const input = document.getElementById('termInput');
+  const cmd = input.value.trim().toLowerCase();
+  const term = document.getElementById('term');
+  const add = (html) => { const d = document.createElement('div'); d.className='line'; d.innerHTML = html; term.appendChild(d); term.scrollTop = term.scrollHeight; };
+  add(`<span class="prompt">mec@lab:~$</span> <span class="cmd">${cmd}</span>`);
+  const responses = {
+    'help': '<span class="out">Comandos: status, ping, modbus, clear, help, sensors, plc</span>',
+    'status': '<span class="out">CLP: OK · PROFINET: OK · VFD: OK · Sensores: 12/12 OK</span>',
+    'ping': '<span class="out">PING 192.168.0.10: 56 bytes, time=2.1ms ✓</span>',
+    'modbus': '<span class="out">[40001] 1024  [40002] 512  [40003] 256  [40004] 128</span>',
+    'clear': '',
+    'sensors': '<span class="out">PT100: 42.3°C · Pressão: 6.2 bar · Nível: 78% · Encoder: 1420 rpm</span>',
+    'plc': '<span class="out">CPU 1214C · FW 4.4 · Memória: 42% · Ciclo: 8.2ms</span>'
+  };
+  if (cmd === 'clear') { term.innerHTML = ''; }
+  else if (responses[cmd]) { add(responses[cmd]); }
+  else if (cmd) { add(`<span class="err">comando não encontrado: ${cmd}. Digite 'help'</span>`); }
+  input.value = '';
+}
+document.getElementById('termInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') runTerm(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Builder 2.5D — Sandbox de Montagem</title>
+<style>
+  :root {
+    --bg: #0a0c12;
+    --panel: rgba(16,20,30,0.85);
+    --card: rgba(24,30,44,0.7);
+    --border: rgba(100,180,255,0.15);
+    --text: #e8ecf4;
+    --muted: #7a8699;
+    --cyan: #5eead4;
+    --blue: #60a5fa;
+    --violet: #a78bfa;
+    --amber: #fbbf24;
+    --green: #4ade80;
+    --red: #f87171;
+    --pink: #f472b6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Inter", -apple-system, system-ui, sans-serif;
+    background: radial-gradient(ellipse at 30% 20%, rgba(94,234,212,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(167,139,250,0.06) 0%, transparent 50%), var(--bg);
+    color: var(--text);
+  }
+
+  /* isometric grid background */
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      linear-gradient(30deg, rgba(94,234,212,0.04) 1px, transparent 1px),
+      linear-gradient(150deg, rgba(94,234,212,0.04) 1px, transparent 1px);
+    background-size: 60px 104px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; height: 100vh; display: grid; grid-template-columns: 320px 1fr 340px; grid-template-rows: 56px 1fr; }
+  .topbar { grid-column: 1/-1; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--panel); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .topbar .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 16px; letter-spacing: -0.5px; }
+  .topbar .brand .icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--cyan), var(--violet)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .topbar .stats { display: flex; gap: 24px; font-size: 11px; color: var(--muted); }
+  .topbar .stats b { color: var(--text); font-size: 14px; }
+  .topbar .actions { display: flex; gap: 8px; }
+  .topbar button { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text); padding: 7px 14px; border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all .2s; letter-spacing: .5px; }
+  .topbar button:hover { background: rgba(94,234,212,0.12); border-color: var(--cyan); }
+  .topbar button.primary { background: var(--cyan); color: #0a0c12; border-color: var(--cyan); }
+
+  /* LEFT: parts catalog */
+  .catalog { background: var(--panel); backdrop-filter: blur(12px); border-right: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
+  .catalog-header { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .catalog-header h2 { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; }
+  .search { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 7px; font-size: 12px; font-family: inherit; }
+  .search:focus { outline: none; border-color: var(--cyan); }
+  .filters { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .filter { padding: 4px 9px; border-radius: 5px; font-size: 10px; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--muted); cursor: pointer; transition: all .15s; letter-spacing: .5px; }
+  .filter:hover { color: var(--text); }
+  .filter.active { background: var(--cyan); color: #0a0c12; border-color: var(--cyan); }
+  .parts-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .part-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 7px;
+    cursor: grab; transition: all .15s; border: 1px solid transparent; margin-bottom: 4px;
+    user-select: none;
+  }
+  .part-item:hover { background: rgba(255,255,255,0.04); border-color: var(--border); }
+  .part-item.dragging { opacity: 0.5; }
+  .part-icon { width: 36px; height: 36px; border-radius: 6px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .part-info { flex: 1; min-width: 0; }
+  .part-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .part-spec { font-size: 10px; color: var(--muted); }
+  .part-price { font-size: 11px; color: var(--amber); font-weight: 600; }
+  .parts-count { padding: 8px 16px; font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); text-align: center; letter-spacing: 1px; }
+
+  /* CENTER: 2.5D view */
+  .viewport { position: relative; overflow: hidden; background: radial-gradient(ellipse at center, rgba(94,234,212,0.03) 0%, transparent 70%); }
+  .viewport canvas { display: block; width: 100%; height: 100%; }
+  .viewport-overlay { position: absolute; top: 14px; left: 14px; font-size: 10px; color: var(--muted); letter-spacing: 1px; background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 6px; backdrop-filter: blur(6px); }
+  .drop-zone { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); padding: 8px 16px; background: rgba(94,234,212,0.1); border: 1px dashed var(--cyan); border-radius: 8px; font-size: 11px; color: var(--cyan); display: none; }
+  .drop-zone.active { display: block; animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* RIGHT: build info */
+  .build { background: var(--panel); backdrop-filter: blur(12px); border-left: 1px solid var(--border); overflow-y: auto; padding: 16px; }
+  .build h2 { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cyan); margin-bottom: 12px; }
+  .build-section { margin-bottom: 18px; }
+  .build-section h3 { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+  .build-item { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); margin-bottom: 4px; font-size: 11px; }
+  .build-item .slot { width: 28px; height: 28px; border-radius: 5px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .build-item .name { flex: 1; font-weight: 600; }
+  .build-item .spec { color: var(--muted); font-size: 10px; }
+  .build-item .remove { color: var(--red); cursor: pointer; font-size: 14px; opacity: 0.6; transition: opacity .15s; }
+  .build-item .remove:hover { opacity: 1; }
+  .build-item.empty { border-style: dashed; color: var(--muted); justify-content: center; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 7px; padding: 10px; }
+  .stat-card .label { font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .stat-card .value { font-size: 16px; font-weight: 700; margin-top: 3px; }
+  .stat-card .value.good { color: var(--green); }
+  .stat-card .value.warn { color: var(--amber); }
+  .stat-card .value.bad { color: var(--red); }
+
+  .compat { padding: 10px; border-radius: 7px; font-size: 11px; margin-top: 8px; }
+  .compat.ok { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); color: var(--green); }
+  .compat.warn { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); color: var(--amber); }
+  .compat.err { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: var(--red); }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--panel); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; font-size: 12px; z-index: 100; transition: transform .3s ease; backdrop-filter: blur(12px); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* SVG icons inline */
+  .icon-svg { width: 24px; height: 24px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="icon">🖥️</div>
+      <span>PC BUILDER 2.5D</span>
+    </div>
+    <div class="stats">
+      <div>Peças: <b id="partCount">0</b>/1000</div>
+      <div>Montadas: <b id="mountedCount">0</b></div>
+      <div>Custo: <b id="totalCost">R$ 0</b></div>
+    </div>
+    <div class="actions">
+      <button onclick="resetBuild()">Reset</button>
+      <button onclick="randomBuild()">Random Build</button>
+      <button class="primary" onclick="exportBuild()">Exportar</button>
+    </div>
+  </header>
+
+  <!-- LEFT CATALOG -->
+  <aside class="catalog">
+    <div class="catalog-header">
+      <h2>Catálogo de Peças</h2>
+      <input type="text" class="search" id="search" placeholder="Buscar peça, marca, spec..." oninput="filterParts()">
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="parts-list" id="partsList"></div>
+    <div class="parts-count" id="partsCount">0 peças encontradas</div>
+  </aside>
+
+  <!-- CENTER VIEWPORT -->
+  <main class="viewport" id="viewport">
+    <canvas id="viewCanvas"></canvas>
+    <div class="viewport-overlay">2.5D ISOMÉTRICO · ARRASTE PEÇAS DO CATÁLOGO</div>
+    <div class="drop-zone" id="dropZone">Solte aqui para montar</div>
+  </main>
+
+  <!-- RIGHT BUILD -->
+  <aside class="build">
+    <h2>Build Atual</h2>
+    <div class="build-section">
+      <h3>Slots</h3>
+      <div id="slots"></div>
+    </div>
+    <div class="build-section">
+      <h3>Estatísticas</h3>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="label">CPU Cores</div><div class="value" id="statCores">—</div></div>
+        <div class="stat-card"><div class="label">GPU VRAM</div><div class="value" id="statVram">—</div></div>
+        <div class="stat-card"><div class="label">RAM</div><div class="value" id="statRam">—</div></div>
+        <div class="stat-card"><div class="label">Storage</div><div class="value" id="statStorage">—</div></div>
+        <div class="stat-card"><div class="label">Power Draw</div><div class="value" id="statPower">—</div></div>
+        <div class="stat-card"><div class="label">PSU Headroom</div><div class="value" id="statHeadroom">—</div></div>
+      </div>
+      <div id="compat" class="compat ok">✓ Compatível</div>
+    </div>
+    <div class="build-section">
+      <h3>Peças Montadas</h3>
+      <div id="mounted"></div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA GENERATION: 1000 PARTS =====
+const TYPES = [
+  { key:'cpu', label:'CPU', icon:'🔲', color:'#60a5fa' },
+  { key:'gpu', label:'GPU', icon:'🎮', color:'#a78bfa' },
+  { key:'mobo', label:'Placa-Mãe', icon:'🟩', color:'#4ade80' },
+  { key:'ram', label:'RAM', icon:'🟦', color:'#5eead4' },
+  { key:'storage', label:'Storage', icon:'💿', color:'#fbbf24' },
+  { key:'psu', label:'Fonte', icon:'⚡', color:'#f87171' },
+  { key:'case', label:'Gabinete', icon:'📦', color:'#f472b6' },
+  { key:'cooler', label:'Cooler', icon:'❄️', color:'#67e8f9' },
+  { key:'fan', label:'Fan', icon:'🌀', color:'#c084fc' },
+];
+
+const BRANDS = {
+  cpu: ['Intel','AMD'],
+  gpu: ['NVIDIA','AMD','Intel'],
+  mobo: ['ASUS','MSI','Gigabyte','ASRock','Biostar'],
+  ram: ['Corsair','G.Skill','Kingston','Crucial','TeamGroup','Patriot'],
+  storage: ['Samsung','WD','Seagate','Crucial','Kingston','Sabrent'],
+  psu: ['Corsair','Seasonic','EVGA','be quiet!','Cooler Master','Thermaltake'],
+  case: ['Fractal','NZXT','Corsair','Lian Li','Phanteks','be quiet!','Cooler Master'],
+  cooler: ['Noctua','Corsair','be quiet!','Arctic','Deepcool','Thermalright'],
+  fan: ['Noctua','Corsair','Arctic','be quiet!','Lian Li','Thermaltake'],
+};
+
+const CPU_MODELS = {
+  Intel: ['Core i3-13100','Core i5-13400','Core i5-13600K','Core i7-13700K','Core i9-13900K','Core i9-14900K'],
+  AMD: ['Ryzen 5 5600','Ryzen 5 7600','Ryzen 7 7700X','Ryzen 9 7900X','Ryzen 9 7950X','Ryzen 9 7950X3D'],
+};
+const GPU_MODELS = {
+  NVIDIA: ['RTX 3060','RTX 3070','RTX 3080','RTX 4060','RTX 4070','RTX 4080','RTX 4090'],
+  AMD: ['RX 6600','RX 6700 XT','RX 6800 XT','RX 7700 XT','RX 7800 XT','RX 7900 XTX'],
+  Intel: ['Arc A380','Arc A580','Arc A750','Arc A770'],
+};
+const MOBO_MODELS = {
+  ASUS: ['ROG Strix','TUF Gaming','Prime','ProArt'],
+  MSI: ['MPG','MAG','PRO','MEG'],
+  Gigabyte: ['AORUS','Gaming X','UD','Aero'],
+  ASRock: ['Taichi','Steel Legend','Phantom Gaming','Pro'],
+  Biostar: ['Racing','Pro'],
+};
+const RAM_MODELS = ['Vengeance','Trident Z','Fury','Ballistix','T-Force','Viper'];
+const STORAGE_MODELS = {
+  Samsung: ['980','980 PRO','990 PRO'],
+  WD: ['SN770','SN850X','Black','Blue'],
+  Seagate: ['FireCuda','Barracuda'],
+  Crucial: ['P3','P5 Plus','MX500'],
+  Kingston: ['NV2','KC3000','A400'],
+  Sabrent: ['Rocket','Rocket 4 Plus'],
+};
+const PSU_MODELS = ['RM','HX','SF','Focus','Prime','Straight Power'];
+const CASE_MODELS = ['Meshify','H510','4000D','O11 Dynamic','Eclipse','Pure Base'];
+const COOLER_MODELS = ['NH-D15','iCUE H150i','Dark Rock Pro','Liquid Freezer','AK620','Peerless Assassin'];
+const FAN_MODELS = ['NF-A12x25','LL120','P12','Pure Wings','F12','Kaze Flex'];
+
+function rng(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function price(base){ return Math.round(base * (0.8 + Math.random()*0.4)); }
+
+function genPart(type, id){
+  const brand = pick(BRANDS[type]);
+  let model = brand;
+  let spec = '';
+  let power = 0;
+  let perf = 0;
+  switch(type){
+    case 'cpu': {
+      model = pick(CPU_MODELS[brand] || ['Generic']);
+      const cores = pick([4,6,8,12,16,24]);
+      const ghz = (3.0 + Math.random()*2.5).toFixed(2);
+      spec = `${cores}C/${cores*2}T @ ${ghz}GHz`;
+      power = cores*8 + rng(30,60);
+      perf = cores*10 + Math.random()*20;
+      break;
+    }
+    case 'gpu': {
+      model = pick(GPU_MODELS[brand] || ['Generic']);
+      const vram = pick([4,6,8,10,12,16,24]);
+      spec = `${vram}GB VRAM`;
+      power = vram*15 + rng(80,200);
+      perf = vram*8 + Math.random()*30;
+      break;
+    }
+    case 'mobo': {
+      model = pick(MOBO_MODELS[brand] || ['Generic']);
+      const socket = pick(['AM4','AM5','LGA1700','LGA1200']);
+      const ramSlots = pick([2,4]);
+      spec = `${socket} · ${ramSlots} DIMM`;
+      power = 15;
+      perf = 5;
+      break;
+    }
+    case 'ram': {
+      model = pick(RAM_MODELS);
+      const cap = pick([8,16,32,64]);
+      const speed = pick([3200,3600,4800,5200,5600,6000]);
+      const sticks = pick([1,2,4]);
+      spec = `${cap*sticks}GB (${sticks}×${cap}) @ ${speed}MT/s`;
+      power = sticks*3;
+      perf = speed/100;
+      break;
+    }
+    case 'storage': {
+      model = pick(STORAGE_MODELS[brand] || ['Generic']);
+      const cap = pick([256,500,1000,2000,4000]);
+      const type2 = pick(['NVMe','SATA SSD','HDD']);
+      spec = `${cap}GB ${type2}`;
+      power = type2==='HDD'?8:5;
+      perf = cap/10;
+      break;
+    }
+    case 'psu': {
+      model = pick(PSU_MODELS);
+      const watt = pick([550,650,750,850,1000,1200]);
+      const eff = pick(['80+ Bronze','80+ Gold','80+ Platinum','80+ Titanium']);
+      spec = `${watt}W · ${eff}`;
+      power = 0;
+      perf = watt;
+      break;
+    }
+    case 'case': {
+      model = pick(CASE_MODELS);
+      const form = pick(['ATX','mATX','ITX','E-ATX']);
+      spec = `${form} · ${pick(['Mesh','Glass','Solid'])}`;
+      power = 0;
+      perf = 0;
+      break;
+    }
+    case 'cooler': {
+      model = pick(COOLER_MODELS);
+      const tdp = pick([120,180,220,280,360]);
+      spec = `${tdp}W TDP · ${pick(['Air','AIO 240','AIO 280','AIO 360'])}`;
+      power = 5;
+      perf = tdp;
+      break;
+    }
+    case 'fan': {
+      model = pick(FAN_MODELS);
+      const size = pick([120,140]);
+      const rpm = pick([1200,1500,1800,2000]);
+      spec = `${size}mm · ${rpm} RPM`;
+      power = 2;
+      perf = rpm/100;
+      break;
+    }
+  }
+  const basePrice = {cpu:1200,gpu:3000,mobo:800,ram:400,storage:300,psu:600,case:500,cooler:400,fan:80}[type];
+  return {
+    id: id,
+    type: type,
+    brand: brand,
+    model: model,
+    name: `${brand} ${model}`,
+    spec: spec,
+    power: power,
+    perf: perf,
+    price: price(basePrice),
+  };
+}
+
+// generate 1000 parts
+const PARTS = [];
+let idCounter = 1;
+const typeKeys = TYPES.map(t=>t.key);
+// distribute ~1000 across types
+const distribution = { cpu:80, gpu:120, mobo:90, ram:150, storage:140, psu:70, case:80, cooler:90, fan:180 };
+for (const t of typeKeys){
+  for (let i=0;i<distribution[t];i++){
+    PARTS.push(genPart(t, idCounter++));
+  }
+}
+// shuffle
+for (let i=PARTS.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [PARTS[i],PARTS[j]]=[PARTS[j],PARTS[i]]; }
+
+// ===== BUILD STATE =====
+const SLOTS = ['case','mobo','cpu','gpu','ram','storage','psu','cooler','fan'];
+const SLOT_LABELS = { case:'Gabinete', mobo:'Placa-Mãe', cpu:'CPU', gpu:'GPU', ram:'RAM', storage:'Storage', psu:'Fonte', cooler:'Cooler', fan:'Fan' };
+const SLOT_ICONS = { case:'📦', mobo:'🟩', cpu:'🔲', gpu:'🎮', ram:'🟦', storage:'💿', psu:'⚡', cooler:'❄️', fan:'🌀' };
+
+let build = {}; // slot -> part
+let mounted = []; // list of parts
+
+// ===== 2.5D RENDERING =====
+const canvas = document.getElementById('viewCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resizeCanvas(){
+  const r = canvas.parentElement.getBoundingClientRect();
+  W = canvas.width = r.width * (window.devicePixelRatio||1);
+  H = canvas.height = r.height * (window.devicePixelRatio||1);
+  canvas.style.width = r.width+'px';
+  canvas.style.height = r.height+'px';
+  ctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);
+}
+window.addEventListener('resize', resizeCanvas);
+setTimeout(resizeCanvas, 100);
+
+// isometric helpers
+function iso(x,y,z){ // 2.5D projection
+  const ax = x - y;
+  const ay = (x + y)*0.5 - z;
+  return { x: W/2 + ax*1.2, y: H/2 + ay*1.2 };
+}
+
+let rot = 0.3;
+let zoom = 1;
+
+function drawScene(){
+  ctx.clearRect(0,0,W,H);
+  // background gradient
+  const g = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7);
+  g.addColorStop(0,'rgba(94,234,212,0.04)');
+  g.addColorStop(1,'transparent');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+  // grid floor
+  ctx.strokeStyle = 'rgba(94,234,212,0.08)'; ctx.lineWidth = 1;
+  for (let i=-8;i<=8;i++){
+    const a = iso(i*30, -8*30, 0); const b = iso(i*30, 8*30, 0);
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    const c = iso(-8*30, i*30, 0); const d = iso(8*30, i*30, 0);
+    ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(d.x,d.y); ctx.stroke();
+  }
+
+  // case (if mounted)
+  const casePart = build.case;
+  if (casePart){
+    drawCase(casePart);
+  } else {
+    // empty platform
+    ctx.fillStyle = 'rgba(94,234,212,0.05)';
+    const p = iso(0,0,0);
+    ctx.beginPath(); ctx.ellipse(p.x, p.y, 80, 40, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(122,134,153,0.6)'; ctx.font = '12px Inter'; ctx.textAlign='center';
+    ctx.fillText('Arraste um gabinete aqui', p.x, p.y+4);
+    ctx.textAlign='left';
+  }
+
+  // mounted components
+  mounted.forEach((p, idx) => {
+    drawPart(p, idx);
+  });
+
+  requestAnimationFrame(drawScene);
+}
+requestAnimationFrame(drawScene);
+
+function drawCase(part){
+  // isometric box
+  const w=120, h=80, d=100;
+  const pts = {
+    // bottom
+    b0: iso(-w/2, -d/2, 0), b1: iso(w/2, -d/2, 0),
+    b2: iso(w/2, d/2, 0), b3: iso(-w/2, d/2, 0),
+    // top
+    t0: iso(-w/2, -d/2, h), t1: iso(w/2, -d/2, h),
+    t2: iso(w/2, d/2, h), t3: iso(-w/2, d/2, h),
+  };
+  // bottom face
+  ctx.fillStyle = 'rgba(30,40,60,0.9)'; ctx.beginPath();
+  ctx.moveTo(pts.b0.x,pts.b0.y); ctx.lineTo(pts.b1.x,pts.b1.y); ctx.lineTo(pts.b2.x,pts.b2.y); ctx.lineTo(pts.b3.x,pts.b3.y); ctx.closePath(); ctx.fill();
+  // left face
+  ctx.fillStyle = 'rgba(20,30,50,0.95)'; ctx.beginPath();
+  ctx.moveTo(pts.b0.x,pts.b0.y); ctx.lineTo(pts.b3.x,pts.b3.y); ctx.lineTo(pts.t3.x,pts.t3.y); ctx.lineTo(pts.t0.x,pts.t0.y); ctx.closePath(); ctx.fill();
+  // right face
+  ctx.fillStyle = 'rgba(40,50,70,0.9)'; ctx.beginPath();
+  ctx.moveTo(pts.b1.x,pts.b1.y); ctx.lineTo(pts.b2.x,pts.b2.y); ctx.lineTo(pts.t2.x,pts.t2.y); ctx.lineTo(pts.t1.x,pts.t1.y); ctx.closePath(); ctx.fill();
+  // top face (glass)
+  ctx.fillStyle = 'rgba(94,234,212,0.06)'; ctx.beginPath();
+  ctx.moveTo(pts.t0.x,pts.t0.y); ctx.lineTo(pts.t1.x,pts.t1.y); ctx.lineTo(pts.t2.x,pts.t2.y); ctx.lineTo(pts.t3.x,pts.t3.y); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(94,234,212,0.4)'; ctx.lineWidth = 1.5; ctx.stroke();
+  // edges
+  ctx.strokeStyle = 'rgba(94,234,212,0.6)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(pts.t0.x,pts.t0.y); ctx.lineTo(pts.t1.x,pts.t1.y); ctx.lineTo(pts.t2.x,pts.t2.y); ctx.lineTo(pts.t3.x,pts.t3.y); ctx.closePath(); ctx.stroke();
+  // label
+  const center = iso(0,0,h/2);
+  ctx.fillStyle = 'rgba(94,234,212,0.8)'; ctx.font = 'bold 11px Inter'; ctx.textAlign='center';
+  ctx.fillText(part.name, center.x, center.y);
+  ctx.font = '9px Inter'; ctx.fillStyle = 'rgba(122,134,153,0.8)';
+  ctx.fillText(part.spec, center.x, center.y+14);
+  ctx.textAlign='left';
+}
+
+function drawPart(part, idx){
+  const slots = { cpu:[0,0,60], gpu:[30,-20,40], ram:[-30,20,50], storage:[-40,-30,30], psu:[0,0,10], cooler:[0,0,70], fan:[50,30,20] };
+  const pos = slots[part.type] || [0,0,20];
+  const p = iso(pos[0]+idx*2, pos[1], pos[2]);
+  // glow
+  const glow = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,25);
+  glow.addColorStop(0, part.color+'66'); glow.addColorStop(1, part.color+'00');
+  ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(p.x,p.y,25,0,Math.PI*2); ctx.fill();
+  // body
+  ctx.fillStyle = part.color; ctx.beginPath(); ctx.arc(p.x,p.y,12,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.beginPath(); ctx.arc(p.x-3,p.y-3,4,0,Math.PI*2); ctx.fill();
+  // label
+  ctx.fillStyle = 'rgba(232,236,244,0.9)'; ctx.font = '9px Inter'; ctx.textAlign='center';
+  ctx.fillText(part.type.toUpperCase(), p.x, p.y+22);
+  ctx.textAlign='left';
+}
+
+// ===== CATALOG RENDERING =====
+const filtersEl = document.getElementById('filters');
+const types = TYPES;
+types.forEach(t => {
+  const btn = document.createElement('button');
+  btn.className = 'filter';
+  btn.textContent = t.label;
+  btn.dataset.type = t.key;
+  btn.onclick = () => { btn.classList.toggle('active'); filterParts(); };
+  filtersEl.appendChild(btn);
+});
+// "all" filter
+const allBtn = document.createElement('button');
+allBtn.className = 'filter active';
+allBtn.textContent = 'Todos';
+allBtn.dataset.type = 'all';
+allBtn.onclick = () => {
+  document.querySelectorAll('.filter').forEach(f=>f.classList.remove('active'));
+  allBtn.classList.add('active');
+  filterParts();
+};
+filtersEl.insertBefore(allBtn, filtersEl.firstChild);
+
+let filteredParts = [...PARTS];
+function filterParts(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const activeFilters = [...document.querySelectorAll('.filter.active')].map(f=>f.dataset.type);
+  filteredParts = PARTS.filter(p => {
+    const matchType = activeFilters.includes('all') || activeFilters.includes(p.type);
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.spec.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q);
+    return matchType && matchQ;
+  });
+  renderParts();
+}
+
+function renderParts(){
+  const list = document.getElementById('partsList');
+  list.innerHTML = '';
+  const shown = filteredParts.slice(0, 200); // render first 200 for perf
+  shown.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'part-item';
+    item.draggable = true;
+    item.dataset.id = p.id;
+    item.innerHTML = `
+      <div class="part-icon" style="color:${p.color||'#888'}">${SLOT_ICONS[p.type]}</div>
+      <div class="part-info">
+        <div class="part-name">${p.name}</div>
+        <div class="part-spec">${p.spec}</div>
+      </div>
+      <div class="part-price">R$ ${p.price}</div>
+    `;
+    item.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', p.id);
+      item.classList.add('dragging');
+    });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    item.addEventListener('click', () => addToBuild(p));
+    list.appendChild(item);
+  });
+  document.getElementById('partsCount').textContent = `${filteredParts.length} peças encontradas (mostrando ${shown.length})`;
+  document.getElementById('partCount').textContent = PARTS.length;
+}
+
+// ===== BUILD LOGIC =====
+function addToBuild(part){
+  if (build[part.type]){
+    showToast('Slot já ocupado. Remova primeiro.');
+    return;
+  }
+  build[part.type] = part;
+  mounted.push(part);
+  renderBuild();
+  updateStats();
+  showToast(`${part.name} montado ✓`);
+}
+
+function removeFromBuild(slot){
+  const part = build[slot];
+  if (!part) return;
+  delete build[slot];
+  mounted = mounted.filter(p => p.id !== part.id);
+  renderBuild();
+  updateStats();
+  showToast(`${part.name} removido`);
+}
+
+function renderBuild(){
+  const slotsEl = document.getElementById('slots');
+  slotsEl.innerHTML = '';
+  SLOTS.forEach(slot => {
+    const part = build[slot];
+    const div = document.createElement('div');
+    if (part){
+      div.className = 'build-item';
+      div.innerHTML = `
+        <div class="slot">${SLOT_ICONS[slot]}</div>
+        <div><div class="name">${part.name}</div><div class="spec">${part.spec}</div></div>
+        <div class="remove" onclick="removeFromBuild('${slot}')">×</div>
+      `;
+    } else {
+      div.className = 'build-item empty';
+      div.innerHTML = `<div class="slot">${SLOT_ICONS[slot]}</div><span>${SLOT_LABELS[slot]} — vazio</span>`;
+    }
+    slotsEl.appendChild(div);
+  });
+
+  const mountedEl = document.getElementById('mounted');
+  mountedEl.innerHTML = '';
+  mounted.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'build-item';
+    div.innerHTML = `<div class="slot">${SLOT_ICONS[p.type]}</div><div><div class="name">${p.name}</div><div class="spec">${p.brand} · R$ ${p.price}</div></div>`;
+    mountedEl.appendChild(div);
+  });
+}
+
+function updateStats(){
+  const cpu = build.cpu;
+  const gpu = build.gpu;
+  const ram = build.ram;
+  const storage = build.storage;
+  const psu = build.psu;
+  document.getElementById('statCores').textContent = cpu ? cpu.spec.split('C')[0]+' cores' : '—';
+  document.getElementById('statVram').textContent = gpu ? gpu.spec : '—';
+  document.getElementById('statRam').textContent = ram ? ram.spec : '—';
+  document.getElementById('statStorage').textContent = storage ? storage.spec : '—';
+
+  // power calculation
+  let draw = 0;
+  if (cpu) draw += cpu.power;
+  if (gpu) draw += gpu.power;
+  if (ram) draw += ram.power;
+  if (storage) draw += storage.power;
+  if (build.cooler) draw += build.cooler.power;
+  if (build.fan) draw += build.fan.power;
+  draw += 50; // mobo + base
+  document.getElementById('statPower').textContent = draw + ' W';
+
+  if (psu){
+    const psuWatt = parseInt(psu.spec);
+    const headroom = psuWatt - draw;
+    const el = document.getElementById('statHeadroom');
+    el.textContent = headroom + ' W';
+    el.className = 'value ' + (headroom < 50 ? 'bad' : headroom < 150 ? 'warn' : 'good');
+  } else {
+    document.getElementById('statHeadroom').textContent = '—';
+  }
+
+  // total cost
+  const total = mounted.reduce((s,p)=>s+p.price, 0);
+  document.getElementById('totalCost').textContent = 'R$ ' + total.toLocaleString('pt-BR');
+  document.getElementById('mountedCount').textContent = mounted.length;
+
+  // compatibility
+  const compat = document.getElementById('compat');
+  const issues = [];
+  if (cpu && build.mobo){
+    // socket check (simplified)
+  }
+  if (psu && draw > parseInt(psu.spec||0)){
+    issues.push('Fonte insuficiente para a carga');
+  }
+  if (!build.case && mounted.length>1){
+    issues.push('Sem gabinete — montagem instável');
+  }
+  if (issues.length === 0){
+    compat.className = 'compat ok';
+    compat.textContent = '✓ Build compatível';
+  } else {
+    compat.className = 'compat warn';
+    compat.textContent = '⚠ ' + issues.join(' · ');
+  }
+}
+
+function resetBuild(){
+  build = {}; mounted = [];
+  renderBuild(); updateStats();
+  showToast('Build resetado');
+}
+
+function randomBuild(){
+  resetBuild();
+  // pick one of each type
+  TYPES.forEach(t => {
+    const candidates = PARTS.filter(p => p.type === t.key);
+    if (candidates.length){
+      const pick = candidates[Math.floor(Math.random()*candidates.length)];
+      addToBuild(pick);
+    }
+  });
+  showToast('Build aleatório gerado ✓');
+}
+
+function exportBuild(){
+  const data = {
+    parts: mounted.map(p => ({ type: p.type, name: p.name, brand: p.brand, spec: p.spec, price: p.price })),
+    total: mounted.reduce((s,p)=>s+p.price,0),
+    power: document.getElementById('statPower').textContent,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pc-build.json'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Build exportado (pc-build.json)');
+}
+
+// drag & drop on viewport
+const viewport = document.getElementById('viewport');
+const dropZone = document.getElementById('dropZone');
+viewport.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
+viewport.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+viewport.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('active');
+  const id = +e.dataTransfer.getData('text/plain');
+  const part = PARTS.find(p => p.id === id);
+  if (part) addToBuild(part);
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// init
+filterParts();
+renderBuild();
+updateStats();
+</script>
+</body>
+</html>

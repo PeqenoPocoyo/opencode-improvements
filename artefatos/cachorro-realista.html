@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cachorro Realista — SVG</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(ellipse at 50% 30%, #1a1a2e 0%, #0f0f1a 50%, #050508 100%);
+    font-family: -apple-system, system-ui, sans-serif;
+    overflow:hidden;
+  }
+  .container {
+    text-align:center;
+    padding:40px;
+  }
+  .dog-frame {
+    position:relative;
+    width:600px;
+    height:400px;
+    margin:0 auto;
+    filter: drop-shadow(0 20px 50px rgba(0,0,0,0.6));
+  }
+  .dog-svg {
+    width:100%;
+    height:100%;
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.01); }
+  }
+  .glow {
+    position:absolute;
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:350px;
+    height:50px;
+    border-radius:50%;
+    background:radial-gradient(ellipse, rgba(139,90,43,0.3) 0%, transparent 70%);
+    filter:blur(20px);
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%,100% { opacity:0.5; transform:translateX(-50%) scale(1); }
+    50% { opacity:0.8; transform:translateX(-50%) scale(1.1); }
+  }
+  .title {
+    margin-top:20px;
+    font-size:24px;
+    font-weight:900;
+    color:#fff;
+    letter-spacing:-0.5px;
+  }
+  .title span {
+    background:linear-gradient(135deg,#d4a574,#8b5a2b);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .subtitle {
+    margin-top:6px;
+    font-size:12px;
+    color:#a08060;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  .info {
+    margin-top:20px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .info-card {
+    background:rgba(139,90,43,0.1);
+    border:1px solid rgba(139,90,43,0.2);
+    border-radius:12px;
+    padding:10px 16px;
+    text-align:center;
+    min-width:90px;
+  }
+  .info-card .val {
+    font-size:14px;
+    font-weight:800;
+    color:#d4a574;
+  }
+  .info-card .lbl {
+    font-size:9px;
+    color:#a08060;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-top:2px;
+  }
+  .particles {
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .particle {
+    position:absolute;
+    width:2px; height:2px;
+    background:rgba(212,165,116,0.4);
+    border-radius:50%;
+    animation: particleFloat linear infinite;
+  }
+  @keyframes particleFloat {
+    0% { transform:translateY(100vh); opacity:0; }
+    10% { opacity:1; }
+    90% { opacity:1; }
+    100% { transform:translateY(-10vh) translateX(15px); opacity:0; }
+  }
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="container">
+  <div class="dog-frame">
+    <div class="glow"></div>
+    <svg class="dog-svg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Body gradient -->
+        <radialGradient id="bodyGrad" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#c4956a"/>
+          <stop offset="40%" stop-color="#a0704a"/>
+          <stop offset="100%" stop-color="#6b4423"/>
+        </radialGradient>
+        <!-- Head gradient -->
+        <radialGradient id="headGrad" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#d4a574"/>
+          <stop offset="50%" stop-color="#b08050"/>
+          <stop offset="100%" stop-color="#7a5030"/>
+        </radialGradient>
+        <!-- Ear gradient -->
+        <radialGradient id="earGrad" cx="50%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#8b5a2b"/>
+          <stop offset="100%" stop-color="#5a3a1a"/>
+        </radialGradient>
+        <!-- Muzzle gradient -->
+        <radialGradient id="muzzleGrad" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#e8c8a0"/>
+          <stop offset="100%" stop-color="#c4956a"/>
+        </radialGradient>
+        <!-- Eye gradient -->
+        <radialGradient id="eyeGrad" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#3a2a1a"/>
+          <stop offset="100%" stop-color="#1a1008"/>
+        </radialGradient>
+        <!-- Shadow filter -->
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+          <feOffset dx="2" dy="4"/>
+          <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+          <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- Fur texture -->
+        <pattern id="furPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="0.8" fill="rgba(0,0,0,0.08)"/>
+          <circle cx="6" cy="5" r="0.6" fill="rgba(0,0,0,0.06)"/>
+        </pattern>
+      </defs>
+
+      <!-- Ground shadow -->
+      <ellipse cx="300" cy="370" rx="200" ry="15" fill="rgba(0,0,0,0.3)"/>
+
+      <!-- Back legs -->
+      <g filter="url(#softShadow)">
+        <!-- Left back leg -->
+        <path d="M180,280 Q170,310 165,340 Q160,360 170,370 L185,370 Q190,360 188,340 Q185,310 190,285 Z" fill="url(#bodyGrad)"/>
+        <path d="M170,365 Q165,372 175,375 L190,375 Q200,372 195,365 Z" fill="#5a3a1a"/>
+        <!-- Right back leg -->
+        <path d="M230,285 Q220,315 215,345 Q210,365 220,375 L235,375 Q240,365 238,345 Q235,315 240,290 Z" fill="url(#bodyGrad)"/>
+        <path d="M220,370 Q215,377 225,380 L240,380 Q250,377 245,370 Z" fill="#5a3a1a"/>
+      </g>
+
+      <!-- Body -->
+      <g filter="url(#softShadow)">
+        <ellipse cx="260" cy="240" rx="140" ry="80" fill="url(#bodyGrad)"/>
+        <ellipse cx="260" cy="240" rx="140" ry="80" fill="url(#furPattern)"/>
+        <!-- Chest (lighter) -->
+        <ellipse cx="200" cy="220" rx="60" ry="50" fill="rgba(212,165,116,0.3)"/>
+        <!-- Belly -->
+        <ellipse cx="260" cy="280" rx="80" ry="30" fill="rgba(232,200,160,0.2)"/>
+      </g>
+
+      <!-- Front legs -->
+      <g filter="url(#softShadow)">
+        <!-- Left front leg -->
+        <path d="M320,260 Q315,290 310,320 Q305,345 315,355 L330,355 Q340,345 338,320 Q335,290 340,265 Z" fill="url(#bodyGrad)"/>
+        <path d="M315,350 Q310,357 320,360 L335,360 Q345,357 340,350 Z" fill="#5a3a1a"/>
+        <!-- Right front leg -->
+        <path d="M370,255 Q365,285 360,315 Q355,340 365,350 L380,350 Q390,340 388,315 Q385,285 390,260 Z" fill="url(#bodyGrad)"/>
+        <path d="M365,345 Q360,352 370,355 L385,355 Q395,352 390,345 Z" fill="#5a3a1a"/>
+      </g>
+
+      <!-- Neck -->
+      <g filter="url(#softShadow)">
+        <path d="M340,180 Q360,160 380,140 Q390,130 395,140 L390,180 Q375,170 355,185 Z" fill="url(#bodyGrad)"/>
+      </g>
+
+      <!-- Head -->
+      <g filter="url(#softShadow)">
+        <!-- Main head shape -->
+        <ellipse cx="400" cy="130" rx="55" ry="50" fill="url(#headGrad)"/>
+        <ellipse cx="400" cy="130" rx="55" ry="50" fill="url(#furPattern)"/>
+        <!-- Forehead lighter -->
+        <ellipse cx="390" cy="110" rx="30" ry="25" fill="rgba(232,200,160,0.25)"/>
+      </g>
+
+      <!-- Ears -->
+      <g filter="url(#softShadow)">
+        <!-- Left ear (floppy) -->
+        <path d="M355,100 Q340,80 335,110 Q330,140 345,155 Q355,160 360,145 Q365,120 355,100 Z" fill="url(#earGrad)"/>
+        <path d="M355,105 Q345,90 340,115 Q335,135 348,150" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+        <!-- Right ear (floppy) -->
+        <path d="M445,100 Q460,80 465,110 Q470,140 455,155 Q445,160 440,145 Q435,120 445,100 Z" fill="url(#earGrad)"/>
+        <path d="M445,105 Q455,90 460,115 Q465,135 452,150" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      </g>
+
+      <!-- Muzzle -->
+      <g filter="url(#softShadow)">
+        <ellipse cx="400" cy="155" rx="35" ry="25" fill="url(#muzzleGrad)"/>
+        <!-- Nose -->
+        <ellipse cx="400" cy="148" rx="12" ry="8" fill="#1a1008"/>
+        <ellipse cx="397" cy="146" rx="3" ry="2" fill="rgba(255,255,255,0.3)"/>
+        <!-- Mouth -->
+        <path d="M390,165 Q400,172 410,165" fill="none" stroke="#5a3a1a" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M400,165 L400,170" fill="none" stroke="#5a3a1a" stroke-width="1"/>
+        <!-- Tongue (slightly out) -->
+        <path d="M395,170 Q400,178 405,170" fill="#e88090" stroke="#d06070" stroke-width="0.5"/>
+      </g>
+
+      <!-- Eyes -->
+      <g>
+        <!-- Left eye -->
+        <ellipse cx="380" cy="120" rx="10" ry="12" fill="url(#eyeGrad)"/>
+        <ellipse cx="380" cy="120" rx="10" ry="12" fill="none" stroke="#5a3a1a" stroke-width="1"/>
+        <circle cx="378" cy="117" r="3.5" fill="#fff" opacity="0.9"/>
+        <circle cx="382" cy="122" r="1.5" fill="rgba(255,255,255,0.4)"/>
+        <!-- Right eye -->
+        <ellipse cx="420" cy="120" rx="10" ry="12" fill="url(#eyeGrad)"/>
+        <ellipse cx="420" cy="120" rx="10" ry="12" fill="none" stroke="#5a3a1a" stroke-width="1"/>
+        <circle cx="418" cy="117" r="3.5" fill="#fff" opacity="0.9"/>
+        <circle cx="422" cy="122" r="1.5" fill="rgba(255,255,255,0.4)"/>
+      </g>
+
+      <!-- Eyebrows -->
+      <path d="M370,108 Q380,103 390,108" fill="none" stroke="#5a3a1a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M410,108 Q420,103 430,108" fill="none" stroke="#5a3a1a" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Collar -->
+      <path d="M350,170 Q400,185 450,170" fill="none" stroke="#c62828" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="400" cy="180" r="6" fill="#ffd600" stroke="#ffab00" stroke-width="1"/>
+      <circle cx="400" cy="180" r="3" fill="#ff6f00"/>
+
+      <!-- Tail (wagging) -->
+      <g style="transform-origin:200px 220px; animation: tailWag 1s ease-in-out infinite;">
+        <path d="M150,220 Q120,180 100,160 Q85,145 90,130 Q95,120 105,125 Q115,135 110,150 Q105,170 120,195 Q140,215 160,225 Z" fill="url(#bodyGrad)" stroke="#5a3a1a" stroke-width="1"/>
+        <path d="M100,155 Q95,140 100,130" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      </g>
+
+      <!-- Whiskers -->
+      <g stroke="#5a3a1a" stroke-width="0.8" opacity="0.5">
+        <line x1="365" y1="150" x2="340" y2="145"/>
+        <line x1="365" y1="155" x2="340" y2="155"/>
+        <line x1="365" y1="160" x2="340" y2="165"/>
+        <line x1="435" y1="150" x2="460" y2="145"/>
+        <line x1="435" y1="155" x2="460" y2="155"/>
+        <line x1="435" y1="160" x2="460" y2="165"/>
+      </g>
+
+      <!-- Fur details on body -->
+      <g stroke="rgba(0,0,0,0.1)" stroke-width="0.5" fill="none">
+        <path d="M200,200 Q210,195 220,200"/>
+        <path d="M220,210 Q230,205 240,210"/>
+        <path d="M240,220 Q250,215 260,220"/>
+        <path d="M280,200 Q290,195 300,200"/>
+        <path d="M300,210 Q310,205 320,210"/>
+      </g>
+    </svg>
+  </div>
+  <div class="title"><span>Cachorro Realista</span></div>
+  <div class="subtitle">SVG Generativo • Golden Retriever</div>
+  <div class="info">
+    <div class="info-card"><div class="val">Golden</div><div class="lbl">Raça</div></div>
+    <div class="info-card"><div class="val">Médio</div><div class="lbl">Porte</div></div>
+    <div class="info-card"><div class="val">Dourado</div><div class="lbl">Cor</div></div>
+    <div class="info-card"><div class="val">SVG</div><div class="lbl">Formato</div></div>
+  </div>
+</div>
+<script>
+  const particles = document.querySelector('.particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    particles.appendChild(p);
+  }
+</script>
+<style>
+  @keyframes tailWag {
+    0%,100% { transform:rotate(0deg); }
+    25% { transform:rotate(15deg); }
+    75% { transform:rotate(-15deg); }
+  }
+</style>
+</body>
+</html>

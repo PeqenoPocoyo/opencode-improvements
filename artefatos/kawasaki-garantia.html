@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kawasaki Connect — Garantia & Revisões</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(ellipse at 50% 0%, #0a2e1a 0%, #051a0e 40%, #020a05 100%);
+    font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    overflow:hidden;
+  }
+  .phone {
+    width:340px;
+    height:700px;
+    background:#0a0a0a;
+    border-radius:48px;
+    padding:12px;
+    box-shadow: 0 0 0 2px #2a2a2a, 0 40px 100px rgba(0,0,0,0.7), inset 0 0 30px rgba(0,0,0,0.4);
+    position:relative;
+  }
+  .phone::before {
+    content:'';
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:120px;
+    height:32px;
+    background:#000;
+    border-radius:24px;
+    z-index:10;
+  }
+  .screen {
+    width:100%;
+    height:100%;
+    background:#000;
+    border-radius:38px;
+    overflow:hidden;
+    position:relative;
+  }
+  .status {
+    position:absolute;
+    top:0; left:0; right:0;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    z-index:5;
+    pointer-events:none;
+  }
+  .app {
+    position:absolute;
+    inset:0;
+    background: linear-gradient(180deg, #051a0e 0%, #020a05 100%);
+    padding-top:48px;
+    display:flex;
+    flex-direction:column;
+  }
+  /* Kawasaki header */
+  .k-header {
+    padding:14px 20px 10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid rgba(0,200,83,0.15);
+  }
+  .k-header .logo {
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .k-header .logo-icon {
+    width:32px;
+    height:32px;
+    border-radius:8px;
+    background:linear-gradient(135deg,#00c853,#00e676);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    font-weight:900;
+    color:#000;
+    box-shadow:0 4px 12px rgba(0,200,83,0.4);
+  }
+  .k-header .logo-text {
+    font-size:18px;
+    font-weight:800;
+    color:#fff;
+    letter-spacing:-0.5px;
+  }
+  .k-header .logo-sub {
+    font-size:9px;
+    color:#00c853;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .k-header .notif-bell {
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(0,200,83,0.1);
+    border:1px solid rgba(0,200,83,0.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    position:relative;
+    cursor:pointer;
+  }
+  .k-header .notif-bell .badge {
+    position:absolute;
+    top:-2px;
+    right:-2px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:#ff1744;
+    color:#fff;
+    font-size:9px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    animation: pulseBadge 2s infinite;
+  }
+  /* Hero warranty card */
+  .warranty-hero {
+    margin:12px 16px;
+    background:linear-gradient(135deg,rgba(0,200,83,0.15),rgba(0,230,118,0.05));
+    border:1px solid rgba(0,200,83,0.3);
+    border-radius:20px;
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .warranty-hero::before {
+    content:'';
+    position:absolute;
+    top:-30px;
+    right:-30px;
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(0,230,118,0.2),transparent);
+    filter:blur(20px);
+  }
+  .warranty-hero .top {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .warranty-hero .title {
+    font-size:15px;
+    font-weight:800;
+    color:#fff;
+  }
+  .warranty-hero .status-badge {
+    padding:4px 10px;
+    border-radius:8px;
+    background:rgba(0,230,118,0.2);
+    color:#00e676;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:0.5px;
+  }
+  .warranty-hero .bike-info {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .warranty-hero .bike-icon {
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#00c853,#00e676);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    box-shadow:0 4px 16px rgba(0,200,83,0.3);
+  }
+  .warranty-hero .bike-details .name {
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+  }
+  .warranty-hero .bike-details .model {
+    font-size:11px;
+    color:#81c784;
+    margin-top:2px;
+  }
+  .warranty-hero .progress-bar {
+    height:8px;
+    background:rgba(0,0,0,0.3);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:8px;
+  }
+  .warranty-hero .progress-fill {
+    height:100%;
+    background:linear-gradient(90deg,#00c853,#00e676);
+    border-radius:4px;
+    width:72%;
+    animation: progressGrow 1.5s ease-out;
+    box-shadow:0 0 8px rgba(0,230,118,0.5);
+  }
+  .warranty-hero .progress-label {
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    color:#81c784;
+  }
+  .warranty-hero .benefits {
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+  }
+  .warranty-hero .benefit {
+    flex:1;
+    text-align:center;
+    padding:8px 4px;
+    border-radius:10px;
+    background:rgba(0,0,0,0.2);
+  }
+  .warranty-hero .benefit .icon { font-size:16px; margin-bottom:2px; }
+  .warranty-hero .benefit .label { font-size:9px; color:#a5d6a7; font-weight:600; }
+  /* Menu grid */
+  .menu-section {
+    padding:0 16px 12px;
+  }
+  .menu-section .section-title {
+    font-size:12px;
+    font-weight:700;
+    color:#81c784;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .menu-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+  .menu-card {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(0,200,83,0.12);
+    border-radius:16px;
+    padding:14px;
+    cursor:pointer;
+    transition:transform 0.2s, background 0.2s, border-color 0.2s;
+    position:relative;
+    overflow:hidden;
+  }
+  .menu-card:hover {
+    transform:translateY(-2px);
+    background:rgba(0,200,83,0.08);
+    border-color:rgba(0,200,83,0.3);
+  }
+  .menu-card .card-icon {
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    margin-bottom:8px;
+  }
+  .menu-card .card-title {
+    font-size:13px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:2px;
+  }
+  .menu-card .card-desc {
+    font-size:10px;
+    color:#81c784;
+    line-height:1.3;
+  }
+  .menu-card .card-badge {
+    position:absolute;
+    top:8px;
+    right:8px;
+    padding:2px 6px;
+    border-radius:6px;
+    font-size:8px;
+    font-weight:800;
+    letter-spacing:0.5px;
+  }
+  .menu-card.featured {
+    grid-column:1/-1;
+    background:linear-gradient(135deg,rgba(0,200,83,0.12),rgba(0,230,118,0.04));
+    border:1px solid rgba(0,230,118,0.3);
+  }
+  .menu-card.featured .card-icon {
+    width:44px;
+    height:44px;
+    font-size:22px;
+  }
+  /* Promo banner */
+  .promo-banner {
+    margin:0 16px 12px;
+    background:linear-gradient(135deg,#ff6f00,#ff9100);
+    border-radius:16px;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+    transition:transform 0.2s;
+  }
+  .promo-banner:hover { transform:scale(1.02); }
+  .promo-banner::before {
+    content:'';
+    position:absolute;
+    top:-20px;
+    right:-20px;
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.15);
+    filter:blur(20px);
+  }
+  .promo-banner .promo-icon { font-size:28px; }
+  .promo-banner .promo-text .title { font-size:13px; font-weight:800; color:#000; }
+  .promo-banner .promo-text .desc { font-size:10px; color:rgba(0,0,0,0.7); margin-top:2px; }
+  .promo-banner .promo-arrow { margin-left:auto; font-size:18px; color:#000; font-weight:800; }
+  /* Bottom nav */
+  .bottom-nav {
+    height:76px;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(20px);
+    border-top:1px solid rgba(0,200,83,0.1);
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:0 8px 10px;
+  }
+  .nav-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:#546e7a;
+    font-size:10px;
+    cursor:pointer;
+    transition:color 0.2s;
+    padding:6px 10px;
+    border-radius:10px;
+  }
+  .nav-item.active { color:#00e676; }
+  .nav-item .nav-icon { font-size:20px; }
+  .nav-item.active .nav-icon { filter:drop-shadow(0 0 6px rgba(0,230,118,0.5)); }
+  /* Notification toast */
+  .toast {
+    position:absolute;
+    top:52px;
+    left:16px;
+    right:16px;
+    background:rgba(0,200,83,0.15);
+    border:1px solid rgba(0,200,83,0.3);
+    border-radius:14px;
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    z-index:15;
+    transform:translateY(-120px);
+    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    font-size:12px;
+    color:#a5d6a7;
+  }
+  .toast.show { transform:translateY(0); }
+  /* Animations */
+  @keyframes progressGrow { from { width:0; } to { width:72%; } }
+  @keyframes pulseBadge { 0%,100% { transform:scale(1); } 50% { transform:scale(1.3); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .warranty-hero { animation: slideUp 0.6s ease-out; }
+  .menu-card { animation: slideUp 0.5s ease-out; }
+  .menu-card:nth-child(2) { animation-delay:0.1s; }
+  .menu-card:nth-child(3) { animation-delay:0.15s; }
+  .menu-card:nth-child(4) { animation-delay:0.2s; }
+  .menu-card:nth-child(5) { animation-delay:0.25s; }
+  .menu-card:nth-child(6) { animation-delay:0.3s; }
+  .promo-banner { animation: slideUp 0.6s ease-out 0.35s both; }
+  /* Scrollbar */
+  .app::-webkit-scrollbar { width:0; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="status">
+      <span class="time" id="clock">9:41</span>
+      <span class="icons">📶 📡 🔋</span>
+    </div>
+    <div class="app">
+      <div class="k-header">
+        <div class="logo">
+          <div class="logo-icon">K</div>
+          <div>
+            <div class="logo-text">Kawasaki</div>
+            <div class="logo-sub">Connect</div>
+          </div>
+        </div>
+        <div class="notif-bell" onclick="showToast('🔔 1 revisão pendente!')">🔔<div class="badge">1</div></div>
+      </div>
+
+      <!-- Warranty Hero -->
+      <div class="warranty-hero">
+        <div class="top">
+          <div class="title">🛡️ Garantia Ativa</div>
+          <div class="status-badge">PREMIUM</div>
+        </div>
+        <div class="bike-info">
+          <div class="bike-icon">🏍️</div>
+          <div class="bike-details">
+            <div class="name">Ninja 400</div>
+            <div class="model">2024 • Placa ABC-1D23 • 4.200 km</div>
+          </div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <div class="progress-label">
+          <span>72% da garantia utilizada</span>
+          <span>Expira em 8 meses</span>
+        </div>
+        <div class="benefits">
+          <div class="benefit"><div class="icon">🔧</div><div class="label">Revisão Grátis</div></div>
+          <div class="benefit"><div class="icon">📋</div><div class="label">Histórico</div></div>
+          <div class="benefit"><div class="icon">🏆</div><div class="label">Pontos</div></div>
+          <div class="benefit"><div class="icon">🎁</div><div class="label">Brindes</div></div>
+        </div>
+      </div>
+
+      <!-- Promo Banner -->
+      <div class="promo-banner" onclick="showToast('🎉 Agendamento confirmado! +50 pontos')">
+        <div class="promo-icon">📅</div>
+        <div class="promo-text">
+          <div class="title">Agende sua revisão agora</div>
+          <div class="desc">Ganhe 50 pontos + check-up gratuito na Kawasaki Center</div>
+        </div>
+        <div class="promo-arrow">→</div>
+      </div>
+
+      <!-- Menu Grid -->
+      <div class="menu-section">
+        <div class="section-title">🔧 Garantia & Revisões</div>
+        <div class="menu-grid">
+          <div class="menu-card featured" onclick="showToast('📋 Histórico de revisões aberto')">
+            <div class="card-icon" style="background:linear-gradient(135deg,#00c853,#00e676);">📋</div>
+            <div class="card-title">Histórico de Revisões</div>
+            <div class="card-desc">Acompanhe todas as revisões feitas na rede autorizada. Mantenha sua garantia ativa.</div>
+            <div class="card-badge" style="background:rgba(0,230,118,0.2);color:#00e676;">3 feitas</div>
+          </div>
+          <div class="menu-card" onclick="showToast('📅 Agendamento aberto')">
+            <div class="card-icon" style="background:linear-gradient(135deg,#2979ff,#448aff);">📅</div>
+            <div class="card-title">Agendar Revisão</div>
+            <div class="card-desc">Escolha concessionária, data e horário</div>
+            <div class="card-badge" style="background:rgba(41,121,255,0.2);color:#448aff;">+50 pts</div>
+          </div>
+          <div class="menu-card" onclick="showToast('🗺️ Concessionárias próximas')">
+            <div class="card-icon" style="background:linear-gradient(135deg,#ff9100,#ffab40);">🗺️</div>
+            <div class="card-title">Concessionárias</div>
+            <div class="card-desc">Encontre a Kawasaki Center mais próxima</div>
+          </div>
+          <div class="menu-card" onclick="showToast('🎁 Benefícios da garantia')">
+            <div class="card-icon" style="background:linear-gradient(135deg,#e040fb,#ea80fc);">🎁</div>
+            <div class="card-title">Benefícios</div>
+            <div class="card-desc">Veja tudo que sua garantia cobre</div>
+          </div>
+          <div class="menu-card" onclick="showToast('📊 Status da garantia')">
+            <div class="card-icon" style="background:linear-gradient(135deg,#00bcd4,#26c6da);">📊</div>
+            <div class="card-title">Status Garantia</div>
+            <div class="card-desc">Tempo restante, cobertura e condições</div>
+          </div>
+          <div class="menu-card" onclick="showToast('🏆 Programa de pontos')">
+            <div class="card-icon" style="background:linear-gradient(135deg,#ffd600,#ffea00);">🏆</div>
+            <div class="card-title">Meus Pontos</div>
+            <div class="card-desc">1.250 pts • Troque por brindes</div>
+            <div class="card-badge" style="background:rgba(255,214,0,0.2);color:#ffd600;">1.250</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></div>
+        <div class="nav-item active"><span class="nav-icon">🛡️</span><span>Garantia</span></div>
+        <div class="nav-item"><span class="nav-icon">📅</span><span>Agendar</span></div>
+        <div class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></div>
+      </div>
+    </div>
+    <div class="toast" id="toast">
+      <span>✅</span>
+      <span id="toastText">Ação realizada</span>
+    </div>
+  </div>
+</div>
+<script>
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes().toString().padStart(2,'0');
+    document.querySelector('.time').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  let toastTimeout;
+  function showToast(text) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastText').textContent = text;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

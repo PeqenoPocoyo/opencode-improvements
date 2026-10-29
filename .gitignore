@@ -1,0 +1,40 @@
+# Secrets / credentials
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets/
+credentials/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node / build
+node_modules/
+dist/
+build/
+.next/
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Temp
+*.tmp
+tmp/
+temp/
+
+# OpenCode local state
+.opencode/
+*.local
