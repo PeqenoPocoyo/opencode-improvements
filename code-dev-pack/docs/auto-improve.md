@@ -117,6 +117,39 @@ test_scenario: "descrição do teste"
 test_result: "PASS"
 ```
 
+## Auto-Observacao Negativa (CRITICO)
+
+### O que e?
+O agente observa suas proprias limitacoes, erros e incertezas e as registra
+como feedback negativo para auto-melhoria, **sem depender do usuario**.
+
+### Como funciona?
+1. O agente gera uma resposta
+2. O hook self-observation.py analisa a resposta
+3. Se padroes negativos sao detectados, registra em validation.json
+4. Se 2+ observacoes negativas -> recurso e revertido para raw
+5. O agente analisa o gap -> implementa melhoria
+6. Autoteste valida -> marca como melhorado
+7. Commit + Push -> Sync para outros dispositivos
+
+### Padroes detectados:
+- **Erro admissao**: "nao funciona", "falhou", "bug", "erro", "quebrou"
+- **Incerteza**: "nao tenho certeza", "talvez", "possivelmente", "acho que"
+- **Retrabalho**: "vou corrigir", "ajustar", "refazer", "tentar novamente"
+- **Limitacao**: "nao consigo", "nao e possivel", "limitacao", "nao suporta"
+
+### Diferenca: Feedback do Usuario vs Auto-Observacao
+| Aspecto | Feedback do Usuario | Auto-Observacao |
+|---|---|---|
+| Origem | Usuario diz "isso nao funciona" | Agente admite "nao funciona" |
+| Dependencia | Depende do usuario | Autonomo |
+| Velocidade | Lenta | Rapida (imediata) |
+| Cobertura | Apenas o que o usuario ve | Tudo que o agente admite |
+
+### Regra de ouro:
+> Se o agente admite uma limitacao, ela DEVE ser registrada como feedback negativo.
+> O ciclo de auto-melhoria nao depende do usuario — e autonomo.
+
 ## Regras de Ouro
 
 1. **Se o usuário deu feedback, a melhoria DEVE ser implementada no pacote.**

@@ -147,6 +147,32 @@ Dispositivo A (manhã)     Dispositivo B (tarde)     Dispositivo C (noite)
 6. **3+ usos sem feedback negativo** → promove para `main` (estado `validated`)
 7. **7+ usos sem feedback negativo** → promove para `proactive` (auto-aplicado)
 
+## Auto-Observacao Negativa (CRITICO)
+
+### O que e?
+O agente observa suas proprias limitacoes, erros e incertezas e as registra
+como feedback negativo para auto-melhoria, sem depender do usuario.
+
+### Como funciona?
+1. O agente gera uma resposta
+2. O hook self-observation.py analisa a resposta
+3. Se padroes negativos sao detectados, registra em validation.json
+4. Se 2+ observacoes negativas -> recurso e revertido para raw
+5. O agente analisa o gap -> implementa melhoria
+6. Autoteste valida -> marca como melhorado
+7. Commit + Push -> Sync para outros dispositivos
+
+### Padroes detectados:
+- Erro admissao, Incerteza, Retrabalho, Limitacao
+
+### Diferenca: Feedback do Usuario vs Auto-Observacao
+| Aspecto | Feedback do Usuario | Auto-Observacao |
+|---|---|---|
+| Origem | Usuario diz "isso nao funciona" | Agente admite "nao funciona" |
+| Dependencia | Depende do usuario | Autonomo |
+| Velocidade | Lenta | Rapida (imediata) |
+| Cobertura | Apenas o que o usuario ve | Tudo que o agente admite |
+
 ## Changelog
 
 ### 2026-10-28 — v1.1

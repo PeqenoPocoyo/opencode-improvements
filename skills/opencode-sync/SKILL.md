@@ -202,6 +202,24 @@ Os balões de artifacts ao final da resposta devem ser **criativos e contextuais
 - Gerar botão inline APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, código)
 - Não gerar botão para binários (.zip, .exe, .png, .pdf, .mp3) — apenas listar o path
 
+## Auto-Observacao Negativa (CRITICO)
+
+O agente observa suas proprias limitacoes e as registra como feedback negativo:
+
+1. Hook `self-observation.py` detecta padroes negativos automaticamente
+2. Registra em `validation.json` (feedback_negative++)
+3. Se 2+ observacoes negativas -> reverter para raw
+4. Agente analisa o gap -> implementa melhoria
+5. Autoteste valida -> marca como melhorado
+6. Commit + Push -> Sync para outros dispositivos
+
+### Padroes detectados:
+- Erro admissao, Incerteza, Retrabalho, Limitacao
+
+### Regra de ouro:
+> Se o agente admite uma limitacao, ela DEVE ser registrada como feedback negativo.
+> O ciclo de auto-melhoria nao depende do usuario — e autonomo.
+
 ## Regras importantes
 
 - **Nunca sobrescrever mudanças locais sem avisar** — sempre stash/pull/pop
