@@ -178,6 +178,14 @@ O agente DEVE gerar artefatos sem ser solicitado quando:
 - Todo link navega
 - Canvas renderiza e responde
 
+### 9.6 CSP-friendly (artefatos single-file)
+- Preferir `addEventListener` a inline `onclick`
+- Sem `eval`/`new Function`
+- Sem `fetch()` para endpoints internos (bake snapshot JSON em `const DATA`)
+- Nunca deixar API keys/tokens no arquivo
+- CDN versionado com fallback
+- Testar em 375px de largura
+
 ### 9.5 Referência
 - Instrução detalhada: `instructions/artifact-generation.md`
 - Instrução de inline vs Review pane: `instructions/inline-artifacts.md`

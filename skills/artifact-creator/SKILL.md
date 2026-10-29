@@ -104,6 +104,7 @@ Cada artefato deve ter:
 - [ ] Há pelo menos uma animação com propósito?
 - [ ] O artefato é auto-contido (funciona offline)?
 - [ ] O título é descritivo?
+- [ ] CSP-friendly: usar addEventListener em vez de inline onclick; sem eval; sem fetch interno; sem keys/tokens no arquivo.
 
 ### Teste de Reinterpretação
 ```
