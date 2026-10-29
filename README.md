@@ -67,6 +67,55 @@ Ao final da resposta, emitir balão de artifacts com:
 - Botão inline: apenas para HTML, SVG, MD, CSV, código
 - Binários (.zip, .exe, .png, .pdf): apenas listar path, sem botão
 
+## Pacote de Recursos — Code Development Pack
+
+### Estrutura
+```
+code-dev-pack/
+├── skills/          # 5 skills de desenvolvimento de código
+├── hooks/           # 4 hooks de autoteste (2 criados, 2 planejados)
+├── instructions/    # 3 instruções de qualidade
+├── scripts/         # 1 script de autoteste
+├── configs/         # 2 configs (teste + qualidade)
+└── docs/            # 2 documentos (guia + auto-melhoria)
+```
+
+### Skills de Desenvolvimento
+- `code-tdd` — Test-Driven Development (Red-Green-Refactor)
+- `code-review` — Code review automático (checklist, severidade, formato)
+- `code-refactor` — Refactoring assistido (code smells, catálogo de refactorings)
+- `code-debug` — Debugging sistemático (método científico, técnicas, tipos de bugs)
+- `code-test-gen` — Geração automática de testes (unit, integration, edge cases)
+
+### Hooks de Autoteste
+- `pre-write-quality.py` — Valida código antes de escrever (secrets, complexidade, testes)
+- `post-write-test.py` — Roda testes após mudança (pytest/jest)
+
+### Instruções
+- `code-quality.md` — Padrões de qualidade (nomenclatura, estrutura, erros, testes, performance, segurança, git)
+- `testing-standards.md` — Padrões de teste (tipos, estrutura, cobertura, mocking, fixtures, edge cases)
+- `review-standards.md` — Padrões de code review (checklist, severidade, formato, regras)
+
+### Autoteste
+```bash
+python scripts/autotest.py --all          # Testar todos os recursos
+python scripts/autotest.py --skill <name> # Testar uma skill
+python scripts/autotest.py --hook <name>  # Testar um hook
+python scripts/autotest.py --resource <path>  # Testar um recurso
+```
+
+### Auto-Melhoria
+- Feedback-driven: melhorias baseadas em feedback real do usuário
+- Multi-device: sincronização entre 3 dispositivos via git
+- Validação progressiva: raw → marked → validated → proactive
+- Autoteste: cada recurso tem teste de reinterpretação
+
+### Regras
+- Nunca reusar padrões anteriores — cada recurso com identidade própria
+- Não ter pressa — melhorar incrementalmente, testar cada mudança
+- Autoteste sempre — toda melhoria deve ter um teste que valida
+- Multi-device first — pensar em como o recurso funciona em 3 dispositivos
+
 ## Regras
 
 - Nunca commitar segredos (API keys, tokens, .env). Use `.gitignore`.

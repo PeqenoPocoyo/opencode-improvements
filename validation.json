@@ -115,7 +115,7 @@
       "usage_count": 2,
       "promotion_threshold": 3,
       "notes": "README do repositorio. v2.0: pacote de recursos, validacao progressiva, baloes criativos, regra de exibibilidade. Usado em 2 sessoes."
-    }
+    },
     "hooks/validate_bash_command.py": {
       "state": "validated",
       "marked_date": "2026-10-28",
