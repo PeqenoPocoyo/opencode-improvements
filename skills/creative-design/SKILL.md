@@ -100,7 +100,31 @@ E pelo menos um deve ter animação reativa
 SE dois forem visualmente similares → FAIL
 ```
 
+## Balões de Artifacts (Criatividade Obrigatória)
+
+Os balões de artifacts ao final da resposta devem ser **criativos e contextuais**:
+
+### Regras de criatividade para balões:
+1. **Paleta contextual**: cores variam por tipo (HTML=indigo, SVG=emerald, MD=amber, CSV=sky, código=violet)
+2. **Layout dinâmico**: grid 2 colunas para 2+ artifacts, card único para 1
+3. **Animações CSS**: float, blink, shimmer, slide-up, hover (translateY + shadow colorida)
+4. **Glassmorphism**: gradiente + border semi-transparente + backdrop-filter
+5. **Glow effects**: radial-gradient blur atrás dos ícones
+6. **Badges contextuais**: tags por tipo com cores temáticas
+7. **Descrições ricas**: nome + descrição curta + tipo + origem
+8. **Hover interativo**: card levanta + shadow colorida
+
+### Regra de exibibilidade para botões inline:
+- Gerar botão inline APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, código)
+- Não gerar botão para binários (.zip, .exe, .png, .pdf, .mp3) — apenas listar o path
+
+### Anti-Padrão para balões:
+- Balão genérico sem contexto (mesmo estilo sempre)
+- Card simples de 5 linhas sem glassmorphism/glow
+
 ## Metadata
 - **Categoria**: Design/UI
 - **Prioridade**: Alta
 - **Aplicável a**: HTML, CSS, qualquer frontend
+- **Versão**: 2.0
+- **Melhorado**: 2026-10-28 (balões criativos, regra de exibibilidade)

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/test-config.json",
+  "description": "Configuração de teste para o pacote code-dev-pack",
+  "framework": "pytest",
+  "test_directory": "tests/",
+  "source_directory": "src/",
+  "coverage": {
+    "minimum": 80,
+    "branch_minimum": 70,
+    "critical_paths": ["auth", "payment", "security"],
+    "critical_minimum": 100
+  },
+  "test_patterns": {
+    "unit": "test_*.py",
+    "integration": "test_integration_*.py",
+    "e2e": "test_e2e_*.py"
+  },
+  "timeouts": {
+    "unit": 30,
+    "integration": 120,
+    "e2e": 300
+  },
+  "reporters": ["term", "html", "json"],
+  "parallel": true,
+  "max_workers": 4,
+  "fail_fast": false,
+  "reruns": 0,
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-10-28",
+    "pack": "code-dev-pack"
+  }
+}

@@ -124,7 +124,40 @@ function updateOutput(v) { document.getElementById('output').textContent = v; }
 > "Por que entregar um botão que não funciona?"  
 > Se não tem handler, não existe. Remova ou implemente.
 
+## Regra de Exibibilidade para Botões Inline (balões de artifacts)
+
+Quando gerar balões de artifacts ao final da resposta:
+
+### Botões inline (links `file://`)
+- **Gerar botão inline** APENAS para arquivos que o panel pode exibir:
+  - HTML, HTM, SVG, MD, Markdown, CSV, TSV
+  - Código (JS, TS, PY, GO, RS, JAVA, C, CPP, CS, PHP, SH, SQL, JSON, YAML, XML, TOML, INI, LOG, DIFF, TXT)
+- **NÃO gerar botão** para arquivos binários:
+  - Imagens (.png, .jpg, .gif, .webp, .svg binário)
+  - Documentos (.pdf)
+  - Áudio (.mp3, .wav, .ogg, .m4a, .flac)
+  - Arquivos compactados (.zip, .rar, .7z, .tar, .gz)
+  - Executáveis (.exe, .dll, .bat, .cmd, .sh executável)
+  - Qualquer arquivo que o panel não consiga renderizar
+- Para arquivos não exibíveis: apenas listar o path no balão, sem botão
+
+### Por quê?
+O OpenCode intercepta TODOS os links `file://` e abre no Review pane.
+Se o panel não pode exibir o arquivo, o link abrirá uma tentativa de render que falha.
+Portanto, botões inline só fazem sentido para arquivos que o panel pode renderizar.
+
+### Teste de Reinterpretação
+```
+DADO um balão de artifacts com N arquivos
+QUANDO o usuário clica em um botão inline
+ENTÃO se o arquivo é exibível pelo panel → abre no Review pane
+E se o arquivo NÃO é exibível → não há botão (apenas path listado)
+SE um botão abrir um arquivo não exibível no panel → FAIL
+```
+
 ## Metadata
 - **Categoria**: UI/UX
 - **Prioridade**: Crítica
 - **Aplicável a**: HTML, React, Vue, Svelte, qualquer framework
+- **Versão**: 2.0
+- **Melhorado**: 2026-10-28 (regra de exibibilidade para botões inline em balões de artifacts)

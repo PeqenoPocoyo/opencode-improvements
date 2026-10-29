@@ -184,6 +184,34 @@ O agente DEVE gerar artefatos sem ser solicitado quando:
 - Skill: `skills/artifact-creator/SKILL.md`
 - Skills relacionadas: `functional-ui`, `creative-design`, `inline-artifacts`, `artifact-balloon`
 
+## 11. Baloes de Artifacts Criativos
+
+### 11.1 Principio
+Baloes de artifacts ao final da resposta devem ser **criativos e contextuais**, nao genericos.
+Cada balao deve ter identidade visual propria, com cores, icones e animacoes que refletem
+o tipo de artefato e o contexto da conversa.
+
+### 11.2 Regras de Criatividade
+1. Paleta contextual: cores variam por tipo (HTML=indigo, SVG=emerald, MD=amber, CSV=sky, codigo=violet)
+2. Layout dinamico: grid 2 colunas para 2+ artifacts, lista vertical para 1
+3. Animacoes CSS: float, blink, shimmer, slide-up, hover (translateY + shadow colorida)
+4. Glassmorphism: gradiente + border semi-transparente + backdrop-filter
+5. Glow effects: radial-gradient blur atras dos icones
+6. Badges contextuais: tags por tipo com cores tematicas
+7. Descricoes ricas: nome + descricao curta + tipo + origem
+8. Hover interativo: card levanta + shadow colorida
+
+### 11.3 Regra de Exibibilidade para Botoes Inline
+- Gerar botao inline APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, codigo)
+- Nao gerar botao para binarios (.zip, .exe, .png, .pdf, .mp3) — apenas listar o path
+- Para exibiveis: link `file://` que abre no Review pane automaticamente
+
+### 11.4 Anti-Padroes
+- Balao generico sem contexto (mesmo estilo sempre)
+- Card simples de 5 linhas para Review pane
+- 3 paragrafos de texto quando diagrama inline resolve
+- HTML completo com `<script>` inline na conversa
+
 ## 10. Hooks e Observabilidade
 
 ### 10.1 Hooks Disponíveis

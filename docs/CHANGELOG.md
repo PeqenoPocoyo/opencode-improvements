@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0] — 2026-10-28
+
+### Melhorado (auto-upgrade v2 — feedback-driven)
+- `instructions/inline-artifacts.md` — secao de baloes criativos e contextuais (10 regras de criatividade), regra de exibibilidade para botoes inline (so para arquivos exibiveis pelo panel)
+- `instructions/AGENTS.md` — secao 11 (baloes criativos, regra de exibibilidade, anti-padroes de balao generico)
+- `validation.json` — incrementado usage_count (sessao 2), promovidos 3 recursos para `proactive`: inline-artifacts.md, pre-tool-use-security.sh, AGENTS.md
+- Artefato Kawasaki v3 criado (redesign completo: hero dramático, partículas, gamificação, timeline visual, urgência)
+- Artefato Versys-X criado (SVG estilizado da moto, specs, animações)
+
+### Promovido para Proactive
+- `instructions/inline-artifacts.md` — 3+ usos, 0 feedback negativo → auto-aplicado
+- `hooks/pre-tool-use-security.sh` — 3+ usos, 0 feedback negativo → auto-aplicado
+- `instructions/AGENTS.md` — 3+ usos, 0 feedback negativo → auto-aplicado
+
 ## [1.2.1] — 2026-10-28
 
 ### Melhorado

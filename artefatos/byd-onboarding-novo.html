@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYD — Onboarding Interativo para Juniores</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    background: #050505;
+    font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    color:#e0e0e0;
+    overflow-x:hidden;
+  }
+  :root {
+    --byd-blue: #0033a0;
+    --byd-red: #e60012;
+    --byd-cyan: #00d4ff;
+    --byd-gold: #ffd600;
+  }
+  /* Hero com diagonal */
+  .hero {
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(135deg, #001a52 0%, #0033a0 40%, #001a52 100%);
+    overflow:hidden;
+    padding:40px 20px;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  }
+  .hero::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: radial-gradient(circle at 30% 40%, rgba(0,212,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(230,0,18,0.1) 0%, transparent 50%);
+  }
+  .hero::after {
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:100px;
+    background:linear-gradient(180deg, transparent, #050505);
+  }
+  .hero-content {
+    position:relative;
+    z-index:2;
+    text-align:center;
+    max-width:600px;
+  }
+  .hero-badge {
+    display:inline-block;
+    padding:6px 16px;
+    border-radius:20px;
+    background:rgba(0,212,255,0.15);
+    border:1px solid rgba(0,212,255,0.3);
+    color:#00d4ff;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:20px;
+    animation: pulseBadge 2s ease-in-out infinite;
+  }
+  @keyframes pulseBadge { 0%,100% { box-shadow:0 0 0 0 rgba(0,212,255,0.3); } 50% { box-shadow:0 0 0 8px rgba(0,212,255,0); } }
+  .hero h1 {
+    font-size:48px;
+    font-weight:900;
+    color:#fff;
+    letter-spacing:-2px;
+    line-height:1;
+    margin-bottom:16px;
+  }
+  .hero h1 .highlight {
+    background:linear-gradient(135deg, #00d4ff, #0033a0);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    display:block;
+  }
+  .hero p {
+    font-size:16px;
+    color:rgba(255,255,255,0.7);
+    line-height:1.6;
+    margin-bottom:30px;
+  }
+  .hero-cta {
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btn-primary {
+    background:linear-gradient(135deg, #0033a0, #0055cc);
+    color:#fff;
+    border:none;
+    padding:14px 32px;
+    border-radius:12px;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,51,160,0.4);
+    transition:transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,51,160,0.5); }
+  .btn-ghost {
+    background:transparent;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.2);
+    padding:14px 32px;
+    border-radius:12px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .btn-ghost:hover { background:rgba(255,255,255,0.05); }
+  /* Floating elements */
+  .float-element {
+    position:absolute;
+    font-size:40px;
+    opacity:0.15;
+    animation: floatSlow 6s ease-in-out infinite;
+    z-index:1;
+  }
+  @keyframes floatSlow { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(5deg); } }
+  /* Stats bar */
+  .stats-bar {
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    padding:30px 20px;
+    background:rgba(0,51,160,0.05);
+    border-top:1px solid rgba(0,51,160,0.1);
+    border-bottom:1px solid rgba(0,51,160,0.1);
+    flex-wrap:wrap;
+  }
+  .stat-item {
+    text-align:center;
+  }
+  .stat-item .num {
+    font-size:32px;
+    font-weight:900;
+    background:linear-gradient(135deg, #00d4ff, #0033a0);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .stat-item .label {
+    font-size:11px;
+    color:#888;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-top:4px;
+  }
+  /* Section */
+  .section {
+    padding:80px 20px;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  .section-header {
+    text-align:center;
+    margin-bottom:50px;
+  }
+  .section-header h2 {
+    font-size:32px;
+    font-weight:800;
+    color:#fff;
+    letter-spacing:-1px;
+    margin-bottom:10px;
+  }
+  .section-header p {
+    font-size:15px;
+    color:#888;
+    max-width:500px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  /* Mission cards */
+  .mission-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:20px;
+  }
+  .mission-card {
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:20px;
+    padding:30px;
+    position:relative;
+    overflow:hidden;
+    transition:transform 0.3s, border-color 0.3s;
+  }
+  .mission-card:hover {
+    transform:translateY(-6px);
+    border-color:rgba(0,51,160,0.4);
+  }
+  .mission-card::after {
+    content:'';
+    position:absolute;
+    top:0; right:0;
+    width:100px; height:100px;
+    background:radial-gradient(circle, rgba(0,51,160,0.15), transparent);
+    border-radius:50%;
+    transform:translate(30%, -30%);
+  }
+  .mission-card .icon {
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    margin-bottom:16px;
+    background:linear-gradient(135deg, rgba(0,51,160,0.2), rgba(0,51,160,0.05));
+    border:1px solid rgba(0,51,160,0.2);
+  }
+  .mission-card h3 {
+    font-size:18px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:8px;
+  }
+  .mission-card p {
+    font-size:14px;
+    color:#999;
+    line-height:1.6;
+  }
+  /* Interactive checklist */
+  .checklist-container {
+    background:rgba(255,255,255,0.02);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:24px;
+    padding:30px;
+    max-width:600px;
+    margin:0 auto;
+  }
+  .checklist-item {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px;
+    border-radius:12px;
+    margin-bottom:8px;
+    background:rgba(255,255,255,0.02);
+    border:1px solid rgba(255,255,255,0.04);
+    cursor:pointer;
+    transition:background 0.2s, border-color 0.2s;
+  }
+  .checklist-item:hover {
+    background:rgba(0,51,160,0.05);
+    border-color:rgba(0,51,160,0.2);
+  }
+  .checklist-item.completed {
+    background:rgba(0,200,83,0.05);
+    border-color:rgba(0,200,83,0.2);
+  }
+  .checklist-item .checkbox {
+    width:24px;
+    height:24px;
+    border-radius:8px;
+    border:2px solid rgba(255,255,255,0.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    transition:all 0.2s;
+    flex-shrink:0;
+  }
+  .checklist-item.completed .checkbox {
+    background:#00c853;
+    border-color:#00c853;
+    color:#000;
+  }
+  .checklist-item .text {
+    flex:1;
+  }
+  .checklist-item .text .title {
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+  }
+  .checklist-item .text .desc {
+    font-size:12px;
+    color:#888;
+    margin-top:2px;
+  }
+  .progress-bar {
+    height:6px;
+    background:rgba(255,255,255,0.05);
+    border-radius:3px;
+    overflow:hidden;
+    margin-top:20px;
+  }
+  .progress-fill {
+    height:100%;
+    background:linear-gradient(90deg, #0033a0, #00d4ff);
+    border-radius:3px;
+    width:0%;
+    transition:width 0.5s ease;
+  }
+  .progress-text {
+    text-align:center;
+    font-size:12px;
+    color:#888;
+    margin-top:8px;
+  }
+  /* Quiz */
+  .quiz-container {
+    background:rgba(255,255,255,0.02);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:24px;
+    padding:30px;
+    max-width:600px;
+    margin:0 auto;
+  }
+  .quiz-question {
+    font-size:18px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:20px;
+    text-align:center;
+  }
+  .quiz-options {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .quiz-option {
+    padding:14px 20px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    color:#e0e0e0;
+    font-size:14px;
+    cursor:pointer;
+    transition:all 0.2s;
+    text-align:left;
+  }
+  .quiz-option:hover {
+    background:rgba(0,51,160,0.1);
+    border-color:rgba(0,51,160,0.3);
+  }
+  .quiz-option.correct {
+    background:rgba(0,200,83,0.15);
+    border-color:#00c853;
+    color:#00e676;
+  }
+  .quiz-option.wrong {
+    background:rgba(230,0,18,0.15);
+    border-color:#e60012;
+    color:#ff6b6b;
+  }
+  .quiz-feedback {
+    margin-top:16px;
+    padding:12px;
+    border-radius:10px;
+    font-size:13px;
+    text-align:center;
+    display:none;
+  }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.correct { background:rgba(0,200,83,0.1); color:#00e676; }
+  .quiz-feedback.wrong { background:rgba(230,0,18,0.1); color:#ff6b6b; }
+  /* Footer */
+  .footer {
+    padding:40px 20px;
+    text-align:center;
+    border-top:1px solid rgba(255,255,255,0.05);
+    margin-top:40px;
+  }
+  .footer .logo {
+    font-size:24px;
+    font-weight:900;
+    color:#0033a0;
+    margin-bottom:8px;
+  }
+  .footer p { font-size:12px; color:#666; }
+  /* Particles */
+  .particles {
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .particle {
+    position:absolute;
+    width:2px; height:2px;
+    background:rgba(0,51,160,0.4);
+    border-radius:50%;
+    animation: particleFloat linear infinite;
+  }
+  @keyframes particleFloat {
+    0% { transform:translateY(100vh); opacity:0; }
+    10% { opacity:1; }
+    90% { opacity:1; }
+    100% { transform:translateY(-10vh) translateX(20px); opacity:0; }
+  }
+  .fade-in {
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  .fade-in.visible { opacity:1; transform:translateY(0); }
+  @media (max-width:600px) {
+    .hero h1 { font-size:32px; }
+    .section { padding:50px 16px; }
+    .mission-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="float-element" style="top:10%; left:5%;">🔋</div>
+  <div class="float-element" style="top:15%; right:8%; animation-delay:1s;">🚗</div>
+  <div class="float-element" style="bottom:20%; left:10%; animation-delay:2s;">⚡</div>
+  <div class="float-element" style="bottom:15%; right:5%; animation-delay:3s;">🌍</div>
+  <div class="hero-content">
+    <div class="hero-badge">Build Your Dreams</div>
+    <h1>Bem-vindo à <span class="highlight">BYD</span></h1>
+    <p>Você acaba de entrar em uma das maiores empresas de tecnologia do mundo. Aqui, cada sonho se torna realidade. Sua jornada começa agora.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="scrollToSection('quem-somos')">Começar →</button>
+      <button class="btn-ghost" onclick="scrollToSection('quiz')">Fazer Quiz</button>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="num">70+</div><div class="label">Países</div></div>
+  <div class="stat-item"><div class="num">600k+</div><div class="label">Funcionários</div></div>
+  <div class="stat-item"><div class="num">1995</div><div class="label">Fundação</div></div>
+  <div class="stat-item"><div class="num">#1</div><div class="label">NEV Global</div></div>
+</div>
+
+<!-- Quem somos -->
+<section class="section" id="quem-somos">
+  <div class="section-header fade-in">
+    <h2>O que é a BYD?</h2>
+    <p>Uma empresa de tecnologia que fabrica veículos elétricos, baterias e soluções de energia. Tudo em um só lugar.</p>
+  </div>
+  <div class="mission-grid">
+    <div class="mission-card fade-in">
+      <div class="icon">🔋</div>
+      <h3>Baterias</h3>
+      <p>Líder mundial em baterias de lítio-ferro-fosfato. A Blade Battery é a mais segura do mercado. Usada em carros, ônibus e armazenamento de energia.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">🚗</div>
+      <h3>Veículos Elétricos</h3>
+      <p>Carros, ônibus e caminhões 100% elétricos. De sedans a SUVs. A BYD vendeu mais NEVs que qualquer outra empresa em 2023.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">⚡</div>
+      <h3>Energia</h3>
+      <p>Painéis solares, sistemas de armazenamento e soluções completas de energia renovável para residências e indústrias.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">🏭</div>
+      <h3>Manufatura</h3>
+      <p>Fábrica no Brasil (Camaçari-BA) produzindo veículos elétricos. Tecnologia de ponta com produção local.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">📱</div>
+      <h3>Tecnologia</h3>
+      <p>Software, semicondutores, eletrônicos. A BYD é uma empresa de tecnologia que também fabrica veículos.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">🌍</div>
+      <h3>Global</h3>
+      <p>Presente em mais de 70 países. Mais de 600.000 funcionários. A maior empresa de NEV do mundo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Jornada -->
+<section class="section" id="jornada">
+  <div class="section-header fade-in">
+    <h2>Sua Jornada na BYD</h2>
+    <p>O que esperar nos primeiros meses como júnior.</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-item">
+      <h4>📅 Semana 1 — Onboarding</h4>
+      <p>Integração, conhecer a equipe, entender a cultura BYD, acesso aos sistemas, treinamento de segurança.</p>
+      <span class="tag">Integração</span>
+    </div>
+    <div class="tl-item">
+      <h4>📚 Semanas 2-4 — Treinamento</h4>
+      <p>Treinamentos técnicos da área, mentoria com colegas experientes, projetos piloto.</p>
+      <span class="tag">Capacitação</span>
+    </div>
+    <div class="tl-item">
+      <h4>🚀 Meses 2-3 — Autonomia</h4>
+      <p>Assumir responsabilidades, contribuir em projetos reais, feedback contínuo com gestor.</p>
+      <span class="tag">Desenvolvimento</span>
+    </div>
+    <div class="tl-item">
+      <h4>🎯 Mês 6 — Avaliação</h4>
+      <p>Avaliação de desempenho, definição de metas, plano de carreira.</p>
+      <span class="tag">Crescimento</span>
+    </div>
+    <div class="tl-item">
+      <h4>🏆 Ano 1 — Consolidação</h4>
+      <p>Domínio da função, contribuição estratégica, possibilidade de liderança.</p>
+      <span class="tag">Excelência</span>
+    </div>
+  </div>
+</section>
+
+<!-- Valores -->
+<section class="section" id="valores">
+  <div class="section-header fade-in">
+    <h2>Nossos Valores</h2>
+    <p>Os pilares que guiam tudo o que fazemos.</p>
+  </div>
+  <div class="values-grid">
+    <div class="value-card fade-in">
+      <div class="icon">💡</div>
+      <h4>Inovação</h4>
+      <p>P&D contínuo. Mais de 5% da receita investida em pesquisa.</p>
+    </div>
+    <div class="value-card fade-in">
+      <div class="icon">🌱</div>
+      <h4>Sustentabilidade</h4>
+      <p>Zero emissões. Energia limpa para um planeta melhor.</p>
+    </div>
+    <div class="value-card fade-in">
+      <div class="icon">🤝</div>
+      <h4>Colaboração</h4>
+      <p>Trabalho em equipe. Juntos construímos algo maior.</p>
+    </div>
+    <div class="value-card fade-in">
+      <div class="icon">🎯</div>
+      <h4>Excelência</h4>
+      <p>Qualidade em tudo. Do produto ao atendimento.</p>
+    </div>
+    <div class="value-card fade-in">
+      <div class="icon">🚀</div>
+      <h4>Velocidade</h4>
+      <p>Decisões rápidas, execução ágil.</p>
+    </div>
+    <div class="value-card fade-in">
+      <div class="icon">🔒</div>
+      <h4>Integridade</h4>
+      <p>Ética e transparência em todas as relações.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Checklist -->
+<section class="section" id="checklist">
+  <div class="section-header fade-in">
+    <h2>Checklist de Onboarding</h2>
+    <p>Marque o que você já completou.</p>
+  </div>
+  <div class="checklist-container fade-in">
+    <div class="checklist-item" onclick="toggleCheck(this)">
+      <div class="checkbox">☐</div>
+      <div class="text">
+        <div class="title">Acesso aos sistemas</div>
+        <div class="desc">E-mail, intranet, ferramentas da área</div>
+      </div>
+    </div>
+    <div class="checklist-item" onclick="toggleCheck(this)">
+      <div class="checkbox">☐</div>
+      <div class="text">
+        <div class="title">Treinamento de segurança</div>
+        <div class="desc">NR, EPI, procedimentos de emergência</div>
+      </div>
+    </div>
+    <div class="checklist-item" onclick="toggleCheck(this)">
+      <div class="checkbox">☐</div>
+      <div class="text">
+        <div class="title">Conhecer a equipe</div>
+        <div class="desc">Apresentação com colegas e gestor</div>
+      </div>
+    </div>
+    <div class="checklist-item" onclick="toggleCheck(this)">
+      <div class="checkbox">☐</div>
+      <div class="text">
+        <div class="title">Ler políticas internas</div>
+        <div class="desc">Código de conduta, RH, compliance</div>
+      </div>
+    </div>
+    <div class="checklist-item" onclick="toggleCheck(this)">
+      <div class="checkbox">☐</div>
+      <div class="text">
+        <div class="title">Definir metas 30/60/90</div>
+        <div class="desc">Objetivos claros com o gestor</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">0 de 5 concluídos</div>
+  </div>
+</section>
+
+<!-- Quiz -->
+<section class="section" id="quiz">
+  <div class="section-header fade-in">
+    <h2>Quiz BYD</h2>
+    <p>Teste seus conhecimentos sobre a empresa.</p>
+  </div>
+  <div class="quiz-container fade-in">
+    <div class="quiz-question" id="quizQuestion">Em que ano a BYD foi fundada?</div>
+    <div class="quiz-options" id="quizOptions">
+      <div class="quiz-option" onclick="checkAnswer(this, false)">1985</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">1990</div>
+      <div class="quiz-option" onclick="checkAnswer(this, true)">1995</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">2000</div>
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="btn-primary" style="margin-top:16px; width:100%;" onclick="nextQuestion()">Próxima Pergunta →</button>
+  </div>
+</section>
+
+<!-- Dicas -->
+<section class="section" id="dicas">
+  <div class="section-header fade-in">
+    <h2>Dicas para Novatos</h2>
+    <p>O que todo júnior deveria saber.</p>
+  </div>
+  <div class="mission-grid">
+    <div class="mission-card fade-in">
+      <div class="icon">❓</div>
+      <h3>Pergunte sempre</h3>
+      <p>Não tenha medo. Todo mundo já foi júnior. Perguntar é aprender.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">📝</div>
+      <h3>Anote tudo</h3>
+      <p>Use caderno ou app. Anote processos, nomes, sistemas.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">🤝</div>
+      <h3>Conheça pessoas</h3>
+      <p>Networking interno é essencial. Converse com colegas.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">⏰</div>
+      <h3>Pontualidade</h3>
+      <p>Chegar no horário mostra comprometimento.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">📚</div>
+      <h3>Estude a BYD</h3>
+      <p>Leia sobre a empresa, produtos, história.</p>
+    </div>
+    <div class="mission-card fade-in">
+      <div class="icon">🎯</div>
+      <h3>Defina metas</h3>
+      <p>Objetivos claros para 30/60/90 dias.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="logo">BYD</div>
+  <p>Build Your Dreams — Onboarding Interativo para Novatos Juniores</p>
+  <p style="margin-top:8px; font-size:10px; color:#444;">© 2026 BYD. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  }
+  // Particles
+  const container = document.querySelector('.particles');
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2.5) + 'px';
+    container.appendChild(p);
+  }
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Checklist
+  function toggleCheck(item) {
+    item.classList.toggle('completed');
+    const cb = item.querySelector('.checkbox');
+    cb.textContent = item.classList.contains('completed') ? '✓' : '☐';
+    updateProgress();
+  }
+  function updateProgress() {
+    const items = document.querySelectorAll('.checklist-item');
+    const completed = document.querySelectorAll('.checklist-item.completed').length;
+    const pct = (completed / items.length) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = completed + ' de ' + items.length + ' concluídos';
+  }
+
+  // Quiz
+  const questions = [
+    { q: 'Em que ano a BYD foi fundada?', opts: ['1985', '1990', '1995', '2000'], correct: 2 },
+    { q: 'O que significa BYD?', opts: ['Build Your Dreams', 'Bring Your Device', 'Beyond Your Dreams', 'Best Your Drive'], correct: 0 },
+    { q: 'Qual é a tecnologia de bateria da BYD?', opts: ['Lítio-cobalto', 'Níquel-manganês', 'Lítio-ferro-fosfato (Blade)', 'Chumbo-ácido'], correct: 2 },
+    { q: 'Em qual cidade brasileira a BYD tem fábrica?', opts: ['São Paulo', 'Camaçari-BA', 'Manaus', 'Curitiba'], correct: 1 },
+    { q: 'Quantos países a BYD está presente?', opts: ['30+', '50+', '70+', '100+'], correct: 2 }
+  ];
+  let currentQ = 0;
+  let answered = false;
+
+  function renderQuestion() {
+    const q = questions[currentQ];
+    document.getElementById('quizQuestion').textContent = q.q;
+    const opts = document.getElementById('quizOptions');
+    opts.innerHTML = '';
+    q.opts.forEach((opt, i) => {
+      const div = document.createElement('div');
+      div.className = 'quiz-option';
+      div.textContent = opt;
+      div.onclick = () => checkAnswer(div, i === q.correct);
+      opts.appendChild(div);
+    });
+    document.getElementById('quizFeedback').className = 'quiz-feedback';
+    answered = false;
+  }
+
+  function checkAnswer(el, isCorrect) {
+    if (answered) return;
+    answered = true;
+    const opts = document.querySelectorAll('.quiz-option');
+    opts.forEach((o, i) => {
+      if (i === questions[currentQ].correct) o.classList.add('correct');
+      else if (o === el && !isCorrect) o.classList.add('wrong');
+    });
+    const fb = document.getElementById('quizFeedback');
+    fb.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+    fb.textContent = isCorrect ? '✅ Correto! Parabéns!' : '❌ Errado. A resposta correta é: ' + questions[currentQ].opts[questions[currentQ].correct];
+  }
+
+  function nextQuestion() {
+    currentQ = (currentQ + 1) % questions.length;
+    renderQuestion();
+  }
+
+  renderQuestion();
+</script>
+</body>
+</html>

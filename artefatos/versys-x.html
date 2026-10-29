@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kawasaki Versys-X 300</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(ellipse at 50% 30%, #0a2e1a 0%, #051a0e 40%, #020a05 100%);
+    font-family: -apple-system, system-ui, sans-serif;
+    overflow:hidden;
+  }
+  .container {
+    text-align:center;
+    padding:40px;
+  }
+  .bike-frame {
+    position:relative;
+    width:500px;
+    height:300px;
+    margin:0 auto;
+    filter: drop-shadow(0 20px 40px rgba(0,200,83,0.2));
+  }
+  .bike-svg {
+    width:100%;
+    height:100%;
+    animation: bikeFloat 3s ease-in-out infinite;
+  }
+  @keyframes bikeFloat {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-8px); }
+  }
+  .glow-ring {
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:300px;
+    height:40px;
+    border-radius:50%;
+    background:radial-gradient(ellipse, rgba(0,200,83,0.3) 0%, transparent 70%);
+    filter:blur(15px);
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%,100% { opacity:0.6; transform:translateX(-50%) scale(1); }
+    50% { opacity:1; transform:translateX(-50%) scale(1.1); }
+  }
+  .title {
+    margin-top:20px;
+    font-size:28px;
+    font-weight:900;
+    color:#fff;
+    letter-spacing:-1px;
+  }
+  .title span {
+    background:linear-gradient(135deg,#00c853,#00e676);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .subtitle {
+    margin-top:6px;
+    font-size:13px;
+    color:#81c784;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  .specs {
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    margin-top:24px;
+    flex-wrap:wrap;
+  }
+  .spec {
+    background:rgba(0,200,83,0.08);
+    border:1px solid rgba(0,200,83,0.2);
+    border-radius:12px;
+    padding:10px 16px;
+    text-align:center;
+    min-width:80px;
+  }
+  .spec .val {
+    font-size:16px;
+    font-weight:800;
+    color:#00e676;
+  }
+  .spec .lbl {
+    font-size:9px;
+    color:#81c784;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-top:2px;
+  }
+  .particles {
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .particle {
+    position:absolute;
+    width:2px; height:2px;
+    background:rgba(0,230,118,0.5);
+    border-radius:50%;
+    animation: particleFloat linear infinite;
+  }
+  @keyframes particleFloat {
+    0% { transform:translateY(100vh); opacity:0; }
+    10% { opacity:1; }
+    90% { opacity:1; }
+    100% { transform:translateY(-10vh) translateX(20px); opacity:0; }
+  }
+  .badge {
+    display:inline-block;
+    margin-top:16px;
+    padding:6px 16px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#00c853,#00e676);
+    color:#000;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    box-shadow:0 4px 16px rgba(0,200,83,0.3);
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+  @keyframes badgePulse {
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.05); }
+  }
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="container">
+  <div class="bike-frame">
+    <div class="glow-ring"></div>
+    <svg class="bike-svg" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- Shadow -->
+      <ellipse cx="250" cy="270" rx="180" ry="15" fill="rgba(0,0,0,0.4)"/>
+      <!-- Rear wheel -->
+      <circle cx="120" cy="230" r="55" fill="none" stroke="#1a1a1a" stroke-width="8"/>
+      <circle cx="120" cy="230" r="48" fill="none" stroke="#333" stroke-width="3"/>
+      <circle cx="120" cy="230" r="12" fill="#00c853"/>
+      <g stroke="#555" stroke-width="1.5">
+        <line x1="120" y1="182" x2="120" y2="278"/>
+        <line x1="72" y1="230" x2="168" y2="230"/>
+        <line x1="86" y1="196" x2="154" y2="264"/>
+        <line x1="154" y1="196" x2="86" y2="264"/>
+      </g>
+      <!-- Front wheel -->
+      <circle cx="380" cy="230" r="55" fill="none" stroke="#1a1a1a" stroke-width="8"/>
+      <circle cx="380" cy="230" r="48" fill="none" stroke="#333" stroke-width="3"/>
+      <circle cx="380" cy="230" r="12" fill="#00c853"/>
+      <g stroke="#555" stroke-width="1.5">
+        <line x1="380" y1="182" x2="380" y2="278"/>
+        <line x1="332" y1="230" x2="428" y2="230"/>
+        <line x1="346" y1="196" x2="414" y2="264"/>
+        <line x1="414" y1="196" x2="346" y2="264"/>
+      </g>
+      <!-- Frame / body -->
+      <path d="M120,230 L170,160 L230,140 L300,135 L360,150 L380,180 L380,230" 
+            fill="none" stroke="#00c853" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Tank -->
+      <path d="M200,135 Q250,110 310,130 L300,155 Q250,140 200,155 Z" 
+            fill="url(#tankGrad)" stroke="#00e676" stroke-width="1.5"/>
+      <!-- Seat -->
+      <path d="M170,155 Q220,145 290,150 L285,165 Q220,160 175,165 Z" 
+            fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+      <!-- Front fairing -->
+      <path d="M340,140 Q370,120 390,130 L395,160 Q375,150 345,155 Z" 
+            fill="url(#fairingGrad)" stroke="#00e676" stroke-width="1.5"/>
+      <!-- Windshield -->
+      <path d="M350,125 Q370,100 395,115 L390,135 Q370,125 355,130 Z" 
+            fill="rgba(0,230,118,0.15)" stroke="#00e676" stroke-width="1" opacity="0.7"/>
+      <!-- Headlight -->
+      <ellipse cx="395" cy="145" rx="8" ry="6" fill="#fff" opacity="0.9"/>
+      <ellipse cx="395" cy="145" rx="12" ry="9" fill="rgba(255,255,255,0.2)"/>
+      <!-- Rear -->
+      <path d="M120,160 Q140,145 170,150 L165,170 Q140,165 125,175 Z" 
+            fill="#1a1a1a" stroke="#00c853" stroke-width="1"/>
+      <!-- Exhaust -->
+      <path d="M150,200 Q130,210 110,215 L105,205 Q125,200 145,195 Z" 
+            fill="#333" stroke="#555" stroke-width="1"/>
+      <!-- Handlebar -->
+      <path d="M330,125 L350,110 L370,105" fill="none" stroke="#888" stroke-width="3" stroke-linecap="round"/>
+      <!-- Rear rack -->
+      <path d="M140,150 L120,145 L115,160" fill="none" stroke="#555" stroke-width="2"/>
+      <!-- Kawasaki logo on tank -->
+      <text x="255" y="148" text-anchor="middle" fill="#00e676" font-size="11" font-weight="900" font-family="system-ui" opacity="0.8">K</text>
+      <defs>
+        <linearGradient id="tankGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00c853"/>
+          <stop offset="100%" stop-color="#00695c"/>
+        </linearGradient>
+        <linearGradient id="fairingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00e676"/>
+          <stop offset="100%" stop-color="#00c853"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <div class="title"><span>Versys-X 300</span></div>
+  <div class="subtitle">Adventure Tourer • 2024</div>
+  <div class="badge">🛡️ Garantia Ativa</div>
+  <div class="specs">
+    <div class="spec"><div class="val">296cc</div><div class="lbl">Motor</div></div>
+    <div class="spec"><div class="val">40cv</div><div class="lbl">Potência</div></div>
+    <div class="spec"><div class="val">17L</div><div class="lbl">Tanque</div></div>
+    <div class="spec"><div class="val">199kg</div><div class="lbl">Peso</div></div>
+    <div class="spec"><div class="val">2 anos</div><div class="lbl">Garantia</div></div>
+  </div>
+</div>
+<script>
+  const container = document.querySelector('.particles') || document.body;
+  const particles = document.createElement('div');
+  particles.className = 'particles';
+  particles.style.position = 'fixed';
+  particles.style.inset = '0';
+  particles.style.pointerEvents = 'none';
+  particles.style.zIndex = '0';
+  document.body.insertBefore(particles, document.body.firstChild);
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (5 + Math.random() * 8) + 's';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2.5) + 'px';
+    particles.appendChild(p);
+  }
+</script>
+</body>
+</html>

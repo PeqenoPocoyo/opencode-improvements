@@ -226,9 +226,30 @@ SE algum elemento não responder → FAIL
 - Não repetir layout consecutivamente
 - Não repetir estrutura de abas/seções
 
+## Balões de Artifacts (regra de criatividade)
+
+Quando usar o Review pane, emitir balão de artifacts ao final da resposta.
+Os balões devem ser **criativos e contextuais**, não genéricos:
+
+1. Paleta contextual por tipo (HTML=indigo, SVG=emerald, MD=amber, CSV=sky, código=violet)
+2. Layout dinâmico: grid 2 colunas para 2+ artifacts, card único para 1
+3. Animações CSS: float, blink, shimmer, slide-up, hover (translateY + shadow colorida)
+4. Glassmorphism: gradiente + border semi-transparente + backdrop-filter
+5. Glow effects: radial-gradient blur atrás dos ícones
+6. Badges contextuais: tags por tipo com cores temáticas
+7. Descrições ricas: nome + descrição curta + tipo + origem
+8. Hover interativo: card levanta + shadow colorida
+
+### Regra de exibibilidade para botões inline
+- Gerar botão inline APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, código)
+- Não gerar botão para binários (.zip, .exe, .png, .pdf, .mp3) — apenas listar o path
+- Para exibíveis: link `file://` que abre no Review pane automaticamente
+
 ## Metadata
 - **Categoria**: Design/Artefatos
 - **Prioridade**: Alta
 - **Aplicável a**: Qualquer artefato HTML
-- **Dependências**: functional-ui, creative-design
+- **Dependências**: functional-ui, creative-design, inline-artifacts, artifact-balloon
 - **Generativa**: Sim — cria novas capacidades de visualização
+- **Versão**: 2.0
+- **Melhorado**: 2026-10-28 (balões criativos, regra de exibibilidade, metadata de melhoria)

@@ -165,6 +165,61 @@ Para manter sincronização automática entre dispositivos:
 
 ---
 
+## Feedback-Driven Improvement (OBRIGATÓRIO)
+
+Quando o usuário der feedback sobre um recurso (positivo, negativo ou sugestão):
+
+1. **Analisar o feedback** e identificar o gap
+2. **Implementar a melhoria** no recurso (skill, hook, instrução, config, artefato)
+3. **Testar** se a melhoria resolve o feedback
+4. **Marcar** o recurso com metadata de melhoria
+5. **Commitar e pushar** para o repositório
+6. **Reportar** ao usuário o que foi melhorado
+
+### Exemplos de feedback-driven improvement:
+- "balão de artifacts é genérico" → Adicionar 10 regras de criatividade
+- "botão de explorer não funciona" → Adicionar regra de exibibilidade
+- "não desperta meu interesse" → Redesign com hero dramático, urgência, gamificação
+- "ta todo bugado" → Corrigir layout, animações, interatividade
+
+### Regra de ouro:
+> Se o usuário deu feedback, a melhoria DEVE ser implementada no pacote de recursos.
+> Não apenas respondida na conversa — implementada no repo.
+
+## Balões de Artifacts Criativos (OBRIGATÓRIO)
+
+Os balões de artifacts ao final da resposta devem ser **criativos e contextuais**:
+1. Paleta contextual por tipo (HTML=indigo, SVG=emerald, MD=amber, CSV=sky, código=violet)
+2. Layout dinâmico: grid 2 colunas para 2+ artifacts, card único para 1
+3. Animações CSS: float, blink, shimmer, slide-up, hover (translateY + shadow colorida)
+4. Glassmorphism: gradiente + border semi-transparente + backdrop-filter
+5. Glow effects: radial-gradient blur atrás dos ícones
+6. Badges contextuais: tags por tipo com cores temáticas
+7. Descrições ricas: nome + descrição curta + tipo + origem
+8. Hover interativo: card levanta + shadow colorida
+
+### Regra de exibibilidade para botões inline:
+- Gerar botão inline APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, código)
+- Não gerar botão para binários (.zip, .exe, .png, .pdf, .mp3) — apenas listar o path
+
+## Auto-Observacao Negativa (CRITICO)
+
+O agente observa suas proprias limitacoes e as registra como feedback negativo:
+
+1. Hook `self-observation.py` detecta padroes negativos automaticamente
+2. Registra em `validation.json` (feedback_negative++)
+3. Se 2+ observacoes negativas -> reverter para raw
+4. Agente analisa o gap -> implementa melhoria
+5. Autoteste valida -> marca como melhorado
+6. Commit + Push -> Sync para outros dispositivos
+
+### Padroes detectados:
+- Erro admissao, Incerteza, Retrabalho, Limitacao
+
+### Regra de ouro:
+> Se o agente admite uma limitacao, ela DEVE ser registrada como feedback negativo.
+> O ciclo de auto-melhoria nao depende do usuario — e autonomo.
+
 ## Regras importantes
 
 - **Nunca sobrescrever mudanças locais sem avisar** — sempre stash/pull/pop
