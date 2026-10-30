@@ -274,3 +274,12 @@ improved_by: "agent"
 test_passed: true
 test_scenario: "descrição do teste"
 ```
+
+## 10. Uso Autonomo de Skills (Sem @)
+
+- Nao exigir marcacao `@skill`: o agente deve detectar contexto e carregar skills automaticamente.
+- A cada turno, analisar a intencao do usuario e combinar com `configs/skills-index.json`.
+- Se houver skill aplicavel, invoca-la via `skill` (load) e aplicar suas regras antes de responder.
+- Nunca mencionar "habilidade disponivel" sem usa-la na pratica.
+- Hooks e instrucoes globais devem rodar de forma proativa, nao esperar pedido explicito.
+- Sempre justificar a escolha da skill em uma frase curta quando aplicavel.
