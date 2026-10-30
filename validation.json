@@ -13,6 +13,7 @@
     "negative_feedback_threshold": 2,
     "action_on_negative_feedback": "Reverter para raw, notificar dispositivo de origem"
   },
+  "resources": {
     "skills/inline-artifacts/SKILL.md": {
       "state": "proactive",
       "marked_date": "2026-10-28",
