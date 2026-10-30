@@ -178,6 +178,14 @@ O agente DEVE gerar artefatos sem ser solicitado quando:
 - Todo link navega
 - Canvas renderiza e responde
 
+### 9.6 CSP-friendly (artefatos single-file)
+- Preferir `addEventListener` a inline `onclick`
+- Sem `eval`/`new Function`
+- Sem `fetch()` para endpoints internos (bake snapshot JSON em `const DATA`)
+- Nunca deixar API keys/tokens no arquivo
+- CDN versionado com fallback
+- Testar em 375px de largura
+
 ### 9.5 Referência
 - Instrução detalhada: `instructions/artifact-generation.md`
 - Instrução de inline vs Review pane: `instructions/inline-artifacts.md`
@@ -211,6 +219,14 @@ o tipo de artefato e o contexto da conversa.
 - Card simples de 5 linhas para Review pane
 - 3 paragrafos de texto quando diagrama inline resolve
 - HTML completo com `<script>` inline na conversa
+
+### 9.6 Auto-abertura no Review Pane (OBRIGATÓRIO)
+**SEMPRE que gerar um artefato (HTML, SVG, MD, CSV, código, etc.), chamar `browser.preview()` automaticamente.**
+
+- Não esperar o usuário pedir "abre no panel".
+- Após salvar o arquivo, chamar `browser.preview({ path: "<caminho>" })` imediatamente.
+- Isso vale para QUALQUER artefato gerado.
+- A única exceção: artefatos inline muito simples (cards de 3-4 linhas, SVG pequeno) que cabem na conversa.
 
 ## 10. Hooks e Observabilidade
 

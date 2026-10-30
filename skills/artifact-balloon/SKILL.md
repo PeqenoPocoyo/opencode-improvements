@@ -13,6 +13,7 @@ Manter o fluxo do chat leve. Artefatos simples (fluxos, cards, diagramas estatic
 ## Regra de ouro
 - **Prefira render inline** (direto na conversa) para fluxos simples, cards, diagramas estaticos, tabelas e esquemas visuais que ajudem a compreensao imediata.
 - Use o **Review pane (artifact-balloon)** para arquivos grandes, interativos ou editaveis (HTML completo com JS, React/TSX, PDF, imagens binarias) ou quando o usuario pedir explicitamente para abrir em tela cheia.
+- **SEMPRE chamar `browser.preview()` automaticamente** apos salvar o arquivo. Nao esperar o usuario pedir.
 - Quando usar o Review pane, coloque o resumo de artifacts **ao final** da resposta.
 - Se houver mais de 1 arquivo no Review pane, empilhe (um por linha).
 

@@ -104,6 +104,7 @@ Cada artefato deve ter:
 - [ ] Há pelo menos uma animação com propósito?
 - [ ] O artefato é auto-contido (funciona offline)?
 - [ ] O título é descritivo?
+- [ ] CSP-friendly: usar addEventListener em vez de inline onclick; sem eval; sem fetch interno; sem keys/tokens no arquivo.
 
 ### Teste de Reinterpretação
 ```
@@ -245,11 +246,14 @@ Os balões devem ser **criativos e contextuais**, não genéricos:
 - Não gerar botão para binários (.zip, .exe, .png, .pdf, .mp3) — apenas listar o path
 - Para exibíveis: link `file://` que abre no Review pane automaticamente
 
+### Auto-abertura no Review Pane (OBRIGATORIO)
+**SEMPRE chamar `browser.preview()` automaticamente** apos salvar o arquivo.
+Nao esperar o usuario pedir. Isso vale para QUALQUER artefato gerado.
+
 ## Metadata
-- **Categoria**: Design/Artefatos
 - **Prioridade**: Alta
-- **Aplicável a**: Qualquer artefato HTML
-- **Dependências**: functional-ui, creative-design, inline-artifacts, artifact-balloon
-- **Generativa**: Sim — cria novas capacidades de visualização
-- **Versão**: 2.0
-- **Melhorado**: 2026-10-28 (balões criativos, regra de exibibilidade, metadata de melhoria)
+- **Aplicavel a**: Qualquer artefato HTML
+- **Dependencias**: functional-ui, creative-design, inline-artifacts, artifact-balloon
+- **Generativa**: Sim — cria novas capacidades de visualizacao
+- **Versao**: 2.1
+- **Melhorado**: 2026-10-29 (auto-abertura no Review pane, baloes criativos, regra de exibibilidade)

@@ -124,6 +124,16 @@ function updateOutput(v) { document.getElementById('output').textContent = v; }
 > "Por que entregar um botão que não funciona?"  
 > Se não tem handler, não existe. Remova ou implemente.
 
+## Compatibilidade CSP (artefatos single-file)
+Hosts (wikis, viewers) podem servir o HTML em iframe sandboxed com CSP strict.
+Regras:
+- Preferir `addEventListener` em vez de inline `onclick=""` (inline handlers são bloqueados por CSP strict).
+- Não usar `eval`/`new Function` (bloqueado por CSP `unsafe-eval`).
+- Não fazer `fetch()` para endpoints internos — bake snapshot JSON em `const DATA = {...}`.
+- Nunca deixar API keys/tokens no arquivo (busque `key`, `token`, `Bearer` antes de publicar).
+- CDN: versionar pin + fallback se JS falhar.
+- Testar em 375px de largura (viewport meta obrigatório).
+
 ## Regra de Exibibilidade para Botões Inline (balões de artifacts)
 
 Quando gerar balões de artifacts ao final da resposta:

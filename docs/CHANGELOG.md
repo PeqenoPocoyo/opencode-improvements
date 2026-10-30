@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.1] - 2026-10-29
+
+### Adicionado
+- artefatos/sinestesia-beats.html - artefato de sinestesia: step sequencer de 4 tracks (kick/snare/hat/bass) com Web Audio API + canvas reativo (particulas coloridas, ondas, core pulsante). Testado via agent-browser (Play, Random, step toggle).
+
+### Melhorado
+- skills/functional-ui/SKILL.md, skills/artifact-creator/SKILL.md, instructions/AGENTS.md - diretrizes CSP-friendly (addEventListener > inline onclick, sem eval, sem fetch interno, sem keys, CDN versionado, teste 375px).
+
+
 ## [1.3.0] — 2026-10-28
 
 ### Melhorado (auto-upgrade v2 — feedback-driven)

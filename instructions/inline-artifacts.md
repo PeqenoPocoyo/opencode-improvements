@@ -3,6 +3,26 @@
 > Define quando usar artefatos inline (na conversa) vs Review pane (arquivo).
 > Baseado nas regras globais do OpenCode do dispositivo Cesar.
 
+## REGRA AUTOMATICA: Abrir no Review Pane
+
+**SEMPRE que gerar um artefato (HTML, SVG, MD, CSV, codigo, etc.), chamar `browser.preview()` automaticamente.**
+
+- Nao esperar o usuario pedir "abre no panel" ou "mostra no review pane".
+- Apos salvar o arquivo, chamar `browser.preview({ path: "<caminho>" })` imediatamente.
+- Isso vale para QUALQUER artefato gerado, seja inline ou em arquivo.
+- A unica excecao: artefatos inline muito simples (cards de 3-4 linhas, SVG pequeno) que cabem na conversa.
+
+### Fluxo obrigatorio:
+1. Gerar o conteudo do artefato
+2. Salvar em arquivo (write tool ou save-artifact.js)
+3. Chamar `browser.preview({ path: "<caminho>" })` IMEDIATAMENTE
+4. Emitir balao de artifacts ao final da resposta
+
+### O que NAO fazer:
+- Gerar artefato e apenas listar o path sem abrir no panel
+- Esperar o usuario pedir para abrir no panel
+- Abrir no panel apenas "se necessario"
+
 ## Artefatos Inline (skill `inline-artifacts`)
 
 Use **PROATIVAMENTE** (nao apenas quando solicitado):
@@ -48,7 +68,7 @@ Quando usar o Review pane, emitir um balao de artifacts ao final da resposta. Os
 10. **Indicadores de status**: dots animados (blink) para mostrar que esta ativo
 
 ### Regra de exibibilidade para botoes inline:
-- **Gerar botao inline** APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, codigo, etc.)
+- **Gerar botao inline** APENAS para arquivos que o panel pode exibir (HTML, SVG, MD, CSV, codigo)
 - **Nao gerar botao** para arquivos binarios (.zip, .exe, .png, .pdf, .mp3, etc.) — apenas listar o path no balao
 - Para arquivos exibiveis: link `file://` que abre no Review pane automaticamente
 
@@ -58,6 +78,7 @@ Quando usar o Review pane, emitir um balao de artifacts ao final da resposta. Os
 - Nao responder com 3 paragrafos de texto quando um diagrama inline resolve
 - Nao gerar HTML completo com `<script>` inline na conversa (usar Review pane)
 - Nao usar balao generico sem contexto (sempre o mesmo estilo, sem cores/icones tematicos)
+- Nao gerar artefato e apenas listar o path sem abrir no panel
 
 ## Metadata
 
@@ -65,4 +86,4 @@ Quando usar o Review pane, emitir um balao de artifacts ao final da resposta. Os
 - **Prioridade**: Alta
 - **Aplicavel a**: Todos os artefatos e respostas visuais
 - **Dependencias**: artifact-generation, artifact-creator, inline-artifacts, artifact-balloon
-- **Melhorado**: 2026-10-28 (baloes criativos e contextuais, regra de exibibilidade para botoes inline)
+- **Melhorado**: 2026-10-29 (auto-abertura no Review pane, baloes criativos, regra de exibibilidade)

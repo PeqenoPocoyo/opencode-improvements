@@ -82,7 +82,7 @@
       "feedback_negative": 0,
       "usage_count": 3,
       "promotion_threshold": 3,
-      "notes": "Skill de auto-upgrade. v2.0: feedback-driven improvement, multi-device contribution flow. PRONTO PARA PROMOCAO (3+ usos, 0 feedback negativo)."
+      "notes": "Skill de auto-upgrade. v2.0: feedback-driven improvement, auto-observacao negativa, multi-device contribution flow. PRONTO PARA PROMOCAO (3+ usos, 0 feedback negativo)."
     },
     "skills/opencode-sync/SKILL.md": {
       "state": "validated",
@@ -93,9 +93,9 @@
       "feedback_negative": 0,
       "usage_count": 3,
       "promotion_threshold": 3,
-      "notes": "Skill de sync. v2.0: feedback-driven improvement, baloes criativos, regra de exibibilidade. PRONTO PARA PROMOCAO (3+ usos, 0 feedback negativo)."
+      "notes": "Skill de sync. v2.0: feedback-driven improvement, auto-observacao negativa, baloes criativos, regra de exibibilidade. PRONTO PARA PROMOCAO (3+ usos, 0 feedback negativo)."
     },
-    "docs/self-upgrade-protocol.md": {
+    "skills/agent-browser/SKILL.md": {
       "state": "validated",
       "marked_date": "2026-10-28",
       "marked_by": "device-cesar",
@@ -104,9 +104,9 @@
       "feedback_negative": 0,
       "usage_count": 2,
       "promotion_threshold": 3,
-      "notes": "Protocolo de auto-upgrade. v2.0: feedback-driven improvement, multi-device contribution flow. Usado em 2 sessoes."
+      "notes": "Skill de browser automation (ego-browser). v1.0. Usado em 2 sessoes."
     },
-    "README.md": {
+    "skills/artifacts-feature/SKILL.md": {
       "state": "validated",
       "marked_date": "2026-10-28",
       "marked_by": "device-cesar",
@@ -115,7 +115,59 @@
       "feedback_negative": 0,
       "usage_count": 2,
       "promotion_threshold": 3,
-      "notes": "README do repositorio. v2.0: pacote de recursos, validacao progressiva, baloes criativos, regra de exibibilidade. Usado em 2 sessoes."
+      "notes": "Skill de detector de blocos visualizaveis + balao clicavel. v1.0: baloes criativos, regra de exibibilidade. Usado em 2 sessoes."
+    },
+    "skills/algorithmic-art/SKILL.md": {
+      "state": "proactive",
+      "marked_date": "2026-10-29",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-29",
+      "validated_by": "device-cesar (curador)",
+      "promoted_date": "2026-10-29",
+      "promoted_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 10,
+      "promotion_threshold": 3,
+      "notes": "Skill de arte algoritmica (p5.js). Baixada do repo anthropics/skills. Inclui templates (generator_template.js, viewer.html). PROMOVIDA PARA PROACTIVE (10+ usos, 0 feedback negativo). Auto-aplicada sem intervencao."
+    },
+    "instructions/inline-artifacts.md": {
+      "state": "proactive",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "promoted_date": "2026-10-28",
+      "promoted_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 4,
+      "promotion_threshold": 3,
+      "notes": "Regras de proatividade de visuais inline vs Review pane. v2.0: baloes criativos e contextuais (10 regras), regra de exibibilidade para botoes inline. PROMOVIDO PARA PROACTIVE (4+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
+    },
+    "instructions/AGENTS.md": {
+      "state": "proactive",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "promoted_date": "2026-10-28",
+      "promoted_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 3,
+      "promotion_threshold": 3,
+      "notes": "Instrucoes globais do OpenCode. v2.0: secao 11 (baloes criativos, regra de exibibilidade). PROMOVIDO PARA PROACTIVE (3+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
+    },
+    "hooks/pre-tool-use-security.sh": {
+      "state": "proactive",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "promoted_date": "2026-10-28",
+      "promoted_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 3,
+      "promotion_threshold": 3,
+      "notes": "Hook bash portavel (PreToolUse). v1.2: padroes regex robustos. PROMOVIDO PARA PROACTIVE (3+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
     },
     "hooks/validate_bash_command.py": {
       "state": "validated",
@@ -126,7 +178,7 @@
       "feedback_negative": 0,
       "usage_count": 2,
       "promotion_threshold": 3,
-      "notes": "Validador robusto de comandos bash (regex, fail-open). Portavel entre SOs (requer Python 3). Usado em 2 sessoes."
+      "notes": "Validador robusto de comandos bash (regex, fail-open). Portavel entre SOs (requer Python 3). v1.1: path traversal + command injection detection. Usado em 2 sessoes."
     },
     "hooks/validate_sensitive_write.py": {
       "state": "validated",
@@ -203,9 +255,9 @@
       "promoted_date": "2026-10-28",
       "promoted_by": "device-cesar (curador)",
       "feedback_negative": 0,
-      "usage_count": 3,
+      "usage_count": 4,
       "promotion_threshold": 3,
-      "notes": "Regras de proatividade de visuais inline vs Review pane. Baseado nas regras globais do OpenCode. Melhorado v2: baloes criativos e contextuais, regra de exibibilidade para botoes inline. PROMOVIDO PARA PROACTIVE (3+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
+      "notes": "Regras de proatividade de visuais inline vs Review pane. v2.0: baloes criativos e contextuais (10 regras), regra de exibibilidade para botoes inline. PROMOVIDO PARA PROACTIVE (4+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
     },
     "configs/settings.example.json": {
       "state": "validated",
@@ -218,31 +270,38 @@
       "promotion_threshold": 3,
       "notes": "Exemplo de hooks configurados (placeholders). Complementa mcp.example.json. Usado em 2 sessoes."
     },
-    "hooks/pre-tool-use-security.sh": {
-      "state": "proactive",
+    "docs/self-upgrade-protocol.md": {
+      "state": "validated",
       "marked_date": "2026-10-28",
       "marked_by": "device-cesar",
       "validated_date": "2026-10-28",
       "validated_by": "device-cesar (curador)",
-      "promoted_date": "2026-10-28",
-      "promoted_by": "device-cesar (curador)",
       "feedback_negative": 0,
-      "usage_count": 3,
+      "usage_count": 2,
       "promotion_threshold": 3,
-      "notes": "Hook bash portavel (PreToolUse). Melhorado v1.2 com padroes regex robustos. PROMOVIDO PARA PROACTIVE (3+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
+      "notes": "Protocolo de auto-upgrade. v2.0: feedback-driven improvement, auto-observacao negativa, multi-device contribution flow. Usado em 2 sessoes."
     },
-    "instructions/AGENTS.md": {
-      "state": "proactive",
+    "README.md": {
+      "state": "validated",
       "marked_date": "2026-10-28",
       "marked_by": "device-cesar",
       "validated_date": "2026-10-28",
       "validated_by": "device-cesar (curador)",
-      "promoted_date": "2026-10-28",
-      "promoted_by": "device-cesar (curador)",
       "feedback_negative": 0,
-      "usage_count": 3,
+      "usage_count": 2,
       "promotion_threshold": 3,
-      "notes": "Instrucoes globais do OpenCode. Melhorado: secao 11 (baloes criativos, regra de exibibilidade). PROMOVIDO PARA PROACTIVE (3+ usos, 0 feedback negativo). Auto-aplicado sem intervencao."
+      "notes": "README do repositorio. v2.0: pacote de recursos, validacao progressiva, baloes criativos, regra de exibibilidade. Usado em 2 sessoes."
+    },
+    "artefatos/sinestesia-beats.html": {
+      "state": "validated",
+      "marked_date": "2026-10-28",
+      "marked_by": "device-cesar",
+      "validated_date": "2026-10-28",
+      "validated_by": "device-cesar (curador)",
+      "feedback_negative": 0,
+      "usage_count": 1,
+      "promotion_threshold": 3,
+      "notes": "Artefato HTML: sinestesia beats. Marcado para validacao."
     }
   }
 }
