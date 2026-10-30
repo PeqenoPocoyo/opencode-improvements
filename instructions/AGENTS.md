@@ -220,6 +220,14 @@ o tipo de artefato e o contexto da conversa.
 - 3 paragrafos de texto quando diagrama inline resolve
 - HTML completo com `<script>` inline na conversa
 
+### 9.6 Auto-abertura no Review Pane (OBRIGATÓRIO)
+**SEMPRE que gerar um artefato (HTML, SVG, MD, CSV, código, etc.), chamar `browser.preview()` automaticamente.**
+
+- Não esperar o usuário pedir "abre no panel".
+- Após salvar o arquivo, chamar `browser.preview({ path: "<caminho>" })` imediatamente.
+- Isso vale para QUALQUER artefato gerado.
+- A única exceção: artefatos inline muito simples (cards de 3-4 linhas, SVG pequeno) que cabem na conversa.
+
 ## 10. Hooks e Observabilidade
 
 ### 10.1 Hooks Disponíveis
