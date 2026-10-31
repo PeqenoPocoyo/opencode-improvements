@@ -93,4 +93,4 @@ seções são complementadas.
 - Pode ser estendido com novos templates em `SECTION_TEMPLATES`
 - Integra-se ao ecossistema de hooks (PreToolUse/PostToolUse)
 
-> **Skill Evolver**: score 65/100 · evoluída em 2026-10-31T02:32:40.465753Z · versão evolver-1.0
+> **Skill Evolver**: score 65/100 · evoluída em 2026-10-31T02:34:06.462136+00:00Z · versão evolver-1.0

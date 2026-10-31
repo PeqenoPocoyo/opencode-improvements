@@ -182,14 +182,16 @@ def audit_skill(sk):
     for sec in REQUIRED_SECTIONS:
         if any(sec.lower().replace("## ", "") in h.lower() for h in h2s):
             present_sections += 1
-    # pelo menos 3 seções distintas
+    # pontuação por quantidade de H2 (mais H2 = mais estrutura)
     if len(h2s) >= 3:
         dims["structure"] += 4
     if len(h2s) >= 5:
         dims["structure"] += 4
+    if len(h2s) >= 8:
+        dims["structure"] += 2
     if present_sections >= 2:
-        dims["structure"] += 4
-    else:
+        dims["structure"] += 2
+    if len(h2s) < 3:
         issues.append(f"poucas seções H2 ({len(h2s)})")
         suggestions.append("adicionar seções: Quando usar, Exemplos, Anti-padrões, Saída")
 
@@ -280,10 +282,13 @@ def evolve_skill(sk, apply=False, dry_run=True):
     # 2. Adicionar triggers se ausentes
     if "trigger" not in (sk["frontmatter"].get("description", "") + sk["body"]).lower():
         trigger_line = f"\n> **Triggers (auto)**: {sk['id'].replace('-', ' ')}, {sk['id']}\n"
-        # insere após o primeiro H1 ou no início do body
-        if "\n# " in new_content:
+        # insere APÓS o frontmatter (segundo ---), não antes
+        fm_end = new_content.find("---", new_content.find("---") + 3)
+        if fm_end != -1:
+            insert_at = new_content.find("\n", fm_end) + 1
+            new_content = new_content[:insert_at] + trigger_line + new_content[insert_at:]
+        elif "\n# " in new_content:
             idx = new_content.find("\n# ") + 1
-            # find end of first heading line
             nl = new_content.find("\n", idx)
             new_content = new_content[:nl+1] + trigger_line + new_content[nl+1:]
         else:

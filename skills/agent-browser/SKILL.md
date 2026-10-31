@@ -50,3 +50,12 @@ Run `agent-browser skills list` to see everything available on the installed ver
 ## Observability Dashboard
 
 The dashboard runs independently of browser sessions on port 4848 and can also be opened through a proxied or forwarded URL such as `https://dashboard.agent-browser.localhost`. Agents should stay on the dashboard origin: session tabs, status, and stream traffic are proxied internally, so session ports do not need to be exposed.
+
+## Anti-padrões (auto-evoluídos)
+
+- ❌ Usar a skill sem validar o contexto de entrada.
+- ❌ Ignorar os triggers documentados e forçar ativação manual.
+- ❌ Entregar resultado sem verificar se todos os elementos são funcionais.
+- ❌ Repetir o mesmo padrão de saída sem adaptar ao domínio.
+
+> **Skill Evolver**: score 49/100 · evoluída em 2026-10-31T02:34:05.629745+00:00Z · versão evolver-1.0

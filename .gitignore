@@ -38,3 +38,6 @@ temp/
 # OpenCode local state
 .opencode/
 *.local
+
+# Skill evolution backups (local only)
+.claude/skill-backups/

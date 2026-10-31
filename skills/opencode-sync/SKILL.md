@@ -5,6 +5,8 @@ description: Conecta este dispositivo ao repositório unificado opencode-improve
 
 # OpenCode Sync — Conexão, Auto-Sync e Validação Progressiva
 
+> **Triggers (auto)**: opencode sync, opencode-sync
+
 ## Objetivo
 
 Conectar este dispositivo ao repositório `https://github.com/PeqenoPocoyo/opencode-improvements.git`,
@@ -245,3 +247,12 @@ E o agente executará todos os passos acima automaticamente.
 - `scripts/onboard-device.ps1` — onboarding Windows
 - `docs/SYNC.md` — documentação completa
 - `validation.json` — rastreamento de validação
+
+## Anti-padrões (auto-evoluídos)
+
+- ❌ Usar a skill sem validar o contexto de entrada.
+- ❌ Ignorar os triggers documentados e forçar ativação manual.
+- ❌ Entregar resultado sem verificar se todos os elementos são funcionais.
+- ❌ Repetir o mesmo padrão de saída sem adaptar ao domínio.
+
+> **Skill Evolver**: score 66/100 · evoluída em 2026-10-31T02:34:06.305505+00:00Z · versão evolver-1.0

@@ -10,6 +10,8 @@ test_scenario: "Criar artifact com 5 botões, verificar que todos têm onclick h
 
 # Functional UI — Skill
 
+> **Triggers (auto)**: functional ui, functional-ui
+
 ## Princípio Central
 **Nenhum elemento de UI pode ser "morto".** Se existe, funciona.
 
@@ -171,3 +173,5 @@ SE um botão abrir um arquivo não exibível no panel → FAIL
 - **Aplicável a**: HTML, React, Vue, Svelte, qualquer framework
 - **Versão**: 2.0
 - **Melhorado**: 2026-10-28 (regra de exibibilidade para botões inline em balões de artifacts)
+
+> **Skill Evolver**: score 63/100 · evoluída em 2026-10-31T02:34:06.081488+00:00Z · versão evolver-1.0

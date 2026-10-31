@@ -35,6 +35,11 @@
             "type": "command",
             "command": "python <hooks>/validate_sensitive_write.py",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python <hooks>/reasoning/skill-quality-gate.py",
+            "timeout": 10
           }
         ]
       },
@@ -57,6 +62,16 @@
             "type": "command",
             "command": "python <hooks>/session_end.py",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "skill|Skill|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/reasoning/skill-evolver-hook.py",
+            "timeout": 5
           }
         ]
       }

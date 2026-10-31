@@ -5,6 +5,8 @@ description: Cria artefatos inline (SVG, HTML, Mermaid, cards) diretamente na co
 
 # Skill: inline-artifacts
 
+> **Triggers (auto)**: inline artifacts, inline-artifacts
+
 # Inline Artifacts (OpenCode)
 
 ## O que renderiza inline
@@ -112,3 +114,5 @@ test_scenario: "Balao criativo com glassmorphism, glow, animacoes CSS, hover 3D,
 
 Base directory for this skill: C:\Users\drici\.config\opencode\skills\inline-artifacts
 Relative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.
+
+> **Skill Evolver**: score 70/100 · evoluída em 2026-10-31T02:34:06.147989+00:00Z · versão evolver-1.0

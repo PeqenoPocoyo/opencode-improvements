@@ -5,6 +5,8 @@ description: Salva arquivos grandes/interativos/editaveis em arquivo temporario 
 
 # Skill: artifact-balloon
 
+> **Triggers (auto)**: artifact balloon, artifact-balloon
+
 # Artifact Balloon (OpenCode)
 
 ## Objetivo
@@ -124,3 +126,5 @@ test_scenario: "Balao criativo com glassmorphism, glow, animacoes CSS, hover 3D,
 
 Base directory for this skill: C:\Users\drici\.config\opencode\skills\artifact-balloon
 Relative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.
+
+> **Skill Evolver**: score 68/100 · evoluída em 2026-10-31T02:34:05.745302+00:00Z · versão evolver-1.0

@@ -10,6 +10,8 @@ test_scenario: "Gerar 3 artefatos diferentes espontaneamente e verificar que nen
 
 # Artifact Creator — Skill
 
+> **Triggers (auto)**: artifact creator, artifact-creator
+
 ## Princípio Central
 **Artefatos não são sites.** São peças visuais interativas, funcionais e criativas que comunicam informação de forma dinâmica.
 
@@ -257,3 +259,5 @@ Nao esperar o usuario pedir. Isso vale para QUALQUER artefato gerado.
 - **Generativa**: Sim — cria novas capacidades de visualizacao
 - **Versao**: 2.1
 - **Melhorado**: 2026-10-29 (auto-abertura no Review pane, baloes criativos, regra de exibibilidade)
+
+> **Skill Evolver**: score 66/100 · evoluída em 2026-10-31T02:34:05.806709+00:00Z · versão evolver-1.0

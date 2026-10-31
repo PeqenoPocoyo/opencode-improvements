@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 """
-Assumption Probe — Questionamento de Premissas (auto-expansível).
+Assumption Probe — Questionamento GENÉRICO de Premissas (auto-expansível).
 
-O modelo frequentemente interpreta termos amplos de forma RESTRITA
-(ex: "indústria 4.0" -> só motores/gêmeo digital, ignorando robótica,
-agro, café, manufaturas discretas).
+NÃO é vinculada a domínio. Funciona para qualquer assunto.
 
-Esta hook força o modelo a questionar SUAS premissas de interpretação:
-"Será que o usuário quer que eu considere X como Y?"
+Princípio: o modelo frequentemente interpreta termos/conceitos de forma
+RESTRITA, assumindo a primeira interpretação que vem à cabeça. Esta hook
+força o modelo a questionar SUA premissa antes de assumir.
 
-A hook CRESCE SOZINHA: cada termo ambíguo novo identificado é
-adicionado ao arquivo de probes, que serve de memória para conversas
-futuras.
+Ela NÃO sabe o que os termos significam. Ela apenas:
+1. Extrai todo termo candidato do contexto (substantivos, siglas, compostos).
+2. Pergunta: "que premissa você está assumindo? é a única? qual o subset?"
+3. Aprende: registra termos + interpretações assumidas, e quando o modelo
+   repete uma interpretação RESTRITA, marca como "viés conhecido".
+
+Auto-expansão: o mapa de ambiguidade cresce com o uso, sem depender de
+lista fixa ou sufixos.
 
 Sem matchers: dispara em qualquer contexto.
 Fail-open: qualquer erro resultado em saida 0.
@@ -20,145 +24,144 @@ import sys
 import json
 import os
 import re
+import unicodedata
 from datetime import datetime
 
-# Onde os probes vivem (crescem com o uso)
-PROBE_FILES = [
-    os.path.join(os.getcwd(), "configs", "assumption-probes.json"),
-    os.path.expanduser("~/.config/opencode/assumption-probes.json"),
-]
+# Estado que cresce sozinho
+STATE_FILE = os.path.expanduser("~/.config/opencode/reasoning-state/assumption-probes.json")
+REPO_SEED = os.path.join(os.getcwd(), "configs", "assumption-probes.json")
 
-# Seed mínimo: pares termo -> interpretações possíveis
-SEED_PROBES = {
-    "dança": ["ballet", "dança contemporânea", "dança de salão", "break", "sapateado", "qual estilo?"],
-    "indústria": ["manufatura discreta", "processo contínuo", "agro", "mineração", "alimentos", "qual setor?"],
-    "indústria 4.0": ["IIoT", "gêmeo digital", "robótica", "MAN", "agro 4.0", "visão além de motores?"],
-    "iiot": ["sensores", "gateway", "edge", "cloud", "protocolos (MQTT/OPC-UA)", "manufatura discreta x contínua"],
-    "automação": ["CLP/PLC", "SCADA", "robótica", "MES", "predial", "qual camada?"],
-    "café": ["agricultura", "torrefação", "máquinas de café", "bebida", "qual contexto?"],
-    "motor": ["elétrico", "combustão", "servo", "passo", "qual tipo?"],
-    "arte": ["visual", "musical", "cênica", "digital", "qual forma?"],
-    "esporte": ["futebol", "eSports", "automobilismo", "qual modalidade?"],
-    "cidade": ["planejamento urbano", "mobilidade", "habitação", "qual aspecto?"],
-    "energia": ["elétrica", "renovável", "solar", "eólica", "qual fonte?"],
-    "saúde": ["clínica", "hospitalar", "preventiva", "dispositivos", "qual domínio?"],
-    "escola": ["ensino fundamental", "médio", "técnico", "superior", "qual nível?"],
-    "música": ["produção", "performance", "streaming", "instrumento", "qual contexto?"],
-    "robô": ["industrial", "colaborativo", "móvel", "serviço", "qual tipo?"],
-    "manufatura": ["discreta", "por processo", "job shop", "lote", "qual modo?"],
+STOPWORDS_PT = {
+    "para", "como", "sobre", "essa", "esse", "isso", "aqui", "ali", "mas",
+    "porque", "então", "também", "quando", "onde", "qual", "quais", "muito",
+    "mais", "menos", "estou", "está", "estão", "fazer", "feito", "feita",
+    "seja", "sendo", "foi", "será", "deve", "poderia", "preciso", "quero",
+    "gostaria", "temos", "tudo", "todos", "todas", "cada", "outro", "outra",
+    "mesmo", "mesma", "assim", "ainda", "depois", "antes", "desde", "até",
+    "the", "and", "for", "with", "this", "that", "from", "have", "has",
+    "you", "your", "not", "are", "was", "were", "can", "could", "would",
 }
 
-def load_probes():
-    for p in PROBE_FILES:
-        if os.path.exists(p):
-            try:
-                with open(p, "r", encoding="utf-8") as f:
-                    return json.load(f), p
-            except Exception:
-                pass
-    return dict(SEED_PROBES), PROBE_FILES[-1]
+def normalize(s):
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii").lower()
 
-def save_probes(probes, path):
+def load_state():
     try:
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(probes, f, indent=2, ensure_ascii=False)
+        os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+        if os.path.exists(STATE_FILE):
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    # Estrutura inicial VAZIA de viés — cresce com o uso
+    return {
+        "known_terms": {},      # termo -> {interpretations_assumed: [], narrow_bias_count: N}
+        "narrow_bias_watch": {}, # termo -> quantas vezes foi interpretado de forma restrita
+        "round": 0,
+    }
+
+def save_state(state):
+    try:
+        os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+        with open(STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
 
-def normalize(s):
-    """Remove acentos e loweriza para matching robusto."""
-    import unicodedata
-    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii").lower()
+def extract_candidate_terms(text):
+    """Extrai termos candidatos a interpretação (genérico)."""
+    # Remove código/urls para não poluir
+    text = re.sub(r'https?://\S+', ' ', text)
+    text = re.sub(r'```[\s\S]*?```', ' ', text)
+    # Palavras 4+ letras (inclui acentos)
+    words = re.findall(r'\b[a-zA-Záàâãéêíóôõúçñ]{4,}\b', text)
+    # Siglas 2-5 letras maiúsculas (CLP, MES, IIoT, ERP...)
+    acron = re.findall(r'\b[A-Z]{2,5}\b', text)
+    # Termos compostos (2 palavras maiúsculas ou com número: Industria 4.0)
+    compound = re.findall(r'\b[A-Za-záàâãéêíóôõúçñ]+\s+\d+(\.\d+)?\b', text)
 
-def find_terms(text, probes):
-    """Encontra termos semente presentes no texto (match sem acento)."""
-    found = []
-    text_norm = normalize(text)
-    for term in probes:
-        if term.startswith("_"):
-            continue
-        if normalize(term) in text_norm:
-            found.append(term)
-    return found
+    candidates = []
+    for w in words:
+        wn = normalize(w)
+        if wn not in {normalize(s) for s in STOPWORDS_PT}:
+            candidates.append(w)
+    candidates.extend(acron)
+    candidates.extend([c.strip() for c in compound])
+    return list(dict.fromkeys(candidates))
 
-def detect_new_ambiguous(text, probes):
-    """Heurística para detectar NOVOS termos amplos (auto-expansão da hook).
-
-    Critério: palavra com 5+ letras, título ou substantivo comum,
-    que não está nos probes e aparece em contexto de dúvida/abrangência.
-    """
-    new_terms = []
-    # palavras candidatas (5+ letras, alfabéticas)
-    candidates = re.findall(r'\b[a-záàâãéêíóôõúç]{5,}\b', text.lower())
-    for w in candidates:
-        if w in probes:
-            continue
-        # heurística simples: palavras que são categorias amplas conhecidas
-        # ou que terminam em sufixos de domínio
-        if any(w.endswith(s) for s in ["ção", "mento", "ência", "ano", "ista"]):
-            new_terms.append(w)
-    # dedup, máx 3 novas por rodada (para não poluir)
-    return list(dict.fromkeys(new_terms))[:3]
+def get_text(data, raw):
+    if isinstance(data, dict):
+        return data.get("prompt") or data.get("message") or data.get("text") or raw
+    return raw
 
 def main():
     try:
-        input_data = sys.stdin.read()
-        if not input_data:
+        raw = sys.stdin.read()
+        if not raw:
             sys.exit(0)
-
-        probes, probe_path = load_probes()
-
-        # Extrair texto do prompt/contexto
         try:
-            data = json.loads(input_data)
-            text = data.get("prompt", data.get("message", data.get("text", input_data)))
+            data = json.loads(raw)
         except json.JSONDecodeError:
-            text = input_data
+            data = None
 
-        found = find_terms(text, probes)
-        new_terms = detect_new_ambiguous(text, probes)
+        text = get_text(data, raw)
+        state = load_state()
+        state["round"] += 1
 
-        # AUTO-EXPANSÃO: adicionar novos termos como probes pendentes
-        grew = False
-        for term in new_terms:
-            if term not in probes:
-                probes[term] = ["(interpretação a questionar)",
-                                "o que exatamente o usuário quer dizer com isto?"]
-                grew = True
-        if grew:
-            save_probes(probes, probe_path)
+        candidates = extract_candidate_terms(text)
 
-        if not found and not new_terms:
+        # Filtra: mantém termos que são potencialmente categorias/conceitos
+        # (genérico: não sabemos o significado, então questionamos todos os relevantes)
+        # Limita a 8 por rodada para não sobrecarregar
+        focus = candidates[:8]
+        if not focus:
             sys.exit(0)
 
-        # Construir questionamentos
-        questions = []
-        for term in found:
-            interps = probes[term]
-            formatted = ", ".join(f"'{i}'" for i in interps if not i.startswith("("))
-            questions.append(
-                f"Você está interpretando '{term}' de forma RESTRITA? "
-                f"Considere também: {formatted}. "
-                f"PERGUNTE-SE: o usuário quis dizer tudo isso ou só um subset?"
+        # Aprende: registra termos vistos
+        for term in focus:
+            tn = normalize(term)
+            if tn not in state["known_terms"]:
+                state["known_terms"][tn] = {
+                    "term": term,
+                    "times_seen": 0,
+                    "narrow_bias_count": 0,
+                    "first_seen": datetime.utcnow().isoformat() + "Z",
+                }
+            state["known_terms"][tn]["times_seen"] += 1
+        save_state(state)
+
+        # Viés conhecido? (termo já interpretado restritamente antes)
+        biased = [t for t in focus
+                  if state["known_terms"].get(normalize(t), {}).get("narrow_bias_count", 0) >= 2]
+
+        # Constrói questionamentos GENÉRICOS
+        lines = []
+        for term in focus:
+            lines.append(
+                f"'{term}': que premissa VOCÊ está assumindo sobre isto? "
+                f"É a ÚNICA interpretação? Que subsets/contextos você NÃO considerou?"
             )
 
-        if new_terms:
-            questions.append(
-                f"Termos amplos detectados (novos probes registrados): {', '.join(new_terms)}. "
-                f"Antes de assumir significado, QUESTIONE a abrangência."
+        bias_warning = ""
+        if biased:
+            bias_warning = (
+                f" ALERTA DE VIÉS: você já interpretou {', '.join(biased)} de forma RESTRITA antes. "
+                "Amplie obrigatoriamente a interpretação."
             )
+
+        hook_event = (data.get("hook_event_name") if isinstance(data, dict) else None) or "UserPromptSubmit"
 
         additional = {
             "hookSpecificOutput": {
-                "hookEventName": data.get("hook_event_name", "UserPromptSubmit") if isinstance(data, dict) else "UserPromptSubmit",
+                "hookEventName": hook_event,
                 "additionalContext": (
-                    "[PROBE DE PREMISSAS] Você pode ter interpretado algo de forma restrita. "
-                    + " ".join(questions) + " "
-                    "REGRA: não restrinja o sentido do usuário à sua primeira interpretação. "
-                    "Se o termo é abrangente, considere TODOS os setores/contextos possíveis "
-                    "ou pergunte qual o usuário quer. "
-                    + (f"(hooks auto-expandida: {len(new_terms)} novos probes salvos)" if grew else "")
+                    "[PROBE GENÉRICO DE PREMISSAS] Não restrinja a interpretação. "
+                    "Para cada termo abaixo, questione sua premissa ANTES de assumir:\n"
+                    + "\n".join(" - " + l for l in lines)
+                    + "\nREGRA: se qualquer termo for abrangente (domínio, categoria, setor, "
+                    "conceito amplo), considere TODOS os subcontextos possíveis ou PERGUNTE "
+                    "ao usuário qual subset ele quer. Não assuma o primeiro sentido que veio à cabeça."
+                    + bias_warning
                 )
             }
         }
