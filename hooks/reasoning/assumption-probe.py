@@ -32,14 +32,25 @@ STATE_FILE = os.path.expanduser("~/.config/opencode/reasoning-state/assumption-p
 REPO_SEED = os.path.join(os.getcwd(), "configs", "assumption-probes.json")
 
 STOPWORDS_PT = {
+    # preposições/conjunções/advérbios
     "para", "como", "sobre", "essa", "esse", "isso", "aqui", "ali", "mas",
     "porque", "então", "também", "quando", "onde", "qual", "quais", "muito",
-    "mais", "menos", "estou", "está", "estão", "fazer", "feito", "feita",
-    "seja", "sendo", "foi", "será", "deve", "poderia", "preciso", "quero",
-    "gostaria", "temos", "tudo", "todos", "todas", "cada", "outro", "outra",
-    "mesmo", "mesma", "assim", "ainda", "depois", "antes", "desde", "até",
+    "mais", "menos", "assim", "ainda", "depois", "antes", "desde", "até",
     "the", "and", "for", "with", "this", "that", "from", "have", "has",
     "you", "your", "not", "are", "was", "were", "can", "could", "would",
+    # verbos/pronomes/possessivos comuns
+    "entender", "estudando", "estudar", "estudo", "entendendo", "entendi",
+    "fazer", "feito", "feita", "fazendo", "fiz", "faço", "seja", "sendo",
+    "estou", "está", "estão", "esta", "este", "estes", "estas", "foi",
+    "será", "deve", "poderia", "preciso", "quero", "gostaria", "temos",
+    "tenho", "tendo", "ter", "tudo", "todos", "todas", "cada", "outro",
+    "outra", "outros", "outras", "mesmo", "mesma", "mesmos", "mesmas",
+    "minha", "meu", "seu", "sua", "nosso", "nossa", "dele", "dela",
+    "gostar", "gostei", "achar", "acho", "achei", "penso", "pensando",
+    "consigo", "consegue", "conseguir", "queria", "quis", "querer",
+    "pretendo", "pretende", "objetivo", "ideia", "caso", "coisa", "coisas",
+    "forma", "jeito", "modo", "maneira", "parte", "partes", "lado",
+    "volta", "vez", "vezes", "ano", "anos", "dia", "dias", "hoje", "agora",
 }
 
 def normalize(s):

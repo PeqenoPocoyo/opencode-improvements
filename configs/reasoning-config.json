@@ -48,6 +48,11 @@
         "timeout": 5
       },
       {
+        "name": "bias-tracker",
+        "command": "python hooks/reasoning/bias-tracker.py",
+        "timeout": 5
+      },
+      {
         "name": "capability-audit",
         "command": "python hooks/reasoning/capability-audit.py",
         "timeout": 5
