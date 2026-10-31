@@ -17,6 +17,11 @@
         "name": "reasoning-expand",
         "command": "python hooks/reasoning/user-prompt-expand.py",
         "timeout": 10
+      },
+      {
+        "name": "assumption-probe",
+        "command": "python hooks/reasoning/assumption-probe.py",
+        "timeout": 10
       }
     ],
     "PreToolUse": [

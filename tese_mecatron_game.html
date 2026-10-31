@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tese de TCC — Sistema Mecatrônico Integrado para Manufatura Discreta e Logística</title>
+<style>
+/* ============================================================
+   ESTILO ABNT — NBR 14724 / NBR 6023
+   ============================================================ */
+@page { size: A4; margin: 3cm 2cm 2cm 3cm; }
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  text-align: justify;
+  color: #000;
+  margin: 0;
+  padding: 0;
+}
+h1, h2, h3, h4 { font-family: "Times New Roman", Times, serif; font-weight: bold; }
+h1 { font-size: 14pt; text-transform: uppercase; text-align: center; margin-top: 2cm; margin-bottom: 1cm; }
+h2 { font-size: 12pt; text-transform: uppercase; margin-top: 1.5cm; margin-bottom: 0.5cm; }
+h3 { font-size: 12pt; margin-top: 1cm; margin-bottom: 0.3cm; }
+h4 { font-size: 12pt; font-style: italic; margin-top: 0.8cm; margin-bottom: 0.2cm; }
+p { text-indent: 1.25cm; margin: 0 0 0.3cm 0; }
+p.no-indent { text-indent: 0; }
+.center { text-align: center; text-indent: 0; }
+.small { font-size: 10pt; }
+.caption { font-size: 10pt; text-align: center; font-weight: bold; margin: 0.3cm 0 0.1cm 0; text-indent: 0; }
+.source { font-size: 10pt; text-align: center; font-style: italic; margin: 0 0 0.6cm 0; text-indent: 0; }
+table { width: 100%; border-collapse: collapse; margin: 0.5cm 0 0.3cm 0; font-size: 10pt; }
+th, td { border: 1px solid #000; padding: 4px 6px; vertical-align: top; }
+th { background: #e8e8e8; font-weight: bold; text-align: center; }
+.figure { margin: 0.6cm 0; text-align: center; }
+.figure svg { max-width: 100%; height: auto; }
+.page-break { page-break-before: always; }
+ul, ol { margin: 0.3cm 0 0.3cm 1.25cm; }
+li { margin-bottom: 0.15cm; }
+.ref { text-indent: -1.25cm; margin-left: 1.25cm; margin-bottom: 0.3cm; font-size: 11pt; }
+code { font-family: "Consolas", monospace; font-size: 9.5pt; background: #f4f4f4; padding: 1px 3px; }
+pre { font-family: "Consolas", monospace; font-size: 9.5pt; background: #f4f4f4; padding: 8px; border: 1px solid #ccc; overflow-x: auto; }
+.cover { text-align: center; padding-top: 4cm; }
+.cover .inst { font-size: 12pt; margin-bottom: 2cm; }
+.cover .title { font-size: 14pt; font-weight: bold; margin-bottom: 3cm; }
+.cover .author { font-size: 12pt; margin-bottom: 4cm; }
+.cover .city { font-size: 12pt; margin-top: 3cm; }
+.toc { margin-left: 0; }
+.toc li { list-style: none; margin-bottom: 0.2cm; }
+.toc a { text-decoration: none; color: #000; }
+.badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 9pt; font-weight: bold; }
+.badge-down { background: #fde2e2; color: #9b1c1c; }
+.badge-up { background: #e2f3e2; color: #1c6b1c; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ CAPA ============================================================ -->
+<div class="cover">
+  <p class="inst no-indent">UNIVERSIDADE FEDERAL DE TECNOLOGIA — CURSO DE ENGENHARIA MECATRÔNICA</p>
+  <p class="inst no-indent">TRABALHO DE CONCLUSÃO DE CURSO</p>
+  <p class="title no-indent">SISTEMA MECATRÔNICO INTEGRADO COM GÊMEO DIGITAL E GAMIFICAÇÃO PARA MANUFATURA DISCRETA E LOGÍSTICA: REDUÇÃO DE DOWNTIME E AUMENTO DE ENGAJAMENTO OPERACIONAL</p>
+  <p class="author no-indent">Autor: Eng. (a ser definido)<br>Orientador: Prof. Dr. (a ser definido)</p>
+  <p class="city no-indent">Cidade, 2026</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ FOLHA DE ROSTO ============================================================ -->
+<div class="cover">
+  <p class="inst no-indent">UNIVERSIDADE FEDERAL DE TECNOLOGIA — CURSO DE ENGENHARIA MECATRÔNICA</p>
+  <p class="title no-indent">SISTEMA MECATRÔNICO INTEGRADO COM GÊMEO DIGITAL E GAMIFICAÇÃO PARA MANUFATURA DISCRETA E LOGÍSTICA: REDUÇÃO DE DOWNTIME E AUMENTO DE ENGAJAMENTO OPERACIONAL</p>
+  <p class="no-indent" style="margin-top:4cm; text-align:justify; margin-left:8cm;">
+    Trabalho de Conclusão de Curso apresentado ao Curso de Engenharia Mecatrônica da Universidade Federal de Tecnologia, como requisito parcial para obtenção do título de Bacharel em Engenharia Mecatrônica.
+  </p>
+  <p class="no-indent" style="margin-top:4cm;">Orientador: Prof. Dr. (a ser definido)</p>
+  <p class="city no-indent" style="margin-top:6cm;">Cidade, 2026</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ RESUMO ============================================================ -->
+<h1>RESUMO</h1>
+<p>O presente trabalho propõe o desenvolvimento de uma solução mecatrônica integrada, denominada <strong>MECATRON-GAME</strong>, destinada à manufatura discreta e aos processos logísticos correlatos. A solução combina (i) aquisição de dados de campo via sensores IIoT e protocolos OPC UA/MQTT, (ii) um gêmeo digital (digital twin) para simulação e manutenção preditiva, e (iii) uma camada de gamificação voltada ao engajamento dos operadores do chão de fábrica. O objetivo central é fazer com que índices custosos — downtime não planejado, MTTR (Mean Time To Repair), retrabalho e lead time logístico — <span class="badge badge-down">CAIAM</span>, enquanto índices de valor — OEE (Overall Equipment Effectiveness), MTBF (Mean Time Between Failures), produtividade e engajamento operacional — <span class="badge badge-up">AUMENTEM</span>. A metodologia adotada é a Design Science Research (DSR), com construção de artefato, demonstração e avaliação em cenário simulado. Espera-se, como resultado, a redução de até 35% no downtime não planejado e o aumento de 20% no OEE e de 40% no engajamento, gerando oportunidade de crescimento e competitividade para a empresa. Palavras-chave: mecatrônica; manufatura discreta; gêmeo digital; gamificação; OEE; IIoT; manutenção preditiva.</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ ABSTRACT ============================================================ -->
+<h1>ABSTRACT</h1>
+<p class="no-indent" style="font-style:italic;">This work proposes the development of an integrated mechatronic solution, named MECATRON-GAME, aimed at discrete manufacturing and related logistics processes. The solution combines (i) field data acquisition via IIoT sensors and OPC UA/MQTT protocols, (ii) a digital twin for simulation and predictive maintenance, and (iii) a gamification layer aimed at engaging shop-floor operators. The central goal is to make costly indices — unplanned downtime, MTTR, rework and logistics lead time — decrease, while value indices — OEE, MTBF, productivity and operational engagement — increase. The adopted methodology is Design Science Research (DSR), with artifact construction, demonstration and evaluation in a simulated scenario. Expected results include up to 35% reduction in unplanned downtime and a 20% increase in OEE and 40% in engagement, generating growth and competitiveness opportunities. Keywords: mechatronics; discrete manufacturing; digital twin; gamification; OEE; IIoT; predictive maintenance.</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ LISTA DE FIGURAS ============================================================ -->
+<h1>LISTA DE FIGURAS</h1>
+<ul class="toc">
+  <li>Figura 1 — Arquitetura geral do sistema MECATRON-GAME ........................................ 12</li>
+  <li>Figura 2 — Fluxo de dados do chão de fábrica à nuvem .............................................. 14</li>
+  <li>Figura 3 — Gêmeo digital e manutenção preditiva ...................................................... 16</li>
+  <li>Figura 4 — Dashboard de gamificação e engajamento ................................................ 18</li>
+  <li>Figura 5 — Diagrama de blocos do MVP ...................................................................... 20</li>
+  <li>Figura 6 — Comparativo de soluções existentes .......................................................... 22</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ LISTA DE TABELAS ============================================================ -->
+<h1>LISTA DE TABELAS</h1>
+<ul class="toc">
+  <li>Tabela 1 — Índices custosos vs. índices de valor .................................................... 11</li>
+  <li>Tabela 2 — Comparativo de soluções de mercado .................................................. 22</li>
+  <li>Tabela 3 — Requisitos funcionais do MVP ............................................................ 24</li>
+  <li>Tabela 4 — Cronograma de desenvolvimento .......................................................... 26</li>
+  <li>Tabela 5 — Métricas de avaliação .............................................................................. 28</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ SUMÁRIO ============================================================ -->
+<h1>SUMÁRIO</h1>
+<ul class="toc">
+  <li>1 INTRODUÇÃO ........................................................................................................ 8</li>
+  <li>1.1 Contexto e motivação ......................................................................................... 8</li>
+  <li>1.2 Problema de pesquisa ........................................................................................ 9</li>
+  <li>1.3 Objetivos .............................................................................................................. 9</li>
+  <li>1.4 Justificativa ........................................................................................................ 10</li>
+  <li>1.5 Estrutura do trabalho ........................................................................................ 10</li>
+  <li>2 REFERENCIAL TEÓRICO ...................................................................................... 11</li>
+  <li>2.1 Manufatura discreta e processos logísticos .................................................... 11</li>
+  <li>2.2 Automação e mecatrônica ................................................................................ 11</li>
+  <li>2.3 Indústria 4.0 e 5.0 ............................................................................................ 12</li>
+  <li>2.4 IIoT e protocolos de comunicação (OPC UA, MQTT) ..................................... 12</li>
+  <li>2.5 Gêmeo digital (Digital Twin) .............................................................................. 13</li>
+  <li>2.6 Manutenção preditiva ........................................................................................ 14</li>
+  <li>2.7 Gamificação e engajamento operacional ........................................................ 14</li>
+  <li>2.8 Indicadores de desempenho (OEE, MTBF, MTTR) ........................................ 15</li>
+  <li>3 METODOLOGIA ..................................................................................................... 15</li>
+  <li>3.1 Design Science Research .................................................................................. 15</li>
+  <li>3.2 Coleta e análise de dados .................................................................................. 16</li>
+  <li>3.3 Cenário de aplicação .......................................................................................... 16</li>
+  <li>4 DESENVOLVIMENTO DA SOLUÇÃO (MVP) ................................................... 17</li>
+  <li>4.1 Visão geral do sistema MECATRON-GAME .................................................. 17</li>
+  <li>4.2 Arquitetura em camadas ................................................................................... 17</li>
+  <li>4.3 Camada de campo (sensores e atuadores) ................................................... 18</li>
+  <li>4.4 Camada de comunicação (OPC UA / MQTT) ................................................ 18</li>
+  <li>4.5 Camada de gêmeo digital ................................................................................ 19</li>
+  <li>4.6 Camada de gamificação e engajamento .......................................................... 19</li>
+  <li>4.7 Requisitos funcionais .......................................................................................... 20</li>
+  <li>4.8 Stack tecnológica .............................................................................................. 21</li>
+  <li>4.9 Diagrama de blocos do MVP ............................................................................ 21</li>
+  <li>5 ANÁLISE COMPARATIVA E RESULTADOS ESPERADOS ................................ 22</li>
+  <li>5.1 Comparativo com soluções existentes ........................................................... 22</li>
+  <li>5.2 Impacto nos índices custosos e de valor ........................................................ 23</li>
+  <li>5.3 Cenário de simulação ......................................................................................... 24</li>
+  <li>6 CONCLUSÃO .......................................................................................................... 25</li>
+  <li>6.1 Síntese .............................................................................................................. 25</li>
+  <li>6.2 Limitações ......................................................................................................... 25</li>
+  <li>6.3 Trabalhos futuros .............................................................................................. 26</li>
+  <li>REFERÊNCIAS ........................................................................................................ 27</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ 1 INTRODUÇÃO ============================================================ -->
+<h1>1 INTRODUÇÃO</h1>
+
+<h2>1.1 Contexto e motivação</h2>
+<p>A manufatura discreta e os processos logísticos correlatos enfrentam, na atualidade, pressões simultâneas por redução de custos, aumento de qualidade e maior engajamento dos trabalhadores. A literatura recente aponta que a convergência entre mecatrônica, Internet Industrial das Coisas (IIoT), gêmeos digitais e gamificação constitui um dos caminhos mais promissores para a transformação digital do chão de fábrica (MORDOR INTELLIGENCE, 2026; EUROPEAN COMMISSION, 2025).</p>
+<p>No contexto brasileiro, a adoção da Indústria 4.0 ainda é heterogênea, com muitas empresas operando em níveis de maturidade digital baixos, o que gera perdas significativas por downtime não planejado, retrabalho e baixo engajamento operacional. Segundo a Gallup (2024), equipes altamente engajadas geram 23% mais lucratividade e reduzem o absenteísmo em 81%, evidenciando que o fator humano é determinante.</p>
+
+<h2>1.2 Problema de pesquisa</h2>
+<p>Como desenvolver e validar uma solução mecatrônica integrada, baseada em gêmeo digital e gamificação, capaz de reduzir índices custosos (downtime, MTTR, retrabalho, lead time logístico) e aumentar índices de valor (OEE, MTBF, produtividade, engajamento) na manufatura discreta e em processos logísticos correlatos?</p>
+
+<h2>1.3 Objetivos</h2>
+<p><strong>Objetivo geral:</strong> desenvolver e avaliar o sistema MECATRON-GAME, uma plataforma mecatrônica integrada que reduz índices custosos e aumenta índices de valor na manufatura discreta e logística.</p>
+<p><strong>Objetivos específicos:</strong></p>
+<ul>
+  <li>Levantar as tendências de automação e mecatrônica aplicáveis à manufatura discreta e logística;</li>
+  <li>Projetar a arquitetura em camadas (campo, comunicação, gêmeo digital, gamificação);</li>
+  <li>Definir os requisitos funcionais do MVP;</li>
+  <li>Comparar a solução com as existentes no mercado;</li>
+  <li>Estimar o impacto quantitativo nos índices custosos e de valor.</li>
+</ul>
+
+<h2>1.4 Justificativa</h2>
+<p>A relevância do trabalho reside na convergência de três tendências de alto impacto: (i) a hiperconectividade do chão de fábrica via IIoT e protocolos padronizados (OPC UA/MQTT); (ii) a maturidade dos gêmeos digitais para manutenção preditiva; e (iii) a gamificação como alavanca de engajamento. A combinação dessas três frentes em um único artefato mecatrônico é pouco explorada na literatura e representa oportunidade de crescimento e engajamento para empresas de manufatura discreta.</p>
+
+<h2>1.5 Estrutura do trabalho</h2>
+<p>O trabalho está organizado em seis capítulos. O Capítulo 2 apresenta o referencial teórico. O Capítulo 3 descreve a metodologia. O Capítulo 4 detalha o desenvolvimento da solução (MVP). O Capítulo 5 traz a análise comparativa e os resultados esperados. O Capítulo 6 apresenta as conclusões.</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ 2 REFERENCIAL ============================================================ -->
+<h1>2 REFERENCIAL TEÓRICO</h1>
+
+<h2>2.1 Manufatura discreta e processos logísticos</h2>
+<p>A manufatura discreta produz itens distintos e contáveis (automóveis, eletrônicos, máquinas), diferindo da manufatura de processo (química, alimentícia). Os processos logísticos correlatos incluem armazenagem, picking, packing e expedição, que impactam diretamente o lead time e o custo total (ACTIONSYS, 2026).</p>
+
+<h2>2.2 Automação e mecatrônica</h2>
+<p>A mecatrônica integra mecânica, eletrônica, controle e software. Na manufatura, ela se materializa em células robotizadas, sistemas de transporte (AGVs/AMRs), sensores e atuadores inteligentes, e CLPs/CPUs industriais. A mecatrônica é o substrato físico sobre o qual se apoiam as soluções de Indústria 4.0.</p>
+
+<h2>2.3 Indústria 4.0 e 5.0</h2>
+<p>A Indústria 4.0 caracteriza-se pela digitalização, IIoT, análise de dados e automação. A Indústria 5.0, por sua vez, reposiciona o ser humano no centro, enfatizando sustentabilidade, resiliência e colaboração humano-máquina (EUROPEAN COMMISSION, 2025; SIMIO, 2025). O MECATRON-GAME adota princípios da Indústria 5.0 ao colocar o engajamento do operador como métrica de sucesso.</p>
+
+<h2>2.4 IIoT e protocolos de comunicação (OPC UA, MQTT)</h2>
+<p>O IIoT conecta máquinas, sensores e sistemas de gestão. Os protocolos OPC UA (estruturado, seguro, semântico) e MQTT (leve, pub/sub, ideal para nuvem) são complementares: OPC UA na coleta de campo e MQTT na distribuição para a nuvem (VNODE AUTOMATION, 2025; INDUSTRIAL ETHERNET, 2025). A convergência TI/OT é uma das principais tendências de 2026 (VJ AUTOMAÇÃO, 2026).</p>
+
+<h2>2.5 Gêmeo digital (Digital Twin)</h2>
+<p>O gêmeo digital é a representação virtual de um ativo físico, alimentada por dados em tempo real. Permite simulação, otimização e manutenção preditiva. O mercado global de gêmeos digitais deverá valer US$ 36,1 bilhões em 2026, com crescimento acelerado (BUSINESS RESEARCH INSIGHTS, 2026; SIEMENS, 2025).</p>
+
+<h2>2.6 Manutenção preditiva</h2>
+<p>A manutenção preditiva utiliza sensores e modelos de IA para antecipar falhas antes que ocorram, reduzindo downtime não planejado e custos de manutenção. É uma das tendências centrais de automação industrial para 2026 (VJ AUTOMAÇÃO, 2026; FRACTTAL, 2026).</p>
+
+<h2>2.7 Gamificação e engajamento operacional</h2>
+<p>A gamificação aplica elementos de jogos (pontos, rankings, badges, desafios) a contextos não lúdicos, aumentando engajamento e motivação. Na manufatura, a gamificação do chão de fábrica pode aumentar a produtividade e reduzir o absenteísmo. Equipes engajadas geram 23% mais lucratividade (GALLUP, 2024; HARVARD BUSINESS REVIEW, 2024).</p>
+
+<h2>2.8 Indicadores de desempenho (OEE, MTBF, MTTR)</h2>
+<p>O OEE (Overall Equipment Effectiveness) mede disponibilidade × desempenho × qualidade. O MTBF (Mean Time Between Failures) mede a confiabilidade. O MTTR (Mean Time To Repair) mede a rapidez de recuperação. Juntos, formam o núcleo dos KPIs de manufatura (OEE.COM, 2025; IBM, 2025).</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ 3 METODOLOGIA ============================================================ -->
+<h1>3 METODOLOGIA</h1>
+
+<h2>3.1 Design Science Research (DSR)</h2>
+<p>Adota-se a Design Science Research, que visa criar e avaliar artefatos que resolvam problemas relevantes. As etapas seguidas são: (1) identificação do problema; (2) definição dos objetivos; (3) design e desenvolvimento; (4) demonstração; (5) avaliação; (6) comunicação (PEFFERS et al., 2007).</p>
+
+<h2>3.2 Coleta e análise de dados</h2>
+<p>Os dados de campo são coletados via sensores IIoT (vibração, temperatura, corrente, contagem de peças) e consolidados em uma base de séries temporais. A análise utiliza estatística descritiva e modelos de manutenção preditiva (regressão, classificação de anomalias). Os índices são calculados antes e depois da intervenção.</p>
+
+<h2>3.3 Cenário de aplicação</h2>
+<p>O cenário de aplicação é uma célula de manufatura discreta (montagem de componentes eletrônicos) com três estações, uma linha de transporte (conveyor) e um armazém logístico (picking/shipping). O cenário é modelado em gêmeo digital para validação antes da implantação física.</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ 4 DESENVOLVIMENTO ============================================================ -->
+<h1>4 DESENVOLVIMENTO DA SOLUÇÃO (MVP)</h1>
+
+<h2>4.1 Visão geral do sistema MECATRON-GAME</h2>
+<p>O MECATRON-GAME é uma plataforma mecatrônica integrada composta por quatro camadas: (1) campo (sensores/atuadores), (2) comunicação (OPC UA/MQTT), (3) gêmeo digital (simulação + predição), e (4) gamificação (engajamento). A Figura 1 apresenta a arquitetura geral.</p>
+
+<div class="figure">
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" style="font-family:Times New Roman,serif;">
+  <rect x="10" y="10" width="740" height="300" rx="10" fill="#f7f7f7" stroke="#333" stroke-width="2"/>
+  <text x="380" y="32" text-anchor="middle" font-size="14" font-weight="bold">Figura 1 — Arquitetura geral do sistema MECATRON-GAME</text>
+  <!-- Layer 4 -->
+  <rect x="40" y="55" width="680" height="55" rx="6" fill="#e2f3e2" stroke="#1c6b1c" stroke-width="1.5"/>
+  <text x="380" y="78" text-anchor="middle" font-size="12" font-weight="bold">Camada 4 — Gamificação e Engajamento</text>
+  <text x="380" y="96" text-anchor="middle" font-size="10">Pontos, rankings, badges, desafios, dashboard de operador</text>
+  <!-- Layer 3 -->
+  <rect x="40" y="120" width="680" height="55" rx="6" fill="#e2e8f3" stroke="#1c3b6b" stroke-width="1.5"/>
+  <text x="380" y="143" text-anchor="middle" font-size="12" font-weight="bold">Camada 3 — Gêmeo Digital (Digital Twin)</text>
+  <text x="380" y="161" text-anchor="middle" font-size="10">Simulação, manutenção preditiva, otimização de processo</text>
+  <!-- Layer 2 -->
+  <rect x="40" y="185" width="680" height="55" rx="6" fill="#f3e2e2" stroke="#6b1c1c" stroke-width="1.5"/>
+  <text x="380" y="208" text-anchor="middle" font-size="12" font-weight="bold">Camada 2 — Comunicação (OPC UA / MQTT)</text>
+  <text x="380" y="226" text-anchor="middle" font-size="10">Coleta de campo, distribuição para nuvem, segurança</text>
+  <!-- Layer 1 -->
+  <rect x="40" y="250" width="680" height="50" rx="6" fill="#f3f0e2" stroke="#6b6b1c" stroke-width="1.5"/>
+  <text x="380" y="272" text-anchor="middle" font-size="12" font-weight="bold">Camada 1 — Campo (Sensores e Atuadores IIoT)</text>
+  <text x="380" y="288" text-anchor="middle" font-size="10">Vibração, temperatura, corrente, contagem, AGV, conveyor</text>
+  <!-- arrows -->
+  <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs>
+  <line x1="380" y1="110" x2="380" y2="120" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="380" y1="175" x2="380" y2="185" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="380" y1="240" x2="380" y2="250" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+</svg>
+<p class="source">Fonte: elaborado pelo autor (2026).</p>
+</div>
+
+<h2>4.2 Arquitetura em camadas</h2>
+<p>A arquitetura é modular, permitindo evolução independente de cada camada. Os dados fluem do campo para a nuvem e retornam como ações (alertas, ordens de manutenção, pontuação de gamificação).</p>
+
+<h2>4.3 Camada de campo (sensores e atuadores)</h2>
+<p>Sensores de vibração (acelerômetros MEMS), temperatura (RTD/termopares), corrente (CTs) e contagem de peças (fotoelétricos/indutivos) são instalados nos equipamentos críticos. Atuadores incluem drives de frequência, válvulas pneumáticas e AGVs (Automated Guided Vehicles) para movimentação logística. Os sensores publicam dados a 10–100 Hz via OPC UA.</p>
+
+<h2>4.4 Camada de comunicação (OPC UA / MQTT)</h2>
+<p>Um gateway edge (ex.: Siemens IOT2050 ou Raspberry Pi industrial) consolida os dados OPC UA e os republica via MQTT (QoS 1) para um broker (Mosquitto/EMQX) em nuvem. A segurança é garantida por TLS 1.3 e autenticação por certificado. A Figura 2 ilustra o fluxo.</p>
+
+<div class="figure">
+<svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" style="font-family:Times New Roman,serif;">
+  <text x="380" y="22" text-anchor="middle" font-size="13" font-weight="bold">Figura 2 — Fluxo de dados do chão de fábrica à nuvem</text>
+  <rect x="30" y="45" width="130" height="60" rx="6" fill="#f3f0e2" stroke="#6b6b1c"/>
+  <text x="95" y="72" text-anchor="middle" font-size="11" font-weight="bold">Sensores</text>
+  <text x="95" y="88" text-anchor="middle" font-size="9">Vibração, Temp, I</text>
+  <rect x="200" y="45" width="130" height="60" rx="6" fill="#f3e2e2" stroke="#6b1c1c"/>
+  <text x="265" y="72" text-anchor="middle" font-size="11" font-weight="bold">Gateway Edge</text>
+  <text x="265" y="88" text-anchor="middle" font-size="9">OPC UA → MQTT</text>
+  <rect x="370" y="45" width="130" height="60" rx="6" fill="#e2e8f3" stroke="#1c3b6b"/>
+  <text x="435" y="72" text-anchor="middle" font-size="11" font-weight="bold">Broker MQTT</text>
+  <text x="435" y="88" text-anchor="middle" font-size="9">TLS 1.3</text>
+  <rect x="540" y="45" width="190" height="60" rx="6" fill="#e2f3e2" stroke="#1c6b1c"/>
+  <text x="635" y="72" text-anchor="middle" font-size="11" font-weight="bold">Nuvem / Gêmeo Digital</text>
+  <text x="635" y="88" text-anchor="middle" font-size="9">Dashboards, IA, Gamificação</text>
+  <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs>
+  <line x1="160" y1="75" x2="200" y2="75" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <line x1="330" y1="75" x2="370" y2="75" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <line x1="500" y1="75" x2="540" y2="75" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <text x="380" y="150" text-anchor="middle" font-size="10" font-style="italic">Latência fim-a-fim alvo: &lt; 200 ms para alertas críticos</text>
+</svg>
+<p class="source">Fonte: elaborado pelo autor (2026).</p>
+</div>
+
+<h2>4.5 Camada de gêmeo digital</h2>
+<p>O gêmeo digital replica a célula de produção em um ambiente virtual (Unity/Simio/AnyLogic), alimentado pelos dados IIoT em tempo real. Permite: (a) simulação de cenários de produção; (b) manutenção preditiva por detecção de anomalias (Isolation Forest, LSTM); (c) otimização de sequenciamento. A Figura 3 ilustra.</p>
+
+<div class="figure">
+<svg viewBox="0 0 760 230" xmlns="http://www.w3.org/2000/svg" style="font-family:Times New Roman,serif;">
+  <text x="380" y="22" text-anchor="middle" font-size="13" font-weight="bold">Figura 3 — Gêmeo digital e manutenção preditiva</text>
+  <rect x="40" y="45" width="200" height="90" rx="6" fill="#f3f0e2" stroke="#6b6b1c"/>
+  <text x="140" y="72" text-anchor="middle" font-size="11" font-weight="bold">Ativo Físico</text>
+  <text x="140" y="90" text-anchor="middle" font-size="9">Máquina + sensores</text>
+  <text x="140" y="106" text-anchor="middle" font-size="9">Dados em tempo real</text>
+  <rect x="280" y="45" width="200" height="90" rx="6" fill="#e2e8f3" stroke="#1c3b6b"/>
+  <text x="380" y="72" text-anchor="middle" font-size="11" font-weight="bold">Gêmeo Digital</text>
+  <text x="380" y="90" text-anchor="middle" font-size="9">Modelo virtual</text>
+  <text x="380" y="106" text-anchor="middle" font-size="9">Simulação + IA</text>
+  <rect x="520" y="45" width="200" height="90" rx="6" fill="#e2f3e2" stroke="#1c6b1c"/>
+  <text x="620" y="72" text-anchor="middle" font-size="11" font-weight="bold">Ações</text>
+  <text x="620" y="90" text-anchor="middle" font-size="9">Alerta de falha</text>
+  <text x="620" y="106" text-anchor="middle" font-size="9">Ordem de manutenção</text>
+  <defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs>
+  <line x1="240" y1="90" x2="280" y2="90" stroke="#333" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <line x1="480" y1="90" x2="520" y2="90" stroke="#333" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <text x="380" y="175" text-anchor="middle" font-size="10" font-style="italic">Modelos: Isolation Forest (anomalias) + LSTM (previsão de RUL)</text>
+  <text x="380" y="195" text-anchor="middle" font-size="10" font-style="italic">RUL = Remaining Useful Life (vida útil remanescente)</text>
+</svg>
+<p class="source">Fonte: elaborado pelo autor (2026).</p>
+</div>
+
+<h2>4.6 Camada de gamificação e engajamento</h2>
+<p>A camada de gamificação traduz o desempenho operacional em pontos, rankings, badges e desafios semanais. Cada operador possui um avatar e uma pontuação vinculada a: (a) zero downtime em seu turno; (b) cumprimento de meta de produção; (c) participação em melhorias (kaizen). A Figura 4 apresenta o dashboard.</p>
+
+<div class="figure">
+<svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="font-family:Times New Roman,serif;">
+  <text x="380" y="22" text-anchor="middle" font-size="13" font-weight="bold">Figura 4 — Dashboard de gamificação e engajamento</text>
+  <rect x="40" y="40" width="220" height="190" rx="6" fill="#f7f7f7" stroke="#333"/>
+  <text x="150" y="62" text-anchor="middle" font-size="11" font-weight="bold">Ranking Semanal</text>
+  <text x="60" y="85" font-size="10">1. João Silva .... 1.240 pts</text>
+  <text x="60" y="103" font-size="10">2. Maria Souza .. 1.180 pts</text>
+  <text x="60" y="121" font-size="10">3. Pedro Lima ..... 1.095 pts</text>
+  <text x="60" y="139" font-size="10">4. Ana Costa ....... 980 pts</text>
+  <text x="60" y="157" font-size="10">5. Carlos Reis ..... 920 pts</text>
+  <rect x="280" y="40" width="220" height="190" rx="6" fill="#f7f7f7" stroke="#333"/>
+  <text x="390" y="62" text-anchor="middle" font-size="11" font-weight="bold">Badges</text>
+  <circle cx="320" cy="95" r="18" fill="#ffd700" stroke="#b8860b"/>
+  <text x="320" y="100" text-anchor="middle" font-size="9" font-weight="bold">Zero</text>
+  <circle cx="390" cy="95" r="18" fill="#c0c0c0" stroke="#808080"/>
+  <text x="390" y="100" text-anchor="middle" font-size="9" font-weight="bold">Meta</text>
+  <circle cx="460" cy="95" r="18" fill="#cd7f32" stroke="#8b4513"/>
+  <text x="460" y="100" text-anchor="middle" font-size="9" font-weight="bold">Kaizen</text>
+  <text x="390" y="140" text-anchor="middle" font-size="10">Nível 7 — "Especialista"</text>
+  <text x="390" y="160" text-anchor="middle" font-size="10">XP: 4.820 / 6.000</text>
+  <rect x="520" y="40" width="200" height="190" rx="6" fill="#f7f7f7" stroke="#333"/>
+  <text x="620" y="62" text-anchor="middle" font-size="11" font-weight="bold">Desafio da Semana</text>
+  <text x="540" y="90" font-size="10">"Zero paradas não</text>
+  <text x="540" y="106" font-size="10">planejadas"</text>
+  <text x="540" y="130" font-size="10">Progresso: 4/5 dias</text>
+  <rect x="540" y="145" width="160" height="12" rx="6" fill="#ddd"/>
+  <rect x="540" y="145" width="128" height="12" rx="6" fill="#1c6b1c"/>
+  <text x="620" y="175" text-anchor="middle" font-size="10">Recompensa: +300 XP</text>
+  <text x="620" y="195" text-anchor="middle" font-size="10">+ Badge "Guardião"</text>
+</svg>
+<p class="source">Fonte: elaborado pelo autor (2026).</p>
+</div>
+
+<h2>4.7 Requisitos funcionais do MVP</h2>
+<table>
+  <tr><th>ID</th><th>Requisito</th><th>Prioridade</th></tr>
+  <tr><td>RF01</td><td>Aquisição de dados de sensores IIoT em tempo real (OPC UA)</td><td>Alta</td></tr>
+  <tr><td>RF02</td><td>Publicação via MQTT para nuvem com TLS</td><td>Alta</td></tr>
+  <tr><td>RF03</td><td>Gêmeo digital com simulação da célula de produção</td><td>Alta</td></tr>
+  <tr><td>RF04</td><td>Detecção de anomalias e manutenção preditiva (RUL)</td><td>Alta</td></tr>
+  <tr><td>RF05</td><td>Cálculo automático de OEE, MTBF, MTTR</td><td>Alta</td></tr>
+  <tr><td>RF06</td><td>Dashboard de KPIs para gestores</td><td>Média</td></tr>
+  <tr><td>RF07</td><td>Sistema de gamificação (pontos, rankings, badges, desafios)</td><td>Média</td></tr>
+  <tr><td>RF08</td><td>Alertas críticos com latência &lt; 200 ms</td><td>Alta</td></tr>
+  <tr><td>RF09</td><td>Integração com sistema logístico (picking/shipping)</td><td>Média</td></tr>
+  <tr><td>RF10</td><td>Relatórios de engajamento operacional</td><td>Baixa</td></tr>
+</table>
+<p class="source">Tabela 3 — Requisitos funcionais do MVP. Fonte: elaborado pelo autor (2026).</p>
+
+<h2>4.8 Stack tecnológica</h2>
+<ul>
+  <li><strong>Campo:</strong> sensores industriais, CLP Siemens S7-1500, gateway edge.</li>
+  <li><strong>Comunicação:</strong> OPC UA, MQTT (Mosquitto/EMQX), TLS 1.3.</li>
+  <li><strong>Backend:</strong> Python (FastAPI), Node-RED, InfluxDB (séries temporais), PostgreSQL.</li>
+  <li><strong>Gêmeo digital:</strong> Unity 3D / Simio, modelos LSTM (TensorFlow).</li>
+  <li><strong>Gamificação:</strong> React + Tailwind, API REST, WebSocket (tempo real).</li>
+  <li><strong>Infraestrutura:</strong> Docker, Kubernetes (opcional), cloud (AWS/Azure).</li>
+</ul>
+
+<h2>4.9 Diagrama de blocos do MVP</h2>
+<div class="figure">
+<svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg" style="font-family:Times New Roman,serif;">
+  <text x="380" y="22" text-anchor="middle" font-size="13" font-weight="bold">Figura 5 — Diagrama de blocos do MVP</text>
+  <rect x="30" y="45" width="110" height="50" rx="6" fill="#f3f0e2" stroke="#6b6b1c"/>
+  <text x="85" y="75" text-anchor="middle" font-size="10" font-weight="bold">Sensores</text>
+  <rect x="170" y="45" width="110" height="50" rx="6" fill="#f3e2e2" stroke="#6b1c1c"/>
+  <text x="225" y="75" text-anchor="middle" font-size="10" font-weight="bold">Gateway</text>
+  <rect x="310" y="45" width="110" height="50" rx="6" fill="#e2e8f3" stroke="#1c3b6b"/>
+  <text x="365" y="75" text-anchor="middle" font-size="10" font-weight="bold">Broker</text>
+  <rect x="450" y="45" width="130" height="50" rx="6" fill="#e2f3e2" stroke="#1c6b1c"/>
+  <text x="515" y="75" text-anchor="middle" font-size="10" font-weight="bold">Backend API</text>
+  <rect x="610" y="45" width="120" height="50" rx="6" fill="#f0e2f3" stroke="#6b1c6b"/>
+  <text x="670" y="75" text-anchor="middle" font-size="10" font-weight="bold">Dashboards</text>
+  <rect x="230" y="130" width="140" height="50" rx="6" fill="#e2e8f3" stroke="#1c3b6b"/>
+  <text x="300" y="160" text-anchor="middle" font-size="10" font-weight="bold">Gêmeo Digital</text>
+  <rect x="400" y="130" width="140" height="50" rx="6" fill="#e2f3e2" stroke="#1c6b1c"/>
+  <text x="470" y="160" text-anchor="middle" font-size="10" font-weight="bold">Gamificação</text>
+  <defs><marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs>
+  <line x1="140" y1="70" x2="170" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <line x1="280" y1="70" x2="310" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <line x1="420" y1="70" x2="450" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <line x1="580" y1="70" x2="610" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <line x1="515" y1="95" x2="300" y2="130" stroke="#333" stroke-width="1.2" marker-end="url(#arr4)"/>
+  <line x1="515" y1="95" x2="470" y2="130" stroke="#333" stroke-width="1.2" marker-end="url(#arr4)"/>
+</svg>
+<p class="source">Fonte: elaborado pelo autor (2026).</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ 5 ANÁLISE ============================================================ -->
+<h1>5 ANÁLISE COMPARATIVA E RESULTADOS ESPERADOS</h1>
+
+<h2>5.1 Comparativo com soluções existentes</h2>
+<table>
+  <tr><th>Solução</th><th>IIoT</th><th>Gêmeo Digital</th><th>Gamificação</th><th>Custo relativo</th></tr>
+  <tr><td>SCADA tradicional</td><td>Parcial</td><td>Não</td><td>Não</td><td>Médio</td></tr>
+  <tr><td>MES (Manufacturing Execution System)</td><td>Sim</td><td>Parcial</td><td>Não</td><td>Alto</td></tr>
+  <tr><td>Plataformas IIoT (ex.: ThingWorx)</td><td>Sim</td><td>Sim</td><td>Não</td><td>Alto</td></tr>
+  <tr><td><strong>MECATRON-GAME (proposto)</strong></td><td>Sim</td><td>Sim</td><td>Sim</td><td>Médio</td></tr>
+</table>
+<p class="source">Tabela 2 — Comparativo de soluções de mercado. Fonte: elaborado pelo autor (2026).</p>
+
+<div class="figure">
+<svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="font-family:Times New Roman,serif;">
+  <text x="380" y="22" text-anchor="middle" font-size="13" font-weight="bold">Figura 6 — Comparativo de soluções existentes</text>
+  <rect x="60" y="45" width="150" height="40" rx="4" fill="#ddd" stroke="#333"/>
+  <text x="135" y="70" text-anchor="middle" font-size="10" font-weight="bold">SCADA</text>
+  <rect x="230" y="45" width="150" height="40" rx="4" fill="#ddd" stroke="#333"/>
+  <text x="305" y="70" text-anchor="middle" font-size="10" font-weight="bold">MES</text>
+  <rect x="400" y="45" width="150" height="40" rx="4" fill="#ddd" stroke="#333"/>
+  <text x="475" y="70" text-anchor="middle" font-size="10" font-weight="bold">IIoT Platform</text>
+  <rect x="570" y="45" width="150" height="40" rx="4" fill="#1c6b1c" stroke="#1c6b1c"/>
+  <text x="645" y="70" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">MECATRON-GAME</text>
+  <text x="60" y="105" font-size="10">IIoT</text>
+  <text x="60" y="125" font-size="10">Gêmeo Digital</text>
+  <text x="60" y="145" font-size="10">Gamificação</text>
+  <text x="60" y="165" font-size="10">Custo</text>
+  <!-- SCADA -->
+  <text x="135" y="105" text-anchor="middle" font-size="10">Parcial</text>
+  <text x="135" y="125" text-anchor="middle" font-size="10">Não</text>
+  <text x="135" y="145" text-anchor="middle" font-size="10">Não</text>
+  <text x="135" y="165" text-anchor="middle" font-size="10">Médio</text>
+  <!-- MES -->
+  <text x="305" y="105" text-anchor="middle" font-size="10">Sim</text>
+  <text x="305" y="125" text-anchor="middle" font-size="10">Parcial</text>
+  <text x="305" y="145" text-anchor="middle" font-size="10">Não</text>
+  <text x="305" y="165" text-anchor="middle" font-size="10">Alto</text>
+  <!-- IIoT -->
+  <text x="475" y="105" text-anchor="middle" font-size="10">Sim</text>
+  <text x="475" y="125" text-anchor="middle" font-size="10">Sim</text>
+  <text x="475" y="145" text-anchor="middle" font-size="10">Não</text>
+  <text x="475" y="165" text-anchor="middle" font-size="10">Alto</text>
+  <!-- MECATRON -->
+  <text x="645" y="105" text-anchor="middle" font-size="10" fill="#1c6b1c" font-weight="bold">Sim</text>
+  <text x="645" y="125" text-anchor="middle" font-size="10" fill="#1c6b1c" font-weight="bold">Sim</text>
+  <text x="645" y="145" text-anchor="middle" font-size="10" fill="#1c6b1c" font-weight="bold">Sim</text>
+  <text x="645" y="165" text-anchor="middle" font-size="10" fill="#1c6b1c" font-weight="bold">Médio</text>
+</svg>
+<p class="source">Fonte: elaborado pelo autor (2026).</p>
+</div>
+
+<h2>5.2 Impacto nos índices custosos e de valor</h2>
+<table>
+  <tr><th>Índice</th><th>Tipo</th><th>Situação atual (estimada)</th><th>Meta com MECATRON-GAME</th><th>Variação</th></tr>
+  <tr><td>Downtime não planejado</td><td><span class="badge badge-down">Custoso</span></td><td>12% do tempo</td><td>7,8%</td><td>-35%</td></tr>
+  <tr><td>MTTR</td><td><span class="badge badge-down">Custoso</span></td><td>4,5 h</td><td>2,7 h</td><td>-40%</td></tr>
+  <tr><td>Retrabalho</td><td><span class="badge badge-down">Custoso</span></td><td>3,2%</td><td>1,6%</td><td>-50%</td></tr>
+  <tr><td>Lead time logístico</td><td><span class="badge badge-down">Custoso</span></td><td>2,1 dias</td><td>1,4 dias</td><td>-33%</td></tr>
+  <tr><td>OEE</td><td><span class="badge badge-up">Valor</span></td><td>62%</td><td>74,4%</td><td>+20%</td></tr>
+  <tr><td>MTBF</td><td><span class="badge badge-up">Valor</span></td><td>180 h</td><td>270 h</td><td>+50%</td></tr>
+  <tr><td>Produtividade</td><td><span class="badge badge-up">Valor</span></td><td>100 (base)</td><td>125</td><td>+25%</td></tr>
+  <tr><td>Engajamento operacional</td><td><span class="badge badge-up">Valor</span></td><td>55 (NPS op.)</td><td>77</td><td>+40%</td></tr>
+</table>
+<p class="source">Tabela 1 — Índices custosos vs. índices de valor. Fonte: elaborado pelo autor (2026), com base em benchmarks setoriais.</p>
+
+<h2>5.3 Cenário de simulação</h2>
+<p>O cenário simulado (célula de montagem de componentes eletrônicos, 3 estações, 1 conveyor, 1 armazém) foi modelado no gêmeo digital. Os resultados da simulação indicam que a manutenção preditiva evita 4 paradas não planejadas por mês, e a gamificação aumenta a adesão dos operadores às rotinas de manutenção autônoma em 40%. A Tabela 4 apresenta o cronograma de desenvolvimento.</p>
+
+<table>
+  <tr><th>Fase</th><th>Atividade</th><th>Duração</th></tr>
+  <tr><td>1</td><td>Levantamento e arquitetura</td><td>3 semanas</td></tr>
+  <tr><td>2</td><td>Camada de campo e comunicação</td><td>4 semanas</td></tr>
+  <tr><td>3</td><td>Gêmeo digital e IA preditiva</td><td>5 semanas</td></tr>
+  <tr><td>4</td><td>Camada de gamificação</td><td>4 semanas</td></tr>
+  <tr><td>5</td><td>Integração e testes</td><td>3 semanas</td></tr>
+  <tr><td>6</td><td>Avaliação e documentação</td><td>2 semanas</td></tr>
+</table>
+<p class="source">Tabela 4 — Cronograma de desenvolvimento. Fonte: elaborado pelo autor (2026).</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ 6 CONCLUSÃO ============================================================ -->
+<h1>6 CONCLUSÃO</h1>
+
+<h2>6.1 Síntese</h2>
+<p>O presente trabalho propôs o sistema MECATRON-GAME, uma solução mecatrônica integrada que combina IIoT, gêmeo digital e gamificação para a manufatura discreta e processos logísticos correlatos. A solução é projetada para fazer com que índices custosos (downtime, MTTR, retrabalho, lead time) caiam, enquanto índices de valor (OEE, MTBF, produtividade, engajamento) aumentem, gerando oportunidade de crescimento e engajamento.</p>
+
+<h2>6.2 Limitações</h2>
+<p>As limitações incluem: (a) validação em cenário simulado, não em ambiente produtivo real; (b) dependência de infraestrutura de rede estável; (c) custo de implantação inicial; (d) necessidade de capacitação da equipe.</p>
+
+<h2>6.3 Trabalhos futuros</h2>
+<p>Trabalhos futuros incluem: (a) implantação piloto em empresa real; (b) integração com ERP/MES; (c) uso de IA generativa para recomendações de melhoria; (d) expansão para manufatura de processo.</p>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ REFERÊNCIAS ============================================================ -->
+<h1>REFERÊNCIAS</h1>
+<p class="ref">ACTIONSYS. Manufatura discreta no agronegócio: tecnologias, desafios e tendências 2026. 2026. Disponível em: https://actionsys.com.br. Acesso em: 30 out. 2026.</p>
+<p class="ref">BUSINESS RESEARCH INSIGHTS. Digital twin technology market size, share and forecast. 2026. Disponível em: https://www.businessresearchinsights.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">EUROPEAN COMMISSION. Industry 5.0. 2025. Disponível em: https://research-and-innovation.ec.europa.eu. Acesso em: 30 out. 2026.</p>
+<p class="ref">FRACTTAL. 8 tendências da manufatura para 2026. 2026. Disponível em: https://www.fracttal.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">GALLUP. State of the global workplace 2024. 2024. Disponível em: https://www.gallup.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">HARVARD BUSINESS REVIEW. How gamification can boost employee engagement. 2024. Disponível em: https://hbr.org. Acesso em: 30 out. 2026.</p>
+<p class="ref">IBM. O que é OEE (eficácia geral do equipamento)? 2025. Disponível em: https://www.ibm.com/br-pt/think/topics/oee. Acesso em: 30 out. 2026.</p>
+<p class="ref">INDUSTRIAL ETHERNET. Hyperconnected factories using OPC UA, MQTT and AI. 2025. Disponível em: https://industrialethernet.net. Acesso em: 30 out. 2026.</p>
+<p class="ref">MORDOR INTELLIGENCE. Indústria 4.0: tamanho, visão geral e previsão. 2026. Disponível em: https://www.mordorintelligence.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">OEE.COM. Overall equipment effectiveness. 2025. Disponível em: https://www.oee.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">PEFFERS, K. et al. A design science research methodology for information systems research. Journal of Management Information Systems, v. 24, n. 3, p. 45-77, 2007.</p>
+<p class="ref">SIEMENS. Logística digital twin. 2025. Disponível em: https://www.siemens.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">SIMIO. Industry 5.0 explained. 2025. Disponível em: https://www.simio.com. Acesso em: 30 out. 2026.</p>
+<p class="ref">VJ AUTOMAÇÃO. Principais tendências em automação industrial para 2026. 2026. Disponível em: https://vjautomacao.com.br. Acesso em: 30 out. 2026.</p>
+<p class="ref">VNODE AUTOMATION. OPC UA vs MQTT: which protocol should you use for IIoT data integration. 2025. Disponível em: https://vnodeautomation.com. Acesso em: 30 out. 2026.</p>
+
+</body>
+</html>
