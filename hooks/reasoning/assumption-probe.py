@@ -66,12 +66,19 @@ def save_probes(probes, path):
     except Exception:
         pass
 
+def normalize(s):
+    """Remove acentos e loweriza para matching robusto."""
+    import unicodedata
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii").lower()
+
 def find_terms(text, probes):
-    """Encontra termos semente presentes no texto."""
+    """Encontra termos semente presentes no texto (match sem acento)."""
     found = []
-    text_lower = text.lower()
+    text_norm = normalize(text)
     for term in probes:
-        if term.lower() in text_lower:
+        if term.startswith("_"):
+            continue
+        if normalize(term) in text_norm:
             found.append(term)
     return found
 
