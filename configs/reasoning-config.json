@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json.schemastore.org/reasoning-config.json",
+  "description": "Configuracao dos hooks de raciocinio profundo e auto-melhoria",
+  "pack": "reasoning-enhancement",
+  "version": "1.0",
+  "created": "2026-10-30",
+  "hooks": {
+    "SessionStart": [
+      {
+        "name": "reasoning-prime",
+        "command": "python hooks/reasoning/session-start-prime.py",
+        "timeout": 10
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "name": "reasoning-expand",
+        "command": "python hooks/reasoning/user-prompt-expand.py",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "name": "reasoning-navigate",
+        "command": "python hooks/reasoning/pre-tool-use-navigate.py",
+        "timeout": 5
+      },
+      {
+        "name": "deep-research-loop",
+        "command": "python hooks/reasoning/deep-research-loop.py",
+        "timeout": 5
+      },
+      {
+        "name": "self-research",
+        "command": "python hooks/reasoning/self-research.py",
+        "timeout": 5
+      }
+    ],
+    "PostToolUse": [
+      {
+        "name": "reasoning-reflect",
+        "command": "python hooks/reasoning/post-tool-use-reflect.py",
+        "timeout": 5
+      },
+      {
+        "name": "capability-audit",
+        "command": "python hooks/reasoning/capability-audit.py",
+        "timeout": 5
+      },
+      {
+        "name": "deep-research-loop-pos",
+        "command": "python hooks/reasoning/deep-research-loop.py",
+        "timeout": 5
+      }
+    ]
+  },
+  "principles": {
+    "fail_open": true,
+    "no_matchers": true,
+    "all_models": true,
+    "text_only_benefit": "mais notavel, mas nao exclusivo",
+    "unlimited_cycles": true,
+    "no_fixed_order": true,
+    "live_self_improvement": true
+  },
+  "deep_research": {
+    "min_independent_sources": 3,
+    "no_repeat_sources_same_round": true,
+    "different_angles_required": true,
+    "declare_divergences": true
+  },
+  "state_files": {
+    "self_research_tasks": "~/.config/opencode/reasoning-state/self-research-tasks.json",
+    "scheduled_capability_tests": "~/.config/opencode/reasoning-state/scheduled-capability-tests.json"
+  }
+}
