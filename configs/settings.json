@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "description": "Configuracao global de hooks do OpenCode. Autocontidos em hooks/.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/session_start.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/session_end.py",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/validate_sensitive_write.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python <hooks>/reasoning/skill-quality-gate.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|bash|shell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/validate_bash_command.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/session_end.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "skill|Skill|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/reasoning/skill-evolver-hook.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/session_start.py",
+            "timeout": 1
+          },
+          {
+            "type": "command",
+            "command": "python <hooks>/reasoning/assumption-probe.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python <hooks>/reasoning/bias-tracker.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/notification_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/subagent_start.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/subagent_stop.py",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+  "_notes": {
+    "security": "Nunca commitar caminhos absolutos ou segredos. Substitua <hooks> pelo caminho real.",
+    "updated": "2026-10-31",
+    "origin": "Evolucao auto (skill-evolver + bias-tracker)"
+  }
+}
