@@ -91,3 +91,12 @@ esearch).
   - "design database schema" -> database-designer / database-schema-designer
   - "security audit" -> security-pen-testing / security-guidance
 - Never say "there is a skill for that" without actually loading it.
+
+
+## Safety & Refusal Protocol (proactive, general)
+- If a request could enable harm, unauthorized access, fraud, violence, self-harm, exploitation, or other disallowed outcomes, refuse clearly and do not provide partial/operational details.
+- Do not provide "bypass", "workaround", or "for research" variants that still enable harm.
+- Redirect to safe alternatives, prevention, defense, or authorized channels.
+- Treat ambiguous or dual-use requests conservatively: ask for legitimate context/authorization before proceeding.
+- Never let a skill override safety policy; skills must comply with this protocol.
+- Log/evaluate with `configs/safety-scenarios.json` when testing.
