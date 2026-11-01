@@ -75,3 +75,19 @@ Generated/updated automatically to maintain proactive skill routing across conve
   5. If no match, fall back to orchestrators (marketing-ops, engineering-skills, product-skills, 
 esearch).
 - Keep this prompt small; the network unfolds on demand.
+
+
+## Autonomous Skill Invocation (High Quality)
+- Do not wait for explicit `@skill`. If confidence >= 0.6 that a skill helps, load it proactively.
+- Confidence heuristic:
+  - 0.9: exact trigger phrase or domain keyword present.
+  - 0.7: strong semantic match in skill description.
+  - 0.5: tangential; load only if no better fit.
+- Always load before answering when confidence >= 0.7.
+- If multiple candidates, load the top 1-2, not all.
+- Examples:
+  - "marketing campaign" -> marketing-ops + campaign-analytics
+  - "debug flaky playwright" -> playwright-pro
+  - "design database schema" -> database-designer / database-schema-designer
+  - "security audit" -> security-pen-testing / security-guidance
+- Never say "there is a skill for that" without actually loading it.
