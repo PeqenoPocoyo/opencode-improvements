@@ -278,8 +278,55 @@ test_scenario: "descrição do teste"
 ## 10. Uso Autonomo de Skills (Sem @)
 
 - Nao exigir marcacao `@skill`: o agente deve detectar contexto e carregar skills automaticamente.
-- A cada turno, analisar a intencao do usuario e combinar com `configs/skills-index.json`.
+- A cada turno, analisar a intencao do usuario: primeiro nesta tabela, depois em `configs/skill-router-core.json`, depois grep por 1-2 keywords em `configs/skills-index.json` (1358 skills).
 - Se houver skill aplicavel, invoca-la via `skill` (load) e aplicar suas regras antes de responder.
 - Nunca mencionar "habilidade disponivel" sem usa-la na pratica.
 - Hooks e instrucoes globais devem rodar de forma proativa, nao esperar pedido explicito.
 - Sempre justificar a escolha da skill em uma frase curta quando aplicavel.
+
+### 10.1 Roteador Core (intent → skill) — SEMPRE consulta esta tabela primeiro
+
+| Intenção (PT/EN) | Skill principal | Fallbacks comuns |
+|---|---|---|
+| pesquisa/investigação de tópico ou decisão | `research` | `deep-research` (decisão cara), `pulse` (tendência), `dossier` (empresa/pessoa), `deepread` (estudar texto) |
+| review de código/PR/diff | `code-reviewer` | `adversarial-reviewer`, `pr-review-expert` |
+| bug/feature quebrada end-to-end | `focused-fix` | `red-green-proof`, `fix` |
+| testes (unit/e2e) | `tdd-guide` | `senior-qa`, `pw-init`, `coverage` |
+| planilha xlsx/csv | `xlsx` | — |
+| documento .docx | `docx` | — |
+| PDF | `pdf` | — |
+| slides/deck .pptx | `pptx` | — |
+| landing page | `landing` | `landing-page-generator` |
+| SEO audit | `seo-audit` | `ai-seo`, `local-seo-manager` |
+| CRO/conversão | `cro` | `page-cro`, `form-cro`, `signup-flow-cro` |
+| copy marketing | `copywriting` | `copy-editing`, `content-production` |
+| estratégia de conteúdo | `content-strategy` | — |
+| social/LinkedIn/X | `linkedin-skills` | `x-twitter-growth`, `social-media-manager` |
+| triagem de e-mail | `inbox-triage` | (setup: `inbox-setup`) |
+| cold outreach/sequência | `cold-email` | `email-sequence` |
+| frontend React/Next | `react-best-practices` | `senior-frontend`, `frontend-design` |
+| backend API/DB | `senior-backend` | `sql-database-assistant`, `database-schema-designer` |
+| devops/CI/infra | `senior-devops` | `docker-development`, `terraform-patterns`, `ci-cd-pipeline-builder` |
+| segurança/pentest | `senior-security` | `security-pen-testing`, `threat-detection`, `cloud-security` |
+| dados/ML/estatística | `senior-data-scientist` | `statistical-analyst`, `senior-ml-engineer`, `data-quality-auditor` |
+| performance/observabilidade | `performance-profiler` | `observability-designer`, `slo-architect` |
+| incidente/postmortem | `incident-commander` | `postmortem`, `incident-response` |
+| arquitetura/ADR | `senior-architect` | — |
+| finanças/ARR/burn | `saas-metrics-coach` | `financial-analyst`, `stock-analysis` |
+| plano de marketing | `marketing-ops` | `marketing-skills`, `paid-ads`, `campaign-analytics` |
+| produto/roadmap | `product-skills` | `product-discovery`, `experiment-designer`, `product-strategist` |
+| sprint/jira/confluence | `pm-skills` | `jira-expert`, `scrum-master`, `confluence-expert` |
+| comercial/pipeline/forecast | `revenue-operations` | `cro-advisor`, `commercial-skills`, `rfp-responder` |
+| customer success/churn | `customer-success-manager` | `churn-prevention` |
+| contratar/org/cultura | `chro-advisor` | `vpe-advisor`, `interview-system-designer` |
+| estratégia executiva C-suite | `founder-mode` | `chief-of-staff`, `cs-onboard`, `org-health-diagnostic` |
+| compliance ISO/GDPR/SOC | `ra-qm-skills` | `gdpr-dsgvo-expert`, `soc2-compliance`, `eu-ai-act-specialist` |
+| criar skill nova | `skill-creator` | `write-a-skill`, `book-to-skill` |
+| OpenCode config/sync | `opencode` | `opencode-sync` |
+| artefato visual/diagrama | `inline-artifacts` | `artifact-balloon`, `artifact-creator`, `creative-design` |
+| spec/doc draft | `doc-coauthoring` | — |
+| buscar investimentos/ROI | `business-investment-advisor` | `market-research`, `dossier` |
+| imagem generada | `ai-image-generation` | (execute toolbelt) |
+| vídeo demo/motion | `ai-video-generation` | `remotion-render`, `demo-video` |
+
+**Regra de reflexo**: se o pedido tem formas "pesquisa sobre X", "investiga", "descobre", "o que é", "como funciona" → carregar `research` (e `deep-research` se investimento/decisão caro) ANTES de responder. **Nunca** responder pergunta de pesquisa do repertório sem checar se há skill.
