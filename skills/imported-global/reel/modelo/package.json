@@ -1,0 +1,12 @@
+{
+  "name": "reel-vsl",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reel 9:16 no estilo 03 · VSL com interface animada (motor da referência aprovada).",
+  "devDependencies": {
+    "hyperframes": "0.7.109",
+    "playwright": "^1.59.1",
+    "gsap": "3.14.2"
+  }
+}

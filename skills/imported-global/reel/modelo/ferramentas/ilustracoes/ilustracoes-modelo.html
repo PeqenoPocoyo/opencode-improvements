@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<!-- Telas ILUSTRATIVAS do que o Claude entrega (Slides / Docs / Design / carrossel). Exportadas em JPG por render-ilustracoes.mjs (um arquivo por id). Empresa fictícia: troque pelo exemplo do vídeo. -->
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,600;1,500&display=swap");
+  :root { --cream:#faf9f5; --ink:#1f1e1b; --terra:#d97757; --terra2:#c4623f; --sand:#efe9dd; --muted:#77736a; --line:#e3ddd0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#ccc; font-family:Inter,sans-serif; color:var(--ink); }
+  .shot { position:relative; overflow:hidden; background:var(--cream); margin:20px; }
+  .serif { font-family:"Source Serif 4",Georgia,serif; }
+  /* ---------- SLIDES 1600x900 ---------- */
+  .slide { width:1600px; height:900px; padding:96px 110px; }
+  .slide .tag { font:600 26px/1 Inter; letter-spacing:.18em; text-transform:uppercase; color:var(--terra2); }
+  .slide h1 { font:600 112px/1.02 "Source Serif 4"; margin-top:40px; letter-spacing:-.01em; }
+  .slide h2 { font:600 76px/1.05 "Source Serif 4"; margin-top:28px; }
+  .slide p { font:500 34px/1.4 Inter; color:var(--muted); margin-top:30px; max-width:1100px; }
+  .slide .foot { position:absolute; left:110px; right:110px; bottom:64px; display:flex; justify-content:space-between; font:500 24px/1 Inter; color:var(--muted); border-top:2px solid var(--line); padding-top:24px; }
+  .blob { position:absolute; border-radius:50%; background:var(--terra); }
+  .cols { display:flex; gap:40px; margin-top:56px; }
+  .col { flex:1; background:#fff; border:2px solid var(--line); border-radius:24px; padding:40px; }
+  .col b { display:block; font:700 64px/1 Inter; color:var(--terra2); }
+  .col span { display:block; font:500 28px/1.3 Inter; color:var(--muted); margin-top:16px; }
+  .price { display:flex; gap:40px; margin-top:50px; }
+  .plan { flex:1; border-radius:28px; padding:44px; background:#fff; border:2px solid var(--line); }
+  .plan.hi { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .plan .n { font:600 30px/1 Inter; }
+  .plan .v { font:700 84px/1 Inter; margin-top:26px; }
+  .plan .v small { font:500 28px Inter; opacity:.7; }
+  .plan ul { list-style:none; margin-top:28px; font:500 26px/1.7 Inter; opacity:.85; }
+  /* ---------- DOC 1000x1300 ---------- */
+  .doc { width:1000px; height:1300px; background:#fff; padding:90px 100px; }
+  .doc .bar { position:absolute; left:0; right:0; top:0; height:64px; background:var(--cream); border-bottom:2px solid var(--line); display:flex; align-items:center; gap:14px; padding:0 30px; font:600 22px Inter; color:var(--muted); }
+  .doc .bar i { width:14px; height:14px; border-radius:50%; background:var(--line); display:inline-block; }
+  .doc h1 { font:600 64px/1.08 "Source Serif 4"; margin-top:40px; }
+  .doc .meta { font:500 22px Inter; color:var(--muted); margin-top:18px; }
+  .doc h3 { font:700 30px Inter; margin-top:46px; }
+  .doc .ln { height:18px; border-radius:9px; background:var(--sand); margin-top:20px; }
+  .doc .hl { background:#f6dfd3; }
+  .doc .cm { position:absolute; right:40px; top:520px; width:260px; background:var(--cream); border:2px solid var(--line); border-left:6px solid var(--terra); border-radius:14px; padding:20px; font:500 20px/1.4 Inter; color:var(--muted); }
+  /* ---------- DESIGN 1200x1200 ---------- */
+  .design { width:1200px; height:1200px; background:#ecebe6; background-image:radial-gradient(#d6d3ca 2px,transparent 2px); background-size:34px 34px; }
+  .art { position:absolute; background:#fff; box-shadow:0 18px 40px rgba(0,0,0,.12); overflow:hidden; }
+  .art .lb { position:absolute; left:0; top:-38px; font:600 20px Inter; color:var(--muted); }
+  .lab { position:absolute; font:600 20px Inter; color:var(--muted); }
+  .sel { position:absolute; border:3px solid #2f7cf6; }
+  .sel i { position:absolute; width:16px; height:16px; background:#fff; border:3px solid #2f7cf6; }
+  /* ---------- CARROSSEL 1080x1350 ---------- */
+  .car { width:1080px; height:1350px; padding:110px 100px; }
+  .car .pg { position:absolute; right:80px; top:80px; font:600 30px Inter; color:var(--muted); }
+  .car h1 { font:600 120px/1.0 "Source Serif 4"; margin-top:180px; }
+  .car h2 { font:600 92px/1.04 "Source Serif 4"; margin-top:120px; }
+  .car p { font:500 42px/1.4 Inter; color:var(--muted); margin-top:46px; }
+  .car .hand { position:absolute; left:100px; bottom:110px; display:flex; align-items:center; gap:22px; font:600 32px Inter; }
+  .car .av { width:84px; height:84px; border-radius:50%; background:var(--terra); }
+  .car .big { font:800 300px/1 Inter; color:var(--terra); margin-top:120px; }
+</style></head><body>
+
+<!-- 1 · capa -->
+<div class="shot slide" id="slide-01">
+  <div class="blob" style="width:620px;height:620px;right:-160px;top:-160px;opacity:.95"></div>
+  <div class="blob" style="width:260px;height:260px;right:330px;bottom:120px;background:var(--sand)"></div>
+  <div class="tag">Proposta comercial · 2026</div>
+  <h1>Padaria<br>Trigo &amp; Mel</h1>
+  <p>Encomendas para empresas: café da manhã, coffee break e eventos.</p>
+  <div class="foot"><span>Trigo &amp; Mel</span><span>01</span></div>
+</div>
+<!-- 2 · o problema -->
+<div class="shot slide" id="slide-02">
+  <div class="tag">O desafio</div>
+  <h2>Seu evento merece um café<br>que as pessoas lembrem.</h2>
+  <div class="cols">
+    <div class="col"><b>3 dias</b><span>de antecedência para pedidos grandes</span></div>
+    <div class="col"><b>40+</b><span>itens no cardápio corporativo</span></div>
+    <div class="col"><b>1 contato</b><span>do pedido à entrega</span></div>
+  </div>
+  <div class="foot"><span>Trigo &amp; Mel</span><span>02</span></div>
+</div>
+<!-- 3 · solução -->
+<div class="shot slide" id="slide-03">
+  <div class="blob" style="width:420px;height:420px;left:-120px;bottom:-140px;background:var(--sand)"></div>
+  <div class="tag">Como funciona</div>
+  <h2>Você escolhe o pacote.<br>A gente cuida do resto.</h2>
+  <p>Montagem no local, louça inclusa e cardápio sem glúten sob pedido.</p>
+  <div class="foot"><span>Trigo &amp; Mel</span><span>03</span></div>
+</div>
+<!-- 4 · investimento -->
+<div class="shot slide" id="slide-04">
+  <div class="tag">Investimento</div>
+  <div class="price">
+    <div class="plan"><div class="n">Café da manhã</div><div class="v">Pacote P</div><ul><li>até 20 pessoas</li><li>12 itens</li></ul></div>
+    <div class="plan hi"><div class="n">Coffee break</div><div class="v">Pacote M</div><ul><li>até 60 pessoas</li><li>20 itens + bebidas</li></ul></div>
+    <div class="plan"><div class="n">Eventos</div><div class="v">Pacote G</div><ul><li>100+ pessoas</li><li>cardápio sob medida</li></ul></div>
+  </div>
+  <div class="foot"><span>Trigo &amp; Mel</span><span>04</span></div>
+</div>
+
+<!-- DOC -->
+<div class="shot doc" id="doc">
+  <div class="bar"><i></i><i></i><i></i><span style="margin-left:10px">Roteiro · carrossel Trigo &amp; Mel</span></div>
+  <div class="tag" style="font:600 20px Inter;letter-spacing:.18em;color:var(--terra2);margin-top:30px">ROTEIRO</div>
+  <h1>5 motivos para levar a Trigo &amp; Mel pro seu evento</h1>
+  <div class="meta">Baseado na proposta comercial · 5 slides</div>
+  <h3>Slide 1 · Gancho</h3><div class="ln hl" style="width:92%"></div><div class="ln" style="width:70%"></div>
+  <h3>Slide 2 · O problema</h3><div class="ln" style="width:88%"></div><div class="ln" style="width:76%"></div><div class="ln" style="width:54%"></div>
+  <h3>Slide 3 · Os pacotes</h3><div class="ln" style="width:90%"></div><div class="ln" style="width:64%"></div>
+  <h3>Slide 4 · Prova</h3><div class="ln" style="width:84%"></div><div class="ln" style="width:72%"></div>
+  <h3>Slide 5 · Chamada</h3><div class="ln" style="width:60%"></div>
+  <div class="cm"><b style="color:var(--ink)">Claude</b><br>Quer que eu transforme isso em carrossel?</div>
+</div>
+
+<!-- DESIGN -->
+<div class="shot design" id="design">
+  <div class="art" style="left:80px;top:150px;width:420px;height:525px;background:var(--terra)"><div style="padding:44px;color:#fff;font:600 54px/1.05 'Source Serif 4'">Café que vira assunto.</div></div>
+  <div class="lab" style="left:80px;top:112px">Post · 4:5</div>
+  <div class="art" style="left:560px;top:150px;width:300px;height:533px;background:var(--ink)"><div style="padding:34px;color:#fff;font:600 40px/1.05 'Source Serif 4'">Coffee break<br>para 60</div><div style="position:absolute;left:34px;bottom:40px;width:120px;height:120px;border-radius:50%;background:var(--terra)"></div></div>
+  <div class="lab" style="left:560px;top:112px">Story · 9:16</div>
+  <div class="art" style="left:80px;top:760px;width:780px;height:380px;background:var(--cream)"><div style="padding:44px;font:600 60px/1.05 'Source Serif 4'">Trigo &amp; Mel<br><span style="font:500 28px Inter;color:var(--muted)">Encomendas corporativas</span></div><div class="blob" style="width:300px;height:300px;right:-60px;top:40px"></div></div>
+  <div class="lab" style="left:80px;top:722px">Capa · 16:9</div>
+  <div class="sel" style="left:556px;top:146px;width:308px;height:541px"><i style="left:-10px;top:-10px"></i><i style="right:-10px;top:-10px"></i><i style="left:-10px;bottom:-10px"></i><i style="right:-10px;bottom:-10px"></i></div>
+  <div style="position:absolute;left:920px;top:150px;width:240px;background:#fff;border-radius:16px;padding:22px;box-shadow:0 12px 30px rgba(0,0,0,.1);font:600 20px/2 Inter;color:var(--muted)">Formatos<br><span style="color:var(--ink)">▣ Post 4:5</span><br><span style="color:var(--ink)">▯ Story 9:16</span><br><span style="color:var(--ink)">▭ Capa 16:9</span></div>
+</div>
+
+<!-- CARROSSEL -->
+<div class="shot car" id="car-01"><div class="pg">1/5</div><div class="tag" style="font:600 30px Inter;letter-spacing:.18em;color:var(--terra2)">TRIGO &amp; MEL</div><h1>5 motivos pra levar a gente pro seu evento</h1><div class="hand"><div class="av"></div>arrasta pro lado →</div></div>
+<div class="shot car" id="car-02" style="background:var(--terra);color:#fff"><div class="pg" style="color:#fff">2/5</div><div class="big" style="color:#fff">01</div><h2 style="margin-top:60px">Um contato só, do pedido à entrega.</h2></div>
+<div class="shot car" id="car-03" style="background:var(--ink);color:#fff"><div class="pg" style="color:#ccc">3/5</div><div class="big">02</div><h2 style="margin-top:60px">Três pacotes. Zero dor de cabeça.</h2></div>
+<div class="shot car" id="car-04"><div class="pg">4/5</div><div class="big">03</div><h2 style="margin-top:60px">Montagem no local, louça inclusa.</h2></div>
+</body></html>

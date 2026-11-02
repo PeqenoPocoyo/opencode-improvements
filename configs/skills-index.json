@@ -6793,5 +6793,10 @@
   "id": "opencode",
   "name": "opencode",
   "description": "Use this skill for any question about OpenCode itself, including how OpenCode works, using or configuring it, troubleshooting it, developing plugins or integrations, using the OpenCode SDK, clients, server, or API, and contributing to the OpenCode codebase. Also use it for OpenCode agents, commands, skills, tools, permissions, MCP servers, providers, models, themes, keybinds, formatters, the CLI, TUI, desktop app, and web app."
+ },
+ {
+  "id": "reel",
+  "name": "reel",
+  "description": "Edita um REEL / Short / vídeo vertical 9:16 do início ao fim, sem painel e sem escolhas — a pessoa manda a gravação bruta dela falando e a skill CORTA (tira silêncios, respirações, \"éé\", gaguejos, erros, retomadas e repetições, com o motor de corte pelo som aprovado em produção) e EDITA com o motor \"VSL com interface animada\" (câmera alternando tela cheia com punch-in e tela dividida, cada palavra-chave virando uma peça de interface que entra exatamente na palavra, legenda que segue a boca, efeitos sonoros enxutos, −14 LUFS). Entrega render/reel-v1.mp4 verificado e itera a pedido. Use quando pedirem \"editar esse reel\", \"corta e edita\", \"faz o reel desse vídeo\", \"monta esse bruto\", \"edita esse vídeo pro Instagram\", \"limpa e edita\", \"faz a VSL\", ou depois de um vídeo falado para virar reel rápido — mesmo sem citar a skill. AUDIT: security-scan FAIL revisado manualmente → PASS (ver AUDIT.md na pasta da skill)."
  }
 ]

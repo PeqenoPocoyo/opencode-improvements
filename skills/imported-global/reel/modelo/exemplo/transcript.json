@@ -1,0 +1,782 @@
+{
+"language_code": "pt",
+"audio_duration_secs": 38.784,
+"text": "O Cloud acabou de lançar três ferramentas de A totalmente gratuitas que podem fazer você economizar centenas de dólares por ano. Elas se chamam Slides, Docs e Design, que ficam dentro do chat que você já utiliza. E pra utilizar é muito fácil, é só você pedir pra ele aquilo que você quer construir, como por exemplo uma apresentação comercial pro seu negócio. A partir daí então ele vai preparar todos os slides pra você. Depois com seus slides prontos você pode exportar a apresentação inteira pra PowerPoint ou pra Google Slides. Mas a novidade não para só nos slides. Na mesma conversa, por exemplo, você pode pedir pra ele criar um roteiro que depois ele consegue transformar em carrocéis no Instagram com base nesse material. Então, ao invés de você pagar pelo Gama ou pelo Canva, você tem tudo em uma única conversa. Comenta slides e eu te vim o link para você conhecer.",
+"words": [
+{
+"text": "O",
+"start": 0.0,
+"end": 0.18
+},
+{
+"text": "Claude",
+"start": 0.18,
+"end": 0.4
+},
+{
+"text": "acabou",
+"start": 0.4,
+"end": 0.64
+},
+{
+"text": "de",
+"start": 0.64,
+"end": 0.8
+},
+{
+"text": "lançar",
+"start": 0.8,
+"end": 1.02
+},
+{
+"text": "três",
+"start": 1.02,
+"end": 1.3
+},
+{
+"text": "ferramentas",
+"start": 1.3,
+"end": 1.72
+},
+{
+"text": "de",
+"start": 1.72,
+"end": 1.88
+},
+{
+"text": "IA",
+"start": 1.88,
+"end": 2.06
+},
+{
+"text": "totalmente",
+"start": 2.06,
+"end": 2.64
+},
+{
+"text": "gratuitas",
+"start": 2.64,
+"end": 3.26
+},
+{
+"text": "que",
+"start": 3.26,
+"end": 3.4
+},
+{
+"text": "podem",
+"start": 3.4,
+"end": 3.58
+},
+{
+"text": "fazer",
+"start": 3.58,
+"end": 3.84
+},
+{
+"text": "você",
+"start": 3.84,
+"end": 4.08
+},
+{
+"text": "economizar",
+"start": 4.08,
+"end": 4.54
+},
+{
+"text": "centenas",
+"start": 4.54,
+"end": 5.18
+},
+{
+"text": "de",
+"start": 5.18,
+"end": 5.42
+},
+{
+"text": "dólares",
+"start": 5.42,
+"end": 5.68
+},
+{
+"text": "por",
+"start": 5.68,
+"end": 5.92
+},
+{
+"text": "ano.",
+"start": 5.92,
+"end": 6.08
+},
+{
+"text": "Elas",
+"start": 6.2,
+"end": 6.34
+},
+{
+"text": "se",
+"start": 6.34,
+"end": 6.56
+},
+{
+"text": "chamam",
+"start": 6.56,
+"end": 6.76
+},
+{
+"text": "Slides,",
+"start": 6.76,
+"end": 7.2
+},
+{
+"text": "Docs",
+"start": 7.3,
+"end": 7.6
+},
+{
+"text": "e",
+"start": 7.6,
+"end": 7.8
+},
+{
+"text": "Design,",
+"start": 7.8,
+"end": 8.14
+},
+{
+"text": "que",
+"start": 8.26,
+"end": 8.32
+},
+{
+"text": "ficam",
+"start": 8.32,
+"end": 8.48
+},
+{
+"text": "dentro",
+"start": 8.48,
+"end": 8.88
+},
+{
+"text": "do",
+"start": 8.88,
+"end": 9.14
+},
+{
+"text": "chat",
+"start": 9.14,
+"end": 9.4
+},
+{
+"text": "que",
+"start": 9.4,
+"end": 9.48
+},
+{
+"text": "você",
+"start": 9.48,
+"end": 9.84
+},
+{
+"text": "já",
+"start": 9.84,
+"end": 10.1
+},
+{
+"text": "utiliza.",
+"start": 10.1,
+"end": 10.46
+},
+{
+"text": "E",
+"start": 10.62,
+"end": 10.7
+},
+{
+"text": "pra",
+"start": 10.7,
+"end": 10.86
+},
+{
+"text": "utilizar",
+"start": 10.86,
+"end": 11.16
+},
+{
+"text": "é",
+"start": 11.16,
+"end": 11.32
+},
+{
+"text": "muito",
+"start": 11.32,
+"end": 11.46
+},
+{
+"text": "fácil,",
+"start": 11.46,
+"end": 11.68
+},
+{
+"text": "é",
+"start": 11.7,
+"end": 11.82
+},
+{
+"text": "só",
+"start": 11.82,
+"end": 11.94
+},
+{
+"text": "você",
+"start": 11.94,
+"end": 12.18
+},
+{
+"text": "pedir",
+"start": 12.18,
+"end": 12.4
+},
+{
+"text": "pra",
+"start": 12.4,
+"end": 12.54
+},
+{
+"text": "ele",
+"start": 12.54,
+"end": 12.72
+},
+{
+"text": "aquilo",
+"start": 12.72,
+"end": 12.9
+},
+{
+"text": "que",
+"start": 12.9,
+"end": 13.06
+},
+{
+"text": "você",
+"start": 13.06,
+"end": 13.3
+},
+{
+"text": "quer",
+"start": 13.3,
+"end": 13.38
+},
+{
+"text": "construir,",
+"start": 13.38,
+"end": 13.76
+},
+{
+"text": "como",
+"start": 13.94,
+"end": 14.0
+},
+{
+"text": "por",
+"start": 14.0,
+"end": 14.16
+},
+{
+"text": "exemplo",
+"start": 14.16,
+"end": 14.36
+},
+{
+"text": "uma",
+"start": 14.36,
+"end": 14.58
+},
+{
+"text": "apresentação",
+"start": 14.58,
+"end": 14.92
+},
+{
+"text": "comercial",
+"start": 14.92,
+"end": 15.32
+},
+{
+"text": "pro",
+"start": 15.32,
+"end": 15.54
+},
+{
+"text": "seu",
+"start": 15.54,
+"end": 15.68
+},
+{
+"text": "negócio.",
+"start": 15.68,
+"end": 15.98
+},
+{
+"text": "A",
+"start": 16.12,
+"end": 16.16
+},
+{
+"text": "partir",
+"start": 16.16,
+"end": 16.34
+},
+{
+"text": "daí",
+"start": 16.34,
+"end": 16.54
+},
+{
+"text": "então",
+"start": 16.54,
+"end": 16.76
+},
+{
+"text": "ele",
+"start": 16.76,
+"end": 17.0
+},
+{
+"text": "vai",
+"start": 17.0,
+"end": 17.16
+},
+{
+"text": "preparar",
+"start": 17.16,
+"end": 17.6
+},
+{
+"text": "todos",
+"start": 17.6,
+"end": 17.92
+},
+{
+"text": "os",
+"start": 17.92,
+"end": 18.12
+},
+{
+"text": "slides",
+"start": 18.12,
+"end": 18.3
+},
+{
+"text": "pra",
+"start": 18.3,
+"end": 18.54
+},
+{
+"text": "você.",
+"start": 18.54,
+"end": 18.76
+},
+{
+"text": "Depois",
+"start": 18.9,
+"end": 19.24
+},
+{
+"text": "com",
+"start": 19.24,
+"end": 19.4
+},
+{
+"text": "seus",
+"start": 19.4,
+"end": 19.58
+},
+{
+"text": "slides",
+"start": 19.58,
+"end": 19.92
+},
+{
+"text": "prontos",
+"start": 19.92,
+"end": 20.36
+},
+{
+"text": "você",
+"start": 20.36,
+"end": 20.6
+},
+{
+"text": "pode",
+"start": 20.6,
+"end": 20.84
+},
+{
+"text": "exportar",
+"start": 20.84,
+"end": 21.32
+},
+{
+"text": "a",
+"start": 21.32,
+"end": 21.42
+},
+{
+"text": "apresentação",
+"start": 21.42,
+"end": 21.82
+},
+{
+"text": "inteira",
+"start": 21.82,
+"end": 22.28
+},
+{
+"text": "pra",
+"start": 22.28,
+"end": 22.52
+},
+{
+"text": "PowerPoint",
+"start": 22.52,
+"end": 22.94
+},
+{
+"text": "ou",
+"start": 22.94,
+"end": 23.32
+},
+{
+"text": "pra",
+"start": 23.32,
+"end": 23.46
+},
+{
+"text": "Google",
+"start": 23.46,
+"end": 23.7
+},
+{
+"text": "Slides.",
+"start": 23.7,
+"end": 23.9
+},
+{
+"text": "Mas",
+"start": 23.96,
+"end": 24.12
+},
+{
+"text": "a",
+"start": 24.12,
+"end": 24.22
+},
+{
+"text": "novidade",
+"start": 24.22,
+"end": 24.54
+},
+{
+"text": "não",
+"start": 24.54,
+"end": 24.68
+},
+{
+"text": "para",
+"start": 24.68,
+"end": 24.86
+},
+{
+"text": "só",
+"start": 24.86,
+"end": 25.0
+},
+{
+"text": "nos",
+"start": 25.0,
+"end": 25.18
+},
+{
+"text": "slides.",
+"start": 25.18,
+"end": 25.5
+},
+{
+"text": "Na",
+"start": 25.68,
+"end": 25.76
+},
+{
+"text": "mesma",
+"start": 25.76,
+"end": 25.96
+},
+{
+"text": "conversa,",
+"start": 25.96,
+"end": 26.38
+},
+{
+"text": "por",
+"start": 26.38,
+"end": 26.5
+},
+{
+"text": "exemplo,",
+"start": 26.5,
+"end": 26.7
+},
+{
+"text": "você",
+"start": 26.78,
+"end": 26.96
+},
+{
+"text": "pode",
+"start": 26.96,
+"end": 27.1
+},
+{
+"text": "pedir",
+"start": 27.1,
+"end": 27.38
+},
+{
+"text": "pra",
+"start": 27.38,
+"end": 27.6
+},
+{
+"text": "ele",
+"start": 27.6,
+"end": 27.76
+},
+{
+"text": "criar",
+"start": 27.76,
+"end": 28.14
+},
+{
+"text": "um",
+"start": 28.14,
+"end": 28.52
+},
+{
+"text": "roteiro",
+"start": 28.52,
+"end": 29.02
+},
+{
+"text": "que",
+"start": 29.02,
+"end": 29.2
+},
+{
+"text": "depois",
+"start": 29.2,
+"end": 29.56
+},
+{
+"text": "ele",
+"start": 29.56,
+"end": 29.84
+},
+{
+"text": "consegue",
+"start": 29.84,
+"end": 30.2
+},
+{
+"text": "transformar",
+"start": 30.2,
+"end": 30.74
+},
+{
+"text": "em",
+"start": 30.74,
+"end": 30.86
+},
+{
+"text": "carrosséis",
+"start": 30.86,
+"end": 31.28
+},
+{
+"text": "no",
+"start": 31.28,
+"end": 31.4
+},
+{
+"text": "Instagram",
+"start": 31.4,
+"end": 31.68
+},
+{
+"text": "com",
+"start": 31.68,
+"end": 31.98
+},
+{
+"text": "base",
+"start": 31.98,
+"end": 32.22
+},
+{
+"text": "nesse",
+"start": 32.22,
+"end": 32.42
+},
+{
+"text": "material.",
+"start": 32.42,
+"end": 32.78
+},
+{
+"text": "Então,",
+"start": 32.98,
+"end": 33.12
+},
+{
+"text": "ao",
+"start": 33.16,
+"end": 33.24
+},
+{
+"text": "invés",
+"start": 33.24,
+"end": 33.36
+},
+{
+"text": "de",
+"start": 33.36,
+"end": 33.44
+},
+{
+"text": "você",
+"start": 33.44,
+"end": 33.62
+},
+{
+"text": "pagar",
+"start": 33.62,
+"end": 33.82
+},
+{
+"text": "pelo",
+"start": 33.82,
+"end": 34.04
+},
+{
+"text": "Gamma",
+"start": 34.04,
+"end": 34.36
+},
+{
+"text": "ou",
+"start": 34.36,
+"end": 34.5
+},
+{
+"text": "pelo",
+"start": 34.5,
+"end": 34.76
+},
+{
+"text": "Canva,",
+"start": 34.76,
+"end": 35.06
+},
+{
+"text": "você",
+"start": 35.22,
+"end": 35.34
+},
+{
+"text": "tem",
+"start": 35.34,
+"end": 35.42
+},
+{
+"text": "tudo",
+"start": 35.42,
+"end": 35.66
+},
+{
+"text": "em",
+"start": 35.66,
+"end": 35.82
+},
+{
+"text": "uma",
+"start": 35.82,
+"end": 35.98
+},
+{
+"text": "única",
+"start": 35.98,
+"end": 36.3
+},
+{
+"text": "conversa.",
+"start": 36.3,
+"end": 36.68
+},
+{
+"text": "Comenta",
+"start": 36.84,
+"end": 37.02
+},
+{
+"text": "SLIDES",
+"start": 37.02,
+"end": 37.52
+},
+{
+"text": "e",
+"start": 37.52,
+"end": 37.66
+},
+{
+"text": "eu",
+"start": 37.66,
+"end": 37.78
+},
+{
+"text": "te",
+"start": 37.78,
+"end": 37.86
+},
+{
+"text": "envio",
+"start": 37.86,
+"end": 37.94
+},
+{
+"text": "o",
+"start": 37.94,
+"end": 38.02
+},
+{
+"text": "link",
+"start": 38.02,
+"end": 38.2
+},
+{
+"text": "pra",
+"start": 38.2,
+"end": 38.36
+},
+{
+"text": "você",
+"start": 38.36,
+"end": 38.52
+},
+{
+"text": "conhecer.",
+"start": 38.52,
+"end": 38.76
+}
+]
+}

@@ -1,0 +1,24 @@
+== TEXTO DO CORTE (leia inteiro) ==
+O Claudio acabou de lançar 3 ferramentas de A totalmente gratuitas que podem fazer você economizar centenas de dólares por ano. Elas se chamam Slides, Docs e Design e ficam dentro do chat que você já utiliza. E pra utilizar é muito fácil, é só você pedir o que você quer construir, como por exemplo uma apresentação comercial pro seu negócio e ele prepara todos os slides pra você. Depois, com seus slides prontos, você pode exportar a apresentação inteira pra PowerPoint ou pra Google Slides. Mas essa novidade não para só nos slides. Na mesma conversa, você pode pedir também que ele escreva um documento de uma página. Ele pode até criar carrosséis no Instagram pra acompanhar esse material. Então, ao invés de você pagar pelo Gamma ou pelo Canva, você tem tudo em uma única conversa. Comenta Slides e eu te vi um link pra você conhecer.
+
+== REPETIÇÕES COLADAS ==
+  nenhuma
+
+== EMENDAS (janela ±2 s, transcrita sozinha) ==
+    6.13s  (fonte 12.37) :: Eles vão economizar centenas de dólares por ano. Elas se chamam Slides, Docs e Designs.
+    7.33s  (fonte 13.87) :: por ano. Elas se chamam Slides, Docs e Design e ficam dentro do
+   10.90s  (fonte 38.67) :: dentro do chat que você já utiliza. E pra utilizar é muito fácil, é só você pedir o que
+   16.10s  (fonte 44.00) :: por exemplo, uma apresentação comercial para o seu negócio e ele prepara todos os slides para você
+   18.30s  (fonte 78.97) :: prepara todos os slides pra você. Depois, com seus slides prontos, você pode
+   21.77s  (fonte 82.53) :: você pode exportar a apresentação inteira pra PowerPoint ou pra Google Slides. Mas é
+   23.50s  (fonte 86.27) :: para PowerPoint ou para Google Slides. Mas essa novidade não para só nos slides. Na
+   25.33s  (fonte 88.23) :: Mas essa novidade não para só nos slides. Na mesma conversa, você pode pedir também
+   29.07s  (fonte 121.87) :: também que ele escreva um documento de uma página. Ele pode até criar carrosséis no Instagram
+   31.20s  (fonte 124.10) :: Ele pode até criar carrosséis no Instagram para acompanhar esse material. Então, ao invés de você
+   32.40s  (fonte 142.87) :: Então, ao invés de você pagar pelo Gama ou pelo Câmbio,
+   36.47s  (fonte 147.17) :: você tem tudo em uma única conversa. Comenta slides e eu te vi um link pra você conhecer.
+
+== PAUSAS > 0,25 s QUE SOBRARAM ==
+  nenhuma
+
+duração do corte: 38.77s

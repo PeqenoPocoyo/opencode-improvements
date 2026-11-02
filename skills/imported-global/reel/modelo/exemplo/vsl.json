@@ -1,0 +1,23 @@
+{
+  "theme": "roxo",
+  "font": "padrao",
+  "punch": 1.06,
+  "fullPos": "50% 28%",
+  "splitPos": "50% 26%",
+  "pipPos": "50% 24%",
+  "face": {
+    "x": 310,
+    "y": 300,
+    "w": 540,
+    "h": 680
+  },
+  "head": {
+    "x": 580,
+    "y": 620
+  },
+  "topY": 240,
+  "capY": 1500,
+  "gradeFilter": "saturate(1.04) contrast(1.05) brightness(0.97)",
+  "tint": 0.3,
+  "tint2": 0.25
+}
