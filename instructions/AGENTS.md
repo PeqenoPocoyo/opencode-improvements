@@ -419,3 +419,18 @@ changes:
   - "§6.3: Vault de Chaves de API — local, formato, consumo, proibições"
   - "Repo: .gitignore novo bloqueando api-keys.json/.env*/*.pem/*.key"
   - "api-keys.json normalizado para JSON válido (hf + bfl)"
+
+
+## 17. Metadata — Instalação da suíte Higgsfield (2026-11-02)
+improved: true
+improved_at: "2026-11-02T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "MCP remoto conectado via /mcps (OAuth OK - login do usuario); 185 tools higgsfield no catalogo Code Mode; CLI @higgsfield/cli@1.2.2 autenticado (--version + auth login OK); 9 skills oficiais registradas automaticamente pelo OpenCode; índice/triggers com parse validado nas duas copias"
+changes:
+  - "opencode.jsonc: mcp.servers.higgsfield = { type: remote, url https://mcp.higgsfield.ai/mcp } (formato V2, enabled legado removido, rea preservado)"
+  - "CLI oficial @higgsfield/cli@1.2.2 via npm pinned (postinstall bloqueado pela política npm allowScripts - binário verificado funcional)"
+  - "9 skills oficiais vendored em ~/.config/opencode/skills/ + espelhadas em skills/imported-global/ (134 ficheiros, MIT): higgsfield-{brandkit,faceless-video,generate,marketplace-cards,product-photoshoot,soul-id,video-explainer,websites,youtube-thumbnail}"
+  - "Auditoria completa em skills/imported-global/higgsfield-suite-AUDIT.md (scanner: 7 PASS, 2 WARN re-revisados -> 9 HIGH falsos positivos; notas aceitas: bootstrap curl|sh mitigado pelo CLI pinned; Blender tarball sem checksum em websites/game-3d-animation.md - revisar caso usado)"
+  - "skills-index.json (2 copias) e skill-triggers.json (2 copias) atualizados com reel + suite; descrições extraídas do frontmatter SKILL.md em UTF-8 (correção de entradas higgsfield gravadas com descrição vazia e de vírgula órfã na junção reel->brandkit)"
+  - "segredo herdado pendente: OpenRouter apiKey hardcoded em opencode.jsonc - rotar a chave no painel OpenRouter e migrar para {env:OPENROUTER_API_KEY} ou /connect antes de editar o config"
