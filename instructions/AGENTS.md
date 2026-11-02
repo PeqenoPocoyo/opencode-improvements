@@ -434,3 +434,18 @@ changes:
   - "Auditoria completa em skills/imported-global/higgsfield-suite-AUDIT.md (scanner: 7 PASS, 2 WARN re-revisados -> 9 HIGH falsos positivos; notas aceitas: bootstrap curl|sh mitigado pelo CLI pinned; Blender tarball sem checksum em websites/game-3d-animation.md - revisar caso usado)"
   - "skills-index.json (2 copias) e skill-triggers.json (2 copias) atualizados com reel + suite; descrições extraídas do frontmatter SKILL.md em UTF-8 (correção de entradas higgsfield gravadas com descrição vazia e de vírgula órfã na junção reel->brandkit)"
   - "segredo herdado pendente: OpenRouter apiKey hardcoded em opencode.jsonc - rotar a chave no painel OpenRouter e migrar para {env:OPENROUTER_API_KEY} ou /connect antes de editar o config"
+
+## 18. Metadata — Instalação da suíte claude-motion + skills oficiais Remotion (2026-11-02)
+improved: true
+improved_at: "2026-11-02T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "smoke test completo no clone C:\Users\drici\Documents\claude-motion: python -m sfx (129 sons, -14.0 LUFS true peak -2.3 dBFS); remotion render --sequence --image-format=jpeg com --browser-executable apontando pro chrome-headless-shell x64 do cache playwright (render direto falha no compositor nativo, que nao tem build win32-arm64); encode ffmpeg do sistema (libx264 crf 17 60fps) + npm run mux com a faixa sfx -> out/effort.mp4 (5.17 MB, h264+aac, 1080x1080, 60fps, 22.0s) verificado com ffprobe"
+changes:
+  - "13 skills vendored em ~/.config/opencode/skills/ + espelhadas em skills/imported-global/ (byte-identical verificado 17x2): motion-design, review-loop, sound-design, web-sims (toolkit claude-motion, MIT) e remotion-{best-practices,captions,create,docs,interactivity,license,maps,markup,multimedia,render-cli,saas,studio,upgrade} (oficiais Remotion 4.0.540)"
+  - "colisao resolvida: skill remotion-render oficial da Remotion renomeada para remotion-render-cli (folder + frontmatter name) porque a skill cloud remotion-render (inference.sh) ja existia"
+  - "skills-index.json 1369 -> 1386 entradas (BOM preservado, JSON valido) e skill-triggers.json 1368 -> 1385 rows (sem trailing newline) — 2 copias byte-identicas em cada"
+  - "auditoria de seguranca antes do npm install: skills/imported-global/claude-motion-suite-AUDIT.md — scanner 0 HIGH; 11 MED revisados 1 a 1 (links relativos markdown, chave Algolia search-only publica, instrucoes de key via env do usuario, paths relativos de scripts de manutencao); commit 429ddb7"
+  - "ambiente Windows ARM64: Remotion nao publica Chrome Headless Shell nem o compositor nativo para arm64 — workaround dupla: --browser-executable apontando pro chrome-headless-shell x64 do cache playwright (roda sob emulacao) + render --sequence --image-format=jpeg com encode pelo ffmpeg do sistema; sims/capture.mjs usa playwright direto e funciona nativo"
+  - "esbuild postinstall bloqueado pela politica allowScripts do npm — irrelevante: binario vem via optionalDependencies (esbuild 0.28.1 verificado com npx esbuild --version)"
+  - "npm run sfx chama python3 (ausente no Windows): usar python -m sfx equivalente"

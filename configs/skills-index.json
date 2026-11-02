@@ -6843,5 +6843,90 @@
   "id": "higgsfield-youtube-thumbnail",
   "name": "higgsfield-youtube-thumbnail",
   "description": "Create high-click-through YouTube thumbnails and vertical video covers through the Higgsfield CLI. Builds a truthful information-gap concept, preserves up to three referenced identities, supports logos and controlled variants, renders the main image with Nano Banana Pro, and applies focused Seedream edits. Use when: \"make a YouTube thumb... [AUDIT: scanner 7 PASS/2 WARN revisados manualmente; ver higgsfield-suite-AUDIT.md]"
+ },
+ {
+  "id": "motion-design",
+  "name": "motion-design",
+  "description": "Taste rules for Remotion motion graphics — timing, easing, springs, typography, color, texture, and scene continuity, with concrete numbers. Use whenever you create, animate, retime, or polish a video, composition, scene, or transition in this repo. Nota: rodar dentro do clone em C:\\Users\\drici\\Documents\\claude-motion. [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "review-loop",
+  "name": "review-loop",
+  "description": "Visual self-review loop for motion graphics — render a draft, build contact sheets at every timeline beat, look at them, critique against a checklist, fix, repeat. Use after any change to a video's visuals or timing, and before calling a video done. Nota: rodar dentro do clone em C:\\Users\\drici\\Documents\\claude-motion. [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "sound-design",
+  "name": "sound-design",
+  "description": "Procedural sound design with the sfx engine — writing a cue sheet against a video's timeline, which sound goes with which visual event, gain hierarchy, panning, musical key, automatic mastering to -14 LUFS, adding new generators, and verifying sync. Use when adding, changing or checking audio, SFX, music beds or loudness for any video in this repo. Nota: rodar dentro do clone em C:\\Users\\drici\\Documents\\claude-motion. [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "web-sims",
+  "name": "web-sims",
+  "description": "Build a simulation-style video (agents, particles, 3D machines, fly-throughs) as one HTML page whose render(t) is a pure function of time, then capture it frame by frame to a 60 fps mp4 with sims/capture.mjs. Use when the idea is a simulation or a 3D object rather than motion graphics with text and UI. Nota: rodar dentro do clone em C:\\Users\\drici\\Documents\\claude-motion. [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-best-practices",
+  "name": "remotion-best-practices",
+  "description": "Router for all Remotion skills (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-captions",
+  "name": "remotion-captions",
+  "description": "Transcribing, displaying and animating captions (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-create",
+  "name": "remotion-create",
+  "description": "Create a new Remotion video (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-docs",
+  "name": "remotion-docs",
+  "description": "Search Remotion documentation (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-interactivity",
+  "name": "remotion-interactivity",
+  "description": "Structure Remotion markup for interactivity (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-license",
+  "name": "remotion-license",
+  "description": "Find Remotion license information, FAQs, terms, and where to buy a license. (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-maps",
+  "name": "remotion-maps",
+  "description": "Remotion Map animation knowledge (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-markup",
+  "name": "remotion-markup",
+  "description": "Content, animation and effects best practices (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-multimedia",
+  "name": "remotion-multimedia",
+  "description": "Interacting with Mediabunny (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-render-cli",
+  "name": "remotion-render-cli",
+  "description": "Export a Remotion video (CLI local; a skill cloud \"remotion-render\" via inference.sh continua distinta) (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-saas",
+  "name": "remotion-saas",
+  "description": "Build an app with Remotion (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-studio",
+  "name": "remotion-studio",
+  "description": "Preview a Remotion video (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
+ },
+ {
+  "id": "remotion-upgrade",
+  "name": "remotion-upgrade",
+  "description": "Upgrade Remotion, and related packages (skills oficiais Remotion 4.0.540) [AUDIT: scanner 0 HIGH, MED todos revisados; ver claude-motion-suite-AUDIT.md]"
  }
 ]
