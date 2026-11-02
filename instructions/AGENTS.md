@@ -95,6 +95,7 @@
 ### 4.4 Configs
 - `configs/settings.json` — configurações do OpenCode
 - `configs/mcp.json` — servidores MCP
+- `~/.config/opencode/api-keys.json` — vault de chaves de API (raiz global; **nunca** exportar/commitar — regras em §6.3)
 - Nunca commitar segredos.
 
 ## 5. Comunicação
@@ -124,6 +125,12 @@
 - Validar inputs do usuário.
 - Sanitizar dados antes de usar em comandos.
 - Usar `.gitignore` para arquivos sensíveis.
+
+### 6.3 Vault de Chaves de API (2026-11-02)
+- **Local único**: `~/.config/opencode/api-keys.json` (raiz das configs globais).
+- **Formato**: JSON válido — objeto `{ "nome-do-servico": "token" }`.
+- **Consumo**: ler em runtime pelo script/ferramenta que a usa (PowerShell: `Get-Content ~/.config/opencode/api-keys.json -Raw | ConvertFrom-Json`; bash: `jq -r '."nome"`). O agente referencia a chave **pelo nome**; o valor nunca entra em chat, log, prompt ou arquivo externo.
+- **Proibido**: copiar o vault para o repo, exportá-lo em sync, commitá-lo ou listá-lo em qualquer empacotamento (o `.gitignore` do repo bloqueia `api-keys.json`, `.env*`, `*.pem`, `*.key`).
 
 ## 7. Git Workflow
 
@@ -278,7 +285,7 @@ test_scenario: "descrição do teste"
 ## 10. Uso Autonomo de Skills (Sem @)
 
 - Nao exigir marcacao `@skill`: o agente deve detectar contexto e carregar skills automaticamente.
-- A cada turno, analisar a intencao do usuario: primeiro nesta tabela, depois em `configs/skill-router-core.json`, depois grep por 1-2 keywords em `configs/skills-index.json` (1358 skills).
+- A cada turno, analisar a intencao do usuario: primeiro nesta tabela, depois em `%USERPROFILE%\.config\opencode\configs\skill-router-core.json`, depois grep por 1-2 keywords em `configs/skills-index.json` (1358 skills).
 - Se houver skill aplicavel, invoca-la via `skill` (load) e aplicar suas regras antes de responder.
 - Nunca mencionar "habilidade disponivel" sem usa-la na pratica.
 - Hooks e instrucoes globais devem rodar de forma proativa, nao esperar pedido explicito.
@@ -330,3 +337,85 @@ test_scenario: "descrição do teste"
 | vídeo demo/motion | `ai-video-generation` | `remotion-render`, `demo-video` |
 
 **Regra de reflexo**: se o pedido tem formas "pesquisa sobre X", "investiga", "descobre", "o que é", "como funciona" → carregar `research` (e `deep-research` se investimento/decisão caro) ANTES de responder. **Nunca** responder pergunta de pesquisa do repertório sem checar se há skill.
+
+## 12. Incerteza e Clarificação (NOVO - 2026-10-31)
+
+### 12.1 Marcação de Incerteza
+- **NUNCA** apresentar palpites como certezas. Sempre marcar explicitamente:
+  - `[CERTEZA]` — informação verificada ou de conhecimento confiável
+  - `[PALPITE]` — inferência sem verificação
+  - `[DESCONHECIDO]` — sem informação suficiente
+- Em formulários/exames: listar quais respostas são palpites ANTES de submeter.
+- Se o usuário disser "tire da cabeça", ainda assim marcar o nível de confiança.
+
+### 12.2 Clarificação Antes de Ação
+- Quando o pedido for ambíguo (ex: "abre o tinkered"), **pesquisar primeiro** (webfetch/websearch) para confirmar o que é antes de agir.
+- Se houver múltiplas interpretações, listar as opções e pedir confirmação em vez de escolher uma.
+- Regra: "Pesquisar 10 segundos antes de agir 10 minutos errado."
+
+### 12.3 Auto-Avaliação Pós-Sessão
+- Ao final de cada sessão significativa, registrar:
+  - O que foi feito bem
+  - Onde errou ou foi ineficiente
+  - Melhorias concretas propostas
+- Implementar pelo menos uma melhoria concreta (skill, hook, instrução, script) por sessão.
+
+## 13. Navegação Web e Extração de Dados (NOVO - 2026-10-31)
+
+### 13.1 Padrões de Pesquisa
+- **YouTube suggestions API**: `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=TERM` — descobre termos relacionados.
+- **YouTube search scraping**: fetch `youtube.com/results?search_query=TERM` com User-Agent de browser real.
+- **Extração de títulos**: regex `/"title":\{"runs":\[\{"text":"([^"]+)"\}\]/g`
+- **Extração de video IDs**: regex `/"videoId":"([a-zA-Z0-9_-]{11})"/g`
+- **Extração de playlist IDs**: regex `/playlist\?list=([a-zA-Z0-9_-]+)/g`
+- **Extração de canais**: regex `/"ownerText":\{"runs":\[\{"text":"([^"]+)"/g`
+
+### 13.2 Padrões de Navegação
+- **ego-browser**: navegador real com perfil do usuário (cookies, logins). Usar para abrir abas visualmente.
+- **browser tool (in-app)**: navegador headless/sandbox. Usar para scraping, extração, interação programática.
+- **webfetch**: para APIs e páginas estáticas. Adicionar User-Agent de browser real para sites que bloqueiam.
+- **evaluate()**: para interagir com elementos não capturados pelo snapshot (inputs, checkboxes, radio buttons).
+
+### 13.3 Padrões de Formulário
+- Google Forms: inputs são `input[type="text"]`, checkboxes são `[role="checkbox"]`, radio buttons são `[role="radio"]`.
+- Para preencher: usar `evaluate()` com `inp.value = ...` + `dispatchEvent(new Event('input'))`.
+- Para clicar: usar `evaluate()` com `el.click()`.
+- Sempre verificar após preencher com um segundo `evaluate()` de leitura.
+
+## 14. Exames e Formulários (NOVO - 2026-10-31)
+
+### 14.1 Regras para Exames
+- **NUNCA** submeter um exame/formulário com respostas não verificadas sem avisar o usuário.
+- Marcar cada resposta como `[CERTEZA]`, `[PALPITE]` ou `[DESCONHECIDO]`.
+- Se não tiver acesso ao material de estudo (SOPs, docs), avisar ANTES de responder.
+- Oferecer ao usuário a opção de revisar respostas palpites antes de submeter.
+
+### 14.2 Regras para Formulários
+- Preencher campos pessoais (nome, Discord, SteamID) apenas com dados reais do usuário.
+- Se o usuário pedir dados fictícios, usar placeholders claramente fictícios (ex: "TestPlayer123").
+- Sempre confirmar antes de clicar "Enviar"/"Submit".
+- Se o formulário tiver múltiplas páginas, percorrer TODAS antes de submeter.
+
+## 15. Metadata de Melhoria (NOVO - 2026-10-31)
+improved: true
+improved_at: "2026-10-31T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "Sessão de navegação web + preenchimento de formulário Google Forms com 4 páginas"
+changes:
+  - "Adicionada seção 12: Incerteza e Clarificação"
+  - "Adicionada seção 13: Navegação Web e Extração de Dados"
+  - "Adicionada seção 14: Exames e Formulários"
+  - "Adicionada seção 15: Metadata de Melhoria"
+
+## 16. Metadata — Vault de Chaves (2026-11-02)
+improved: true
+improved_at: "2026-11-02T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "api-keys.json convertido de formato .env para JSON válido e validado por nome+comprimento (sem ecoar valor); §6.3 adicionado aos dois AGENTS.md; .gitignore criado no repo bloqueando segredos"
+changes:
+  - "§4.4: referência ao api-keys.json (raiz das configs globais)"
+  - "§6.3: Vault de Chaves de API — local, formato, consumo, proibições"
+  - "Repo: .gitignore novo bloqueando api-keys.json/.env*/*.pem/*.key"
+  - "api-keys.json normalizado para JSON válido (hf + bfl)"

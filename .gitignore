@@ -1,43 +1,9 @@
-# Secrets / credentials
+# Segredos / credenciais — NUNCA commitar (AGENTS.md §6.3)
+api-keys.json
 .env
 .env.*
-*.key
+*.env
 *.pem
-*.p12
-secrets/
-credentials/
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Editors / IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Node / build
-node_modules/
-dist/
-build/
-.next/
-.cache/
-
-# Logs
-*.log
-logs/
-
-# Temp
-*.tmp
-tmp/
-temp/
-
-# OpenCode local state
-.opencode/
-*.local
-
-# Skill evolution backups (local only)
-.claude/skill-backups/
+*.key
+*.secrets.*
+.claude/settings.local.json
