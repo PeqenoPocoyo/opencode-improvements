@@ -1,9 +1,21 @@
-# Segredos / credenciais — NUNCA commitar (AGENTS.md §6.3)
+# segredos — nunca commit
 api-keys.json
-.env
-.env.*
-*.env
+.env*
 *.pem
 *.key
-*.secrets.*
-.claude/settings.local.json
+*.crt
+
+# dependências dos toolkits/skills vendored
+node_modules/
+package-lock.json
+
+# temporários do agente
+.tmp/
+*.pcm
+*.wav
+_silent.mp4
+_segs.txt
+
+# ruído de sistema
+.DS_Store
+Thumbs.db
