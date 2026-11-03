@@ -1,0 +1,1 @@
+ffmpeg -y -f lavfi -i color=c=0x040508:size=1080x1920:rate=30 -t 2 -vf "drawtext=text='Resgatar 10 Barras de Ouro':fontfile=segoeui.ttf:fontsize=64:fontcolor=gold:x=(w-text_w)/2:y=h/3,drawtext=text=RDO:fontfile=segoeui.ttf:fontsize=48:fontcolor=white:x=(w-text_w)/2:y=h/3+90" -c:v libx264 -pix_fmt yuv420p C:\Users\drici\Documents\OpenCode\artifacts\cena1.mp4

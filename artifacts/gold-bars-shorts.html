@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDO — 10 Barras de Ouro</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#040508;--panel:#0e1220;--glass:rgba(255,255,255,0.04);
+    --gold:#ffd166;--gold-light:#ffe082;--accent:#ff9f1c;--blue:#3a86ff;--red:#e63946;--green:#2a9d8f;
+    --text:#f7fafc;--muted:#94a3b8
+  }
+  html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--text);font-family:'Segoe UI',system-ui,sans-serif}
+  body{display:flex;align-items:center;justify-content:center}
+  .phone{width:390px;height:844px;border-radius:34px;overflow:hidden;box-shadow:0 50px 150px rgba(0,0,0,.8);background:linear-gradient(180deg,#141833,#0a0c15);position:relative;transform:scale(1);animation:phoneIn .8s cubic-bezier(.2,1,.3,1) both}
+  .screen{width:100%;height:100%;position:relative;overflow:hidden}
+
+  @keyframes phoneIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* Chrome do navegador */
+  .bar{height:56px;background:linear-gradient(180deg,#121624,#0f131c);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 12px;z-index:40}
+  .tabs{flex:1;display:flex;gap:6px;overflow:hidden}
+  .tab{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;overflow:hidden;transition:all .2s}
+  .tab.active{border-color:rgba(255,209,102,.35);color:var(--gold);background:rgba(255,209,102,.08)}
+  .tab .dot{width:7px;height:7px;border-radius:50%;background:var(--danger,#ef4444);box-shadow:0 0 8px rgba(239,68,68,.6)}
+  .tab.active .dot{background:var(--green,#10b981)}
+  .bar .right{display:flex;gap:8px}
+  .bar .btn{min-width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s}
+  .bar .btn:hover{background:rgba(255,255,255,.14);transform:scale(1.05)}
+
+  .urlbar{height:40px;background:linear-gradient(180deg,#161a2b,#131624);border-radius:20px;padding:0 14px;display:flex;align-items:center;gap:10px;z-index:35;margin:10px 16px;box-shadow:0 6px 20px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.04)}
+  .urlbar .lock{width:16px;height:16px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:9px;animation:pulseGlow 2s infinite}
+  @keyframes pulseGlow{0%,100%{box-shadow:0 0 6px rgba(16,185,129,.4)}50%{box-shadow:0 0 14px rgba(16,185,129,.8)}}
+  .urlbar input{flex:1;background:transparent;border:none;color:var(--text);font-size:13px;outline:none}
+  .urlbar input::placeholder{color:var(--muted)}
+  .urlbar .go{background:linear-gradient(135deg,var(--accent),var(--gold));color:#000;border:none;border-radius:10px;width:74px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(255,159,28,.4);transition:all .2s}
+  .urlbar .go:active{transform:scale(.95)}
+
+  .content{flex:1;overflow:hidden;position:relative}
+
+  .page{width:100%;height:100%;padding:20px 16px;position:absolute;inset:0;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .5s;pointer-events:none}
+  .page.active{opacity:1;transform:none;pointer-events:auto}
+  .page h2{font-size:23px;margin-bottom:10px;color:var(--text);letter-spacing:-.2px}
+  .page p{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:16px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,209,102,.4),transparent)}
+  .card h3{font-size:16px;margin-bottom:8px;color:var(--gold)}
+  .btn{width:100%;height:48px;border-radius:14px;border:none;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:#000;background:linear-gradient(135deg,var(--gold),var(--gold-light));box-shadow:0 8px 20px rgba(255,209,102,.35);transition:all .2s}
+  .btn.secondary{background:transparent;color:var(--blue);border:1px solid rgba(58,134,255,.3);box-shadow:none}
+  .btn:active{transform:scale(.96);box-shadow:0 4px 12px rgba(255,209,102,.2)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:11px;font-size:12px;font-weight:800;background:rgba(255,255,255,.08);color:var(--blue);border:1px solid rgba(58,134,255,.25)}
+  .input{width:100%;height:50px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:0 16px;color:var(--text);font-size:15px;margin-bottom:14px;outline:none;transition:all .2s}
+  .input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(58,134,255,.15)}
+  .step{margin-bottom:14px}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:900;margin-right:10px}
+  .help{font-size:12px;color:var(--muted);margin-top:8px}
+  .chip{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:11px;color:var(--muted);margin-bottom:10px}
+
+  /* Final */
+  .final{text-align:center}
+  .gold{font-size:80px;font-weight:950;color:var(--gold);text-shadow:0 0 40px rgba(255,209,102,.5),0 0 80px rgba(255,209,102,.2);margin-bottom:12px}
+  .bars{display:flex;gap:10px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+  .bar-ico{width:38px;height:24px;background:linear-gradient(135deg,#ffd166,#ff9f1c);border-radius:4px;box-shadow:0 0 20px rgba(255,209,102,.5);position:relative;animation:float 3s ease-in-out infinite}
+  .bar-ico.shine::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);width:24px;animation:shine 2.5s infinite}
+  .bar-ico:nth-child(1){animation-delay:0s}
+  .bar-ico:nth-child(2){animation-delay:.3s}
+  .bar-ico:nth-child(3){animation-delay:.6s}
+  .bar-ico:nth-child(4){animation-delay:.9s}
+  .bar-ico:nth-child(5){animation-delay:1.2s}
+  .bar-ico:nth-child(6){animation-delay:.1s}
+  .bar-ico:nth-child(7){animation-delay:.4s}
+  .bar-ico:nth-child(8){animation-delay:.7s}
+  .bar-ico:nth-child(9){animation-delay:1s}
+  .bar-ico:nth-child(10){animation-delay:1.3s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes shine{0%{transform:translateX(-40px)}100%{transform:translateX(40px)}}
+  .final h2{font-size:26px;margin-bottom:8px}
+  .final p{color:var(--muted);margin-bottom:26px;line-height:1.5}
+
+  /* Cursor */
+  .cursor{position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 0 14px rgba(255,255,255,.7);pointer-events:none;z-index:110;transition:transform .06s}
+  .cursor.click{transform:scale(.55);box-shadow:0 0 26px rgba(255,209,102,.9)}
+  .cursor.hidden{opacity:0}
+  .trail{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,209,102,.35);pointer-events:none;z-index:109}
+
+  canvas.fx{position:absolute;inset:0;pointer-events:none;z-index:90}
+
+  .fade-in{animation:fadeIn .5s ease forwards}
+  .slide-up{animation:slideUp .65s ease forwards}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="bar">
+      <div class="tabs">
+        <div class="tab active" id="tab1"><span class="dot"></span>rockstargames.com</div>
+        <div class="tab" id="tab2">Red Dead Online</div>
+        <div class="tab" id="tab3">Suporte R*</div>
+      </div>
+      <div class="right">
+        <div class="btn" id="btnNew">+</div>
+        <div class="btn" id="btnReload">↻</div>
+      </div>
+    </div>
+    <div class="urlbar">
+      <div class="lock">🔒</div>
+      <input type="text" id="url" placeholder="rockstargames.com/account/security" spellcheck="false">
+      <div class="go" id="go">Ir</div>
+    </div>
+    <canvas class="fx" id="fx"></canvas>
+    <div class="cursor" id="cursor"></div>
+    <div class="content">
+      <!-- Página inicial -->
+      <div class="page active" id="pageHome">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:38px;height:38px;background:linear-gradient(135deg,#ff9f1c,#ffd166);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900">R</div>
+          <div>
+            <div style="font-weight:800;font-size:17px;letter-spacing:-.3px">Rockstar Games</div>
+            <div style="font-size:12px;color:var(--muted)">Social Club · Conta e Segurança</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Bem-vindo à sua conta</h3>
+          <p>Gerencie sua conta Rockstar, verifique sua identidade e receba recompensas exclusivas em Red Dead Online.</p>
+          <div class="badge" style="margin-top:8px">2-Step Verification · 10 barras de ouro</div>
+        </div>
+        <div class="step">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div class="n">1</div>
+            <div style="font-weight:700">Acesse a página de Segurança</div>
+          </div>
+          <div style="font-size:13px;color:var(--muted)">Toque em "Segurança" no menu da conta para continuar.</div>
+        </div>
+        <div class="btn" id="btnGoSecurity" style="margin-top:12px">Abrir Segurança →</div>
+        <div class="help" style="margin-top:10px">Passo 1 de 6 · Resgate 10 barras de ouro</div>
+      </div>
+
+      <!-- Segurança -->
+      <div class="page" id="pageSecurity">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <button class="btn secondary" id="btnBack" style="width:auto;padding:0 14px;font-size:13px">← Voltar</button>
+          <div style="flex:1"></div>
+          <div style="font-weight:800;font-size:17px;letter-spacing:-.3px">Segurança</div>
+        </div>
+        <div class="card">
+          <h3>Verificação em 2 etapas</h3>
+          <p>Adicione 2FA à sua conta Social Club e ganhe 10 barras de ouro em Red Dead Online.</p>
+          <div class="badge" style="margin-top:8px">Bônus confirmado: 10 barras de ouro</div>
+        </div>
+        <div class="step">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div class="n">2</div>
+            <div style="font-weight:700">Ative a 2FA</div>
+          </div>
+          <div style="font-size:13px;color:var(--muted)">Use um app autenticador (Google Authenticator, Authy ou Microsoft Authenticator).</div>
+        </div>
+        <input type="text" id="code" class="input" placeholder="Digite o código de 6 dígitos" maxlength="6">
+        <div class="btn" id="btnVerify">Verificar código</div>
+        <div class="help" id="helpSecurity" style="margin-top:8px"></div>
+      </div>
+
+      <!-- Confirmação final -->
+      <div class="page" id="pageConfirm">
+        <div class="final">
+          <div class="bars">
+            <span class="bar-ico shine"></span><span class="bar-ico"></span><span class="bar-ico"></span><span class="bar-ico"></span><span class="bar-ico"></span>
+            <span class="bar-ico"></span><span class="bar-ico"></span><span class="bar-ico"></span><span class="bar-ico"></span><span class="bar-ico"></span>
+          </div>
+          <div class="gold">10</div>
+          <h2>Barras de ouro adicionadas</h2>
+          <p>Sua conta Red Dead Online recebeu o bônus de verificação em 2 etapas.</p>
+          <div class="btn" id="btnOpenRdo">Abrir RDO</div>
+          <div class="help" style="margin-top:10px">Pronto · Você pode fechar esta aba</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const cursor=document.getElementById('cursor');
+const pageHome=document.getElementById('pageHome');
+const pageSec=document.getElementById('pageSecurity');
+const pageConf=document.getElementById('pageConfirm');
+const urlInput=document.getElementById('url');
+const btnGo=document.getElementById('go');
+const btnSec=document.getElementById('btnGoSecurity');
+const btnBack=document.getElementById('btnBack');
+const btnVerify=document.getElementById('btnVerify');
+const btnOpenRdo=document.getElementById('btnOpenRdo');
+const codeInput=document.getElementById('code');
+const helpSec=document.getElementById('helpSecurity');
+const fx=document.getElementById('fx');
+const ctx=fx.getContext('2d');
+let W=fx.width=390,H=fx.height=844;
+let particles=[];
+
+function moveTo(x,y,dur=550){
+  return new Promise(r=>{
+    const sx=cursor.offsetLeft||0, sy=cursor.offsetTop||0;
+    const start=performance.now();
+    function frame(now){
+      const t=Math.min(1,(now-start)/dur);
+      const ease=1-Math.pow(1-t,3);
+      cursor.style.left=(sx+(x-sx)*ease)+'px';
+      cursor.style.top=(sy+(y-sy)*ease)+'px';
+      if(t<1) requestAnimationFrame(frame); else r();
+    }
+    requestAnimationFrame(frame);
+  });
+}
+function clickEl(el){
+  const rect=el.getBoundingClientRect();
+  const x=rect.left+rect.width/2, y=rect.top+rect.height/2;
+  moveTo(x,y,350).then(()=>{
+    cursor.classList.add('click');
+    setTimeout(()=>cursor.classList.remove('click'),160);
+    confetti(x,y-12,20);
+  });
+}
+function typeText(el,text){
+  el.value=''; el.focus();
+  return new Promise(r=>{
+    let i=0;
+    const iv=setInterval(()=>{
+      el.value=text.slice(0,i+1); i++;
+      if(i>=text.length){clearInterval(iv);r();}
+    },50);
+  });
+}
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  page.classList.add('active');
+}
+function confetti(x,y,n=18){
+  for(let i=0;i<n;i++){
+    particles.push({x,y,vx:(Math.random()-0.5)*7,vy:(Math.random()-0.5)*7-1,life:1,color:`hsl(${40+Math.random()*30},100%,60%)`,size:Math.random()*4+2});
+  }
+}
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.14;p.life-=0.022;
+    ctx.fillStyle=p.color.replace(/[\d\.]+\)$/g,m=>p.life+')');
+    ctx.globalAlpha=p.life;
+    ctx.fillRect(p.x,p.y,p.size,p.size);
+    if(p.life<=0) particles.splice(i,1);
+  }
+  ctx.globalAlpha=1;
+  requestAnimationFrame(loop);
+}
+loop();
+
+(async ()=>{
+  await moveTo(140,48,500);
+  await typeText(urlInput,'rockstargames.com/account/security');
+  await moveTo(332,48,350);
+  btnGo.classList.add('click');setTimeout(()=>btnGo.classList.remove('click'),160);
+  await new Promise(r=>setTimeout(r,500));
+  showPage(pageSec);
+  await moveTo(205,405,600);
+  await typeText(codeInput,'824719');
+  await moveTo(195,548,400);
+  btnVerify.classList.add('click');setTimeout(()=>btnVerify.classList.remove('click'),160);
+  await new Promise(r=>setTimeout(r,600));
+  helpSec.textContent='Código verificado · Recompensa a caminho';
+  helpSec.style.color='var(--green)';
+  await new Promise(r=>setTimeout(r,700));
+  showPage(pageConf);
+  await moveTo(195,740,500);
+  btnOpenRdo.classList.add('click');setTimeout(()=>btnOpenRdo.classList.remove('click'),160);
+})();
+</script>
+</body>
+</html>

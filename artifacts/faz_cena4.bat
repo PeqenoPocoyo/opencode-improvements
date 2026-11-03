@@ -1,0 +1,1 @@
+ffmpeg -y -f lavfi -i color=c=0x0e1220:size=1080x1920:rate=30 -t 2 -vf "drawtext=text='Codigo: 824719':fontfile=segoeui.ttf:fontsize=56:fontcolor=lime:x=(w-text_w)/2:y=h/2-30,drawtext=text='Verificando...':fontfile=segoeui.ttf:fontsize=28:fontcolor=white:x=(w-text_w)/2:y=h/2+60" -c:v libx264 -pix_fmt yuv420p C:\Users\drici\Documents\OpenCode\artifacts\cena4.mp4
