@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Arte Algorítmica — Mandala</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0f19;color:#fff;font-family:system-ui,sans-serif}
+  .wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%}
+  canvas{border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+  h2{margin:14px 0 6px; font-weight:600}
+  p{opacity:.7; font-size:13px; margin:0 0 10px}
+  button{padding:8px 16px;background:#5b8cff;border:0;color:#fff;border-radius:8px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <canvas id="c" width="900" height="900"></canvas>
+  <h2>Mandala Algorítmica</h2>
+  <p>Cada ponto é calculado com funções trigonométricas encadeadas — regenere para uma nova variação.</p>
+  <button id="btn">Nova variação</button>
+</div>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+let seed = Math.random()*9999;
+function rnd(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+
+function draw(){
+  const W=c.width, H=c.height;
+  ctx.fillStyle='#0b0f19'; ctx.fillRect(0,0,W,H);
+  const cx=W/2, cy=H/2;
+  const N=7 + Math.floor(rnd()*5);
+  const layers=6;
+  const hueBase = rnd()*360;
+  for(let L=0; L<layers; L++){
+    const count = N*(L+1)*4;
+    const radius = 80 + L*90;
+    const thickness = 0.6 + rnd()*2;
+    for(let i=0;i<count;i++){
+      const t=i/count* Math.PI*2;
+      const a = t + rnd()*0.15;
+      const r = radius + Math.sin(t* (3+rnd()*4)) * (20+rnd()*40);
+      const x = cx + Math.cos(a)*r;
+      const y = cy + Math.sin(a)*r;
+      const size = 1 + rnd()* (layers-L)*1.4;
+      const hue = (hueBase + t*180/Math.PI + L*40) % 360;
+      ctx.fillStyle = `hsla(${hue},80%,65%,${0.35+rnd()*0.4})`;
+      ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill();
+    }
+  }
+  // spokes / curves
+  for(let s=0;s<12;s++){
+    const ang = s/12*Math.PI*2 + rnd()*0.2;
+    ctx.strokeStyle = `hsla(${(hueBase+s*30)%360},70%,60%,0.25)`;
+    ctx.lineWidth=1; ctx.beginPath();
+    let started=false;
+    for(let u=0;u<=1;u+=0.01){
+      const rr = u*380 + Math.sin(u*Math.PI* (5+seed%6))*60;
+      const x = cx + Math.cos(ang+u*1.2)*rr;
+      const y = cy + Math.sin(ang+u*1.2)*rr;
+      if(!started){ctx.moveTo(x,y);started=true}else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  // central glow
+  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,90);
+  g.addColorStop(0,'rgba(255,255,255,0.6)');
+  g.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,90,0,Math.PI*2); ctx.fill();
+}
+
+draw();
+document.getElementById('btn').addEventListener('click',()=>{seed=Math.random()*9999; draw();});
+</script>
+</body>
+</html>

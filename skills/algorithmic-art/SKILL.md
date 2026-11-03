@@ -4,6 +4,8 @@ description: Creating algorithmic art using p5.js with seeded randomness and int
 license: Complete terms in LICENSE.txt
 ---
 
+> **Triggers (auto)**: algorithmic art, algorithmic-art
+
 Algorithmic philosophies are computational aesthetic movements that are then expressed through code. Output .md files (philosophy), .html files (interactive viewer), and .js files (generative algorithms).
 
 This happens in two steps:
@@ -403,3 +405,5 @@ This skill includes helpful templates and documentation:
 - The **algorithm is where to create** something unique
 - Don't copy the flow field example - build what the philosophy demands
 - But DO keep the exact UI structure and Anthropic branding from the template
+
+> **Skill Evolver**: score 58/100 · evoluída em 2026-10-31T02:35:17.215560+00:00Z · versão evolver-1.0

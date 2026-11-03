@@ -5,6 +5,8 @@ description: Conecta este dispositivo ao repositório unificado opencode-improve
 
 # OpenCode Sync — Conexão, Auto-Sync e Validação Progressiva
 
+> **Triggers (auto)**: opencode sync, opencode-sync
+
 ## Objetivo
 
 Conectar este dispositivo ao repositório `https://github.com/PeqenoPocoyo/opencode-improvements.git`,
@@ -96,7 +98,8 @@ O arquivo `validation.json` na raiz do repo rastreia o estado de cada recurso:
 ### 6. Adotar configs globais
 Após o sync, verificar se existem configs globais no repo e adotá-las:
 
-- **Skills**: se `skills/` tiver conteúdo novo, listar para o usuário
+- **Skills globais**: se skills/imported-global/ ou skills/imported-agents/ existirem, rodar scripts/install-global-skills.ps1 (Windows) ou ash scripts/install-global-skills.sh (Mac/Linux) para configurar automaticamente em ~/.config/opencode e ~/.agents.
+- **Skills locais**: se skills/ tiver conte?do novo (customizadas), listar para o usu?rio
 - **Hooks**: se `hooks/` tiver conteúdo, listar
 - **Instruções**: se `instructions/` tiver `CLAUDE.md` ou `AGENTS.md`, mostrar o conteúdo
 - **Artefatos**: se `artefatos/` tiver novos HTMLs, listar e oferecer abrir no Review pane
@@ -245,3 +248,12 @@ E o agente executará todos os passos acima automaticamente.
 - `scripts/onboard-device.ps1` — onboarding Windows
 - `docs/SYNC.md` — documentação completa
 - `validation.json` — rastreamento de validação
+
+## Anti-padrões (auto-evoluídos)
+
+- ❌ Usar a skill sem validar o contexto de entrada.
+- ❌ Ignorar os triggers documentados e forçar ativação manual.
+- ❌ Entregar resultado sem verificar se todos os elementos são funcionais.
+- ❌ Repetir o mesmo padrão de saída sem adaptar ao domínio.
+
+> **Skill Evolver**: score 66/100 · evoluída em 2026-10-31T02:34:06.305505+00:00Z · versão evolver-1.0

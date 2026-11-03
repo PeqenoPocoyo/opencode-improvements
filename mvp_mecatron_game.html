@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MECATRON-GAME — MVP Dashboard</title>
+<style>
+:root{
+  --bg:#0b1220; --panel:#121a2b; --panel2:#1a2336; --accent:#3dd6a3; --accent2:#4ea8ff; --warn:#ff6b6b; --text:#e6ecf5; --muted:#8a96ad; --border:#23304a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--panel);border-bottom:1px solid var(--border);}
+header h1{font-size:18px;font-weight:700;letter-spacing:.5px;}
+header .sub{font-size:12px;color:var(--muted);}
+.badge{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;}
+.badge.ok{background:rgba(61,214,163,.15);color:var(--accent);}
+.badge.warn{background:rgba(255,107,107,.15);color:var(--warn);}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:18px 24px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.card h3{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px;}
+.kpi{font-size:26px;font-weight:700;}
+.kpi.up{color:var(--accent);}
+.kpi.down{color:var(--warn);}
+.kpi .delta{font-size:12px;font-weight:500;margin-left:8px;}
+.row{display:grid;grid-template-columns:2fr 1fr;gap:14px;padding:0 24px 18px;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.panel h2{font-size:14px;margin-bottom:12px;font-weight:600;}
+.chart{height:220px;display:flex;align-items:flex-end;gap:6px;padding-top:10px;}
+.bar{flex:1;background:linear-gradient(180deg,var(--accent2),#2a5a99);border-radius:4px 4px 0 0;position:relative;transition:height .6s;}
+.bar span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);}
+.list{display:flex;flex-direction:column;gap:8px;}
+.item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--panel2);border-radius:8px;}
+.item .name{font-size:13px;}
+.item .pts{font-size:13px;font-weight:700;color:var(--accent);}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.bdg{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--panel2);border:2px solid var(--border);}
+.bdg.gold{border-color:#ffd700;background:rgba(255,215,0,.15);}
+.bdg.silver{border-color:#c0c0c0;background:rgba(192,192,192,.15);}
+.bdg.bronze{border-color:#cd7f32;background:rgba(205,127,50,.15);}
+.log{max-height:180px;overflow:auto;font-size:12px;color:var(--muted);}
+.log div{padding:4px 0;border-bottom:1px solid var(--border);}
+.log .t{color:var(--accent2);margin-right:6px;}
+button{background:var(--accent);color:#0b1220;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;font-size:13px;}
+button:hover{filter:brightness(1.1);}
+.controls{display:flex;gap:8px;align-items:center;}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}.row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>MECATRON-GAME · MVP Dashboard</h1>
+    <div class="sub">Manufatura Discreta · Célula de Montagem · Turno A</div>
+  </div>
+  <div class="controls">
+    <span class="badge ok" id="status">● Sistema Online</span>
+    <button onclick="simulate()">Simular Ciclo</button>
+  </div>
+</header>
+
+<div class="grid">
+  <div class="card"><h3>OEE</h3><div class="kpi up" id="oee">62.0% <span class="delta">↑ +0.0</span></div></div>
+  <div class="card"><h3>Downtime não planejado</h3><div class="kpi down" id="down">12.0% <span class="delta">↓ 0.0</span></div></div>
+  <div class="card"><h3>MTBF (h)</h3><div class="kpi up" id="mtbf">180 <span class="delta">↑ 0</span></div></div>
+  <div class="card"><h3>Engajamento (NPS op.)</h3><div class="kpi up" id="eng">55 <span class="delta">↑ 0</span></div></div>
+</div>
+
+<div class="row">
+  <div class="panel">
+    <h2>Produção por hora (peças boas)</h2>
+    <div class="chart" id="chart"></div>
+  </div>
+  <div class="panel">
+    <h2>Ranking Semanal</h2>
+    <div class="list" id="ranking"></div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel">
+    <h2>Badges & Desafio da Semana</h2>
+    <div class="badges">
+      <div class="bdg gold" title="Zero paradas">🛡️</div>
+      <div class="bdg silver" title="Meta cumprida">🎯</div>
+      <div class="bdg bronze" title="Kaizen">🔧</div>
+      <div class="bdg" title="Bloqueado">🔒</div>
+      <div class="bdg" title="Bloqueado">🔒</div>
+    </div>
+    <p style="margin-top:12px;font-size:13px;">Desafio: <strong>"Zero paradas não planejadas"</strong> — progresso 4/5 dias</p>
+    <div style="margin-top:6px;height:10px;background:var(--panel2);border-radius:6px;overflow:hidden;">
+      <div id="prog" style="height:100%;width:80%;background:var(--accent);"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Log de Eventos</h2>
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<script>
+let oee=62.0, down=12.0, mtbf=180, eng=55, prod=0;
+const hours=[42,48,45,51,47,53,49,55,50,46,52,48];
+function renderChart(){
+  const c=document.getElementById('chart'); c.innerHTML='';
+  hours.forEach((v,i)=>{
+    const b=document.createElement('div'); b.className='bar';
+    b.style.height=(v/60*100)+'%';
+    const s=document.createElement('span'); s.textContent=v; b.appendChild(s);
+    c.appendChild(b);
+  });
+}
+const rankingData=[
+  {name:'João Silva',pts:1240},
+  {name:'Maria Souza',pts:1180},
+  {name:'Pedro Lima',pts:1095},
+  {name:'Ana Costa',pts:980},
+  {name:'Carlos Reis',pts:920},
+];
+function renderRanking(){
+  const r=document.getElementById('ranking'); r.innerHTML='';
+  rankingData.forEach((p,i)=>{
+    const d=document.createElement('div'); d.className='item';
+    d.innerHTML=`<span class="name">${i+1}. ${p.name}</span><span class="pts">${p.pts} pts</span>`;
+    r.appendChild(d);
+  });
+}
+function log(msg){
+  const l=document.getElementById('log');
+  const d=document.createElement('div');
+  const t=new Date().toLocaleTimeString();
+  d.innerHTML=`<span class="t">[${t}]</span>${msg}`;
+  l.prepend(d);
+}
+function simulate(){
+  // simula um ciclo: downtime cai, OEE/MTBF/engajamento sobem
+  down=Math.max(4, down - (1.2+Math.random()*0.8));
+  oee=Math.min(92, oee + (1.0+Math.random()*0.6));
+  mtbf=Math.min(400, mtbf + (8+Math.random()*6));
+  eng=Math.min(95, eng + (2+Math.random()*2));
+  prod=Math.round(40+Math.random()*20);
+  hours.shift(); hours.push(prod);
+  document.getElementById('oee').innerHTML=oee.toFixed(1)+'% <span class="delta">↑ '+(oee-62).toFixed(1)+'</span>';
+  document.getElementById('down').innerHTML=down.toFixed(1)+'% <span class="delta">↓ '+(12-down).toFixed(1)+'</span>';
+  document.getElementById('mtbf').innerHTML=Math.round(mtbf)+' <span class="delta">↑ '+(mtbf-180).toFixed(0)+'</span>';
+  document.getElementById('eng').innerHTML=Math.round(eng)+' <span class="delta">↑ '+(eng-55).toFixed(0)+'</span>';
+  // atualiza ranking com pequenas variações
+  rankingData.forEach(p=>{ p.pts += Math.round(Math.random()*30); });
+  rankingData.sort((a,b)=>b.pts-a.pts);
+  renderChart(); renderRanking();
+  const evs=['Manutenção preditiva evitou parada na Estação 2','Anomalia detectada e corrigida via gêmeo digital','Operador João Silva ganhou +50 XP (zero paradas)','Picking logístico otimizado: -12% lead time','Badge "Guardião" desbloqueado para Maria Souza'];
+  log(evs[Math.floor(Math.random()*evs.length)]);
+}
+renderChart(); renderRanking();
+log('Sistema MECATRON-GAME inicializado.');
+log('Sensores IIoT conectados (OPC UA).');
+log('Gêmeo digital sincronizado.');
+</script>
+</body>
+</html>

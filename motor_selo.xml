@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0201">
+  <fileHeader companyName="MECATRON-ZERO" productName="PLCOpen Ladder Generator" productVersion="1.0" creationDateTime="2026-10-31T03:13:46"/>
+  <contentHeader name="MotorSelo" modificationDateTime="2026-10-31T03:13:46">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1"/>
+      </fbd>
+      <ld>
+        <scaling x="1" y="1"/>
+      </ld>
+      <sfc>
+        <scaling x="1" y="1"/>
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+  <types>
+    <dataTypes/>
+    <pous>
+      <pou name="MotorSelo" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="StartBtn" type="BOOL">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Botão de partida (NA)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="StopBtn" type="BOOL">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Botão de parada (NF)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Motor" type="BOOL">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Contator do motor</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Overload" type="BOOL">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Relé térmico (NF)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="Timer1" type="TON">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporizador TON 5s</xhtml>
+              </documentation>
+            </variable>
+            <variable name="TimerDone" type="BOOL">
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Timer concluído</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <LD>
+            <rung>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Selo de motor: partida com retenção</xhtml>
+              </documentation>
+              <leftPowerRail/>
+              <contact name="StartBtn" negated="false" edge="none">
+                <position x="40" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+                <connectionPointOut>
+                  <relPosition x="20" y="0"/>
+                </connectionPointOut>
+              </contact>
+              <contact name="Motor" negated="false" edge="none">
+                <position x="80" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+                <connectionPointOut>
+                  <relPosition x="20" y="0"/>
+                </connectionPointOut>
+              </contact>
+              <contact name="StopBtn" negated="true" edge="none">
+                <position x="120" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+                <connectionPointOut>
+                  <relPosition x="20" y="0"/>
+                </connectionPointOut>
+              </contact>
+              <contact name="Overload" negated="true" edge="none">
+                <position x="160" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+                <connectionPointOut>
+                  <relPosition x="20" y="0"/>
+                </connectionPointOut>
+              </contact>
+              <coil name="Motor" negated="false">
+                <position x="220" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+              </coil>
+              <rightPowerRail/>
+            </rung>
+            <rung>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Temporizador: após 5s de motor ligado, ativa TimerDone</xhtml>
+              </documentation>
+              <leftPowerRail/>
+              <contact name="Motor" negated="false" edge="none">
+                <position x="40" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+                <connectionPointOut>
+                  <relPosition x="20" y="0"/>
+                </connectionPointOut>
+              </contact>
+              <block typeName="TON" instanceName="Timer1" executionOrderId="0">
+                <position x="80" y="10"/>
+                <inputVariables>
+                  <variable formalParameter="IN">
+                    <connectionPointIn>
+                      <relPosition x="0" y="5"/>
+                    </connectionPointIn>
+                  </variable>
+                  <variable formalParameter="PT">
+                    <connectionPointIn>
+                      <relPosition x="0" y="15"/>
+                    </connectionPointIn>
+                    <addData>
+                      <data name="constantValue" handleUnknown="preserve">
+                        <value>T#5s</value>
+                      </data>
+                    </addData>
+                  </variable>
+                </inputVariables>
+                <outputVariables>
+                  <variable formalParameter="Q">
+                    <connectionPointOut>
+                      <relPosition x="40" y="5"/>
+                    </connectionPointOut>
+                  </variable>
+                  <variable formalParameter="ET">
+                    <connectionPointOut>
+                      <relPosition x="40" y="15"/>
+                    </connectionPointOut>
+                  </variable>
+                </outputVariables>
+              </block>
+              <coil name="TimerDone" negated="false">
+                <position x="160" y="20"/>
+                <connectionPointIn>
+                  <relPosition x="0" y="0"/>
+                </connectionPointIn>
+              </coil>
+              <rightPowerRail/>
+            </rung>
+          </LD>
+        </body>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="Config0">
+        <resource name="Res0">
+          <task name="MainTask" priority="0" interval="T#20ms">
+            <pouInstance name="MotorSelo" typeName="MotorSelo"/>
+          </task>
+        </resource>
+      </configuration>
+    </configurations>
+  </instances>
+  <addData/>
+</project>

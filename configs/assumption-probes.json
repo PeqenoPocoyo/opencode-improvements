@@ -1,0 +1,21 @@
+{
+  "_comment": "Probes de questionamento de premissas. A hook assumption-probe.py auto-expande este arquivo com novos termos ambiguos detectados durante a conversa.",
+  "_version": "1.0",
+  "_created": "2026-10-30",
+  "dança": ["ballet", "dança contemporânea", "dança de salão", "break", "sapateado", "qual estilo?"],
+  "indústria": ["manufatura discreta", "processo contínuo", "agro", "mineração", "alimentos", "qual setor?"],
+  "indústria 4.0": ["IIoT", "gêmeo digital", "robótica", "MAN", "agro 4.0", "visão além de motores?"],
+  "iiot": ["sensores", "gateway", "edge", "cloud", "protocolos (MQTT/OPC-UA)", "manufatura discreta x contínua"],
+  "automação": ["CLP/PLC", "SCADA", "robótica", "MES", "predial", "qual camada?"],
+  "café": ["agricultura", "torrefação", "máquinas de café", "bebida", "qual contexto?"],
+  "motor": ["elétrico", "combustão", "servo", "passo", "qual tipo?"],
+  "arte": ["visual", "musical", "cênica", "digital", "qual forma?"],
+  "esporte": ["futebol", "eSports", "automobilismo", "qual modalidade?"],
+  "cidade": ["planejamento urbano", "mobilidade", "habitação", "qual aspecto?"],
+  "energia": ["elétrica", "renovável", "solar", "eólica", "qual fonte?"],
+  "saúde": ["clínica", "hospitalar", "preventiva", "dispositivos", "qual domínio?"],
+  "escola": ["ensino fundamental", "médio", "técnico", "superior", "qual nível?"],
+  "música": ["produção", "performance", "streaming", "instrumento", "qual contexto?"],
+  "robô": ["industrial", "colaborativo", "móvel", "serviço", "qual tipo?"],
+  "manufatura": ["discreta", "por processo", "job shop", "lote", "qual modo?"]
+}

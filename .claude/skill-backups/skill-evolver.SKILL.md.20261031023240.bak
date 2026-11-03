@@ -1,0 +1,94 @@
+---
+id: skill-evolver
+name: skill-evolver
+description: Motor de aprimoramento contínuo de skills. Audita qualidade (score 0-100 em 8 dimensões), gera melhorias (seções faltantes, triggers, exemplos, anti-padrões), aplica com segurança (backup + diff + validação), registra evolução e permite rollback. Use quando quiser evoluir skills, auditar qualidade de skills, melhorar SKILL.md, adicionar triggers/exemplos, ou quando uma skill parecer desatualizada/incompleta. Triggers: "evoluir skill", "melhorar skill", "auditar skills", "skill quality", "skill-evolver", "aprimorar skill".
+---
+
+# Skill Evolver
+
+Motor generativo que aprimora skills continuamente, similar aos hooks de raciocínio
+(`assumption-probe`, `post-tool-use-reflect`): detecta gaps, gera melhorias, aplica
+com segurança, registra e permite rollback.
+
+## Quando usar
+
+- Auditar qualidade de uma ou todas as skills
+- Evoluir uma skill específica (adicionar seções, triggers, exemplos)
+- Reverter uma evolução que não funcionou
+- Gerar relatório de saúde do ecossistema de skills
+
+## Comandos (CLI)
+
+```bash
+# Auditar todas as skills (ranking do pior para o melhor)
+python scripts/skill-evolver.py --audit
+
+# Auditar uma skill específica
+python scripts/skill-evolver.py --evolve <id>
+
+# Evoluir (dry-run, apenas propõe)
+python scripts/skill-evolver.py --evolve <id>
+
+# Evoluir e APLICAR
+python scripts/skill-evolver.py --evolve <id> --apply
+
+# Evoluir TODAS (dry-run)
+python scripts/skill-evolver.py --evolve-all
+
+# Evoluir TODAS e aplicar
+python scripts/skill-evolver.py --evolve-all --apply
+
+# Reverter última evolução
+python scripts/skill-evolver.py --rollback <id>
+
+# Gerar relatório Markdown
+python scripts/skill-evolver.py --report
+```
+
+## Dimensões de qualidade (score 0-100)
+
+| Dimensão | Peso | O que avalia |
+|---|---|---|
+| frontmatter | 10 | YAML válido com id/name/description |
+| description | 12 | descrição rica com triggers |
+| triggers | 12 | palavras de ativação claras |
+| structure | 12 | seções H2 padrão presentes |
+| examples | 10 | exemplos de uso |
+| anti_patterns | 8 | anti-padrões documentados |
+| scripts | 12 | scripts auxiliares presentes e válidos |
+| actionable | 14 | instruções acionáveis |
+
+## Segurança
+
+- Backup automático em `.claude/skill-backups/` antes de qualquer alteração
+- Diff de linhas registrado no log
+- Rollback com um comando
+- Fail-open: nunca quebra a sessão
+- Log de evoluções em `configs/skill-evolution-log.json`
+
+## Auto-expansão
+
+O hook `hooks/reasoning/skill-evolver-hook.py` registra uso de skills em
+`.claude/logs/skill-usage.log` e injeta contexto para o agente considerar
+evolução contínua. A cada uso, a skill "cresce": triggers são refinados,
+seções são complementadas.
+
+## Anti-padrões
+
+- ❌ Evoluir sem backup (o script sempre faz backup, não desative)
+- ❌ Aplicar em massa (`--evolve-all --apply`) sem revisar o dry-run antes
+- ❌ Ignorar o score: skills com score < 40 precisam de reescrita, não só evolução
+- ❌ Confundir evolução com reescrita: evolução adiciona, não substitui
+
+## Saída esperada
+
+- Score antes/depois
+- Lista de mudanças aplicadas
+- Caminho do backup
+- Diff de linhas
+
+## Notas
+
+- O motor é generativo: cria seções a partir de templates, não copia de outras skills
+- Pode ser estendido com novos templates em `SECTION_TEMPLATES`
+- Integra-se ao ecossistema de hooks (PreToolUse/PostToolUse)

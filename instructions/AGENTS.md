@@ -95,6 +95,7 @@
 ### 4.4 Configs
 - `configs/settings.json` — configurações do OpenCode
 - `configs/mcp.json` — servidores MCP
+- `~/.config/opencode/api-keys.json` — vault de chaves de API (raiz global; **nunca** exportar/commitar — regras em §6.3)
 - Nunca commitar segredos.
 
 ## 5. Comunicação
@@ -124,6 +125,12 @@
 - Validar inputs do usuário.
 - Sanitizar dados antes de usar em comandos.
 - Usar `.gitignore` para arquivos sensíveis.
+
+### 6.3 Vault de Chaves de API (2026-11-02)
+- **Local único**: `~/.config/opencode/api-keys.json` (raiz das configs globais).
+- **Formato**: JSON válido — objeto `{ "nome-do-servico": "token" }`.
+- **Consumo**: ler em runtime pelo script/ferramenta que a usa (PowerShell: `Get-Content ~/.config/opencode/api-keys.json -Raw | ConvertFrom-Json`; bash: `jq -r '."nome"`). O agente referencia a chave **pelo nome**; o valor nunca entra em chat, log, prompt ou arquivo externo.
+- **Proibido**: copiar o vault para o repo, exportá-lo em sync, commitá-lo ou listá-lo em qualquer empacotamento (o `.gitignore` do repo bloqueia `api-keys.json`, `.env*`, `*.pem`, `*.key`).
 
 ## 7. Git Workflow
 
@@ -274,3 +281,171 @@ improved_by: "agent"
 test_passed: true
 test_scenario: "descrição do teste"
 ```
+
+## 10. Uso Autonomo de Skills (Sem @)
+
+- Nao exigir marcacao `@skill`: o agente deve detectar contexto e carregar skills automaticamente.
+- A cada turno, analisar a intencao do usuario: primeiro nesta tabela, depois em `%USERPROFILE%\.config\opencode\configs\skill-router-core.json`, depois grep por 1-2 keywords em `configs/skills-index.json` (1358 skills).
+- Se houver skill aplicavel, invoca-la via `skill` (load) e aplicar suas regras antes de responder.
+- Nunca mencionar "habilidade disponivel" sem usa-la na pratica.
+- Hooks e instrucoes globais devem rodar de forma proativa, nao esperar pedido explicito.
+- Sempre justificar a escolha da skill em uma frase curta quando aplicavel.
+
+### 10.1 Roteador Core (intent → skill) — SEMPRE consulta esta tabela primeiro
+
+| Intenção (PT/EN) | Skill principal | Fallbacks comuns |
+|---|---|---|
+| pesquisa/investigação de tópico ou decisão | `research` | `deep-research` (decisão cara), `pulse` (tendência), `dossier` (empresa/pessoa), `deepread` (estudar texto) |
+| review de código/PR/diff | `code-reviewer` | `adversarial-reviewer`, `pr-review-expert` |
+| bug/feature quebrada end-to-end | `focused-fix` | `red-green-proof`, `fix` |
+| testes (unit/e2e) | `tdd-guide` | `senior-qa`, `pw-init`, `coverage` |
+| planilha xlsx/csv | `xlsx` | — |
+| documento .docx | `docx` | — |
+| PDF | `pdf` | — |
+| slides/deck .pptx | `pptx` | — |
+| landing page | `landing` | `landing-page-generator` |
+| SEO audit | `seo-audit` | `ai-seo`, `local-seo-manager` |
+| CRO/conversão | `cro` | `page-cro`, `form-cro`, `signup-flow-cro` |
+| copy marketing | `copywriting` | `copy-editing`, `content-production` |
+| estratégia de conteúdo | `content-strategy` | — |
+| social/LinkedIn/X | `linkedin-skills` | `x-twitter-growth`, `social-media-manager` |
+| triagem de e-mail | `inbox-triage` | (setup: `inbox-setup`) |
+| cold outreach/sequência | `cold-email` | `email-sequence` |
+| frontend React/Next | `react-best-practices` | `senior-frontend`, `frontend-design` |
+| backend API/DB | `senior-backend` | `sql-database-assistant`, `database-schema-designer` |
+| devops/CI/infra | `senior-devops` | `docker-development`, `terraform-patterns`, `ci-cd-pipeline-builder` |
+| segurança/pentest | `senior-security` | `security-pen-testing`, `threat-detection`, `cloud-security` |
+| dados/ML/estatística | `senior-data-scientist` | `statistical-analyst`, `senior-ml-engineer`, `data-quality-auditor` |
+| performance/observabilidade | `performance-profiler` | `observability-designer`, `slo-architect` |
+| incidente/postmortem | `incident-commander` | `postmortem`, `incident-response` |
+| arquitetura/ADR | `senior-architect` | — |
+| finanças/ARR/burn | `saas-metrics-coach` | `financial-analyst`, `stock-analysis` |
+| plano de marketing | `marketing-ops` | `marketing-skills`, `paid-ads`, `campaign-analytics` |
+| produto/roadmap | `product-skills` | `product-discovery`, `experiment-designer`, `product-strategist` |
+| sprint/jira/confluence | `pm-skills` | `jira-expert`, `scrum-master`, `confluence-expert` |
+| comercial/pipeline/forecast | `revenue-operations` | `cro-advisor`, `commercial-skills`, `rfp-responder` |
+| customer success/churn | `customer-success-manager` | `churn-prevention` |
+| contratar/org/cultura | `chro-advisor` | `vpe-advisor`, `interview-system-designer` |
+| estratégia executiva C-suite | `founder-mode` | `chief-of-staff`, `cs-onboard`, `org-health-diagnostic` |
+| compliance ISO/GDPR/SOC | `ra-qm-skills` | `gdpr-dsgvo-expert`, `soc2-compliance`, `eu-ai-act-specialist` |
+| criar skill nova | `skill-creator` | `write-a-skill`, `book-to-skill` |
+| OpenCode config/sync | `opencode` | `opencode-sync` |
+| artefato visual/diagrama | `inline-artifacts` | `artifact-balloon`, `artifact-creator`, `creative-design` |
+| spec/doc draft | `doc-coauthoring` | — |
+| buscar investimentos/ROI | `business-investment-advisor` | `market-research`, `dossier` |
+| imagem generada | `ai-image-generation` | (execute toolbelt) |
+| vídeo demo/motion | `ai-video-generation` | `remotion-render`, `demo-video` |
+
+**Regra de reflexo**: se o pedido tem formas "pesquisa sobre X", "investiga", "descobre", "o que é", "como funciona" → carregar `research` (e `deep-research` se investimento/decisão caro) ANTES de responder. **Nunca** responder pergunta de pesquisa do repertório sem checar se há skill.
+
+## 12. Incerteza e Clarificação (NOVO - 2026-10-31)
+
+### 12.1 Marcação de Incerteza
+- **NUNCA** apresentar palpites como certezas. Sempre marcar explicitamente:
+  - `[CERTEZA]` — informação verificada ou de conhecimento confiável
+  - `[PALPITE]` — inferência sem verificação
+  - `[DESCONHECIDO]` — sem informação suficiente
+- Em formulários/exames: listar quais respostas são palpites ANTES de submeter.
+- Se o usuário disser "tire da cabeça", ainda assim marcar o nível de confiança.
+
+### 12.2 Clarificação Antes de Ação
+- Quando o pedido for ambíguo (ex: "abre o tinkered"), **pesquisar primeiro** (webfetch/websearch) para confirmar o que é antes de agir.
+- Se houver múltiplas interpretações, listar as opções e pedir confirmação em vez de escolher uma.
+- Regra: "Pesquisar 10 segundos antes de agir 10 minutos errado."
+
+### 12.3 Auto-Avaliação Pós-Sessão
+- Ao final de cada sessão significativa, registrar:
+  - O que foi feito bem
+  - Onde errou ou foi ineficiente
+  - Melhorias concretas propostas
+- Implementar pelo menos uma melhoria concreta (skill, hook, instrução, script) por sessão.
+
+## 13. Navegação Web e Extração de Dados (NOVO - 2026-10-31)
+
+### 13.1 Padrões de Pesquisa
+- **YouTube suggestions API**: `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=TERM` — descobre termos relacionados.
+- **YouTube search scraping**: fetch `youtube.com/results?search_query=TERM` com User-Agent de browser real.
+- **Extração de títulos**: regex `/"title":\{"runs":\[\{"text":"([^"]+)"\}\]/g`
+- **Extração de video IDs**: regex `/"videoId":"([a-zA-Z0-9_-]{11})"/g`
+- **Extração de playlist IDs**: regex `/playlist\?list=([a-zA-Z0-9_-]+)/g`
+- **Extração de canais**: regex `/"ownerText":\{"runs":\[\{"text":"([^"]+)"/g`
+
+### 13.2 Padrões de Navegação
+- **ego-browser**: navegador real com perfil do usuário (cookies, logins). Usar para abrir abas visualmente.
+- **browser tool (in-app)**: navegador headless/sandbox. Usar para scraping, extração, interação programática.
+- **webfetch**: para APIs e páginas estáticas. Adicionar User-Agent de browser real para sites que bloqueiam.
+- **evaluate()**: para interagir com elementos não capturados pelo snapshot (inputs, checkboxes, radio buttons).
+
+### 13.3 Padrões de Formulário
+- Google Forms: inputs são `input[type="text"]`, checkboxes são `[role="checkbox"]`, radio buttons são `[role="radio"]`.
+- Para preencher: usar `evaluate()` com `inp.value = ...` + `dispatchEvent(new Event('input'))`.
+- Para clicar: usar `evaluate()` com `el.click()`.
+- Sempre verificar após preencher com um segundo `evaluate()` de leitura.
+
+## 14. Exames e Formulários (NOVO - 2026-10-31)
+
+### 14.1 Regras para Exames
+- **NUNCA** submeter um exame/formulário com respostas não verificadas sem avisar o usuário.
+- Marcar cada resposta como `[CERTEZA]`, `[PALPITE]` ou `[DESCONHECIDO]`.
+- Se não tiver acesso ao material de estudo (SOPs, docs), avisar ANTES de responder.
+- Oferecer ao usuário a opção de revisar respostas palpites antes de submeter.
+
+### 14.2 Regras para Formulários
+- Preencher campos pessoais (nome, Discord, SteamID) apenas com dados reais do usuário.
+- Se o usuário pedir dados fictícios, usar placeholders claramente fictícios (ex: "TestPlayer123").
+- Sempre confirmar antes de clicar "Enviar"/"Submit".
+- Se o formulário tiver múltiplas páginas, percorrer TODAS antes de submeter.
+
+## 15. Metadata de Melhoria (NOVO - 2026-10-31)
+improved: true
+improved_at: "2026-10-31T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "Sessão de navegação web + preenchimento de formulário Google Forms com 4 páginas"
+changes:
+  - "Adicionada seção 12: Incerteza e Clarificação"
+  - "Adicionada seção 13: Navegação Web e Extração de Dados"
+  - "Adicionada seção 14: Exames e Formulários"
+  - "Adicionada seção 15: Metadata de Melhoria"
+
+## 16. Metadata — Vault de Chaves (2026-11-02)
+improved: true
+improved_at: "2026-11-02T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "api-keys.json convertido de formato .env para JSON válido e validado por nome+comprimento (sem ecoar valor); §6.3 adicionado aos dois AGENTS.md; .gitignore criado no repo bloqueando segredos"
+changes:
+  - "§4.4: referência ao api-keys.json (raiz das configs globais)"
+  - "§6.3: Vault de Chaves de API — local, formato, consumo, proibições"
+  - "Repo: .gitignore novo bloqueando api-keys.json/.env*/*.pem/*.key"
+  - "api-keys.json normalizado para JSON válido (hf + bfl)"
+
+
+## 17. Metadata — Instalação da suíte Higgsfield (2026-11-02)
+improved: true
+improved_at: "2026-11-02T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "MCP remoto conectado via /mcps (OAuth OK - login do usuario); 185 tools higgsfield no catalogo Code Mode; CLI @higgsfield/cli@1.2.2 autenticado (--version + auth login OK); 9 skills oficiais registradas automaticamente pelo OpenCode; índice/triggers com parse validado nas duas copias"
+changes:
+  - "opencode.jsonc: mcp.servers.higgsfield = { type: remote, url https://mcp.higgsfield.ai/mcp } (formato V2, enabled legado removido, rea preservado)"
+  - "CLI oficial @higgsfield/cli@1.2.2 via npm pinned (postinstall bloqueado pela política npm allowScripts - binário verificado funcional)"
+  - "9 skills oficiais vendored em ~/.config/opencode/skills/ + espelhadas em skills/imported-global/ (134 ficheiros, MIT): higgsfield-{brandkit,faceless-video,generate,marketplace-cards,product-photoshoot,soul-id,video-explainer,websites,youtube-thumbnail}"
+  - "Auditoria completa em skills/imported-global/higgsfield-suite-AUDIT.md (scanner: 7 PASS, 2 WARN re-revisados -> 9 HIGH falsos positivos; notas aceitas: bootstrap curl|sh mitigado pelo CLI pinned; Blender tarball sem checksum em websites/game-3d-animation.md - revisar caso usado)"
+  - "skills-index.json (2 copias) e skill-triggers.json (2 copias) atualizados com reel + suite; descrições extraídas do frontmatter SKILL.md em UTF-8 (correção de entradas higgsfield gravadas com descrição vazia e de vírgula órfã na junção reel->brandkit)"
+  - "segredo herdado pendente: OpenRouter apiKey hardcoded em opencode.jsonc - rotar a chave no painel OpenRouter e migrar para {env:OPENROUTER_API_KEY} ou /connect antes de editar o config"
+
+## 18. Metadata — Instalação da suíte claude-motion + skills oficiais Remotion (2026-11-02)
+improved: true
+improved_at: "2026-11-02T00:00:00Z"
+improved_by: "agent"
+test_passed: true
+test_scenario: "smoke test completo no clone C:\Users\drici\Documents\claude-motion: python -m sfx (129 sons, -14.0 LUFS true peak -2.3 dBFS); remotion render --sequence --image-format=jpeg com --browser-executable apontando pro chrome-headless-shell x64 do cache playwright (render direto falha no compositor nativo, que nao tem build win32-arm64); encode ffmpeg do sistema (libx264 crf 17 60fps) + npm run mux com a faixa sfx -> out/effort.mp4 (5.17 MB, h264+aac, 1080x1080, 60fps, 22.0s) verificado com ffprobe"
+changes:
+  - "13 skills vendored em ~/.config/opencode/skills/ + espelhadas em skills/imported-global/ (byte-identical verificado 17x2): motion-design, review-loop, sound-design, web-sims (toolkit claude-motion, MIT) e remotion-{best-practices,captions,create,docs,interactivity,license,maps,markup,multimedia,render-cli,saas,studio,upgrade} (oficiais Remotion 4.0.540)"
+  - "colisao resolvida: skill remotion-render oficial da Remotion renomeada para remotion-render-cli (folder + frontmatter name) porque a skill cloud remotion-render (inference.sh) ja existia"
+  - "skills-index.json 1369 -> 1386 entradas (BOM preservado, JSON valido) e skill-triggers.json 1368 -> 1385 rows (sem trailing newline) — 2 copias byte-identicas em cada"
+  - "auditoria de seguranca antes do npm install: skills/imported-global/claude-motion-suite-AUDIT.md — scanner 0 HIGH; 11 MED revisados 1 a 1 (links relativos markdown, chave Algolia search-only publica, instrucoes de key via env do usuario, paths relativos de scripts de manutencao); commit 429ddb7"
+  - "ambiente Windows ARM64: Remotion nao publica Chrome Headless Shell nem o compositor nativo para arm64 — workaround dupla: --browser-executable apontando pro chrome-headless-shell x64 do cache playwright (roda sob emulacao) + render --sequence --image-format=jpeg com encode pelo ffmpeg do sistema; sims/capture.mjs usa playwright direto e funciona nativo"
+  - "esbuild postinstall bloqueado pela politica allowScripts do npm — irrelevante: binario vem via optionalDependencies (esbuild 0.28.1 verificado com npx esbuild --version)"
+  - "npm run sfx chama python3 (ausente no Windows): usar python -m sfx equivalente"

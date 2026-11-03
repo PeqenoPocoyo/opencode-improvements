@@ -10,6 +10,8 @@ test_scenario: "Criar 3 artefatos diferentes e verificar que nenhum compartilha 
 
 # Creative Design — Skill
 
+> **Triggers (auto)**: creative design, creative-design
+
 ## Princípio Central
 **Nunca repetir o mesmo padrão de layout** entre artefatos diferentes, a menos que o usuário peça.
 
@@ -128,3 +130,5 @@ Os balões de artifacts ao final da resposta devem ser **criativos e contextuais
 - **Aplicável a**: HTML, CSS, qualquer frontend
 - **Versão**: 2.0
 - **Melhorado**: 2026-10-28 (balões criativos, regra de exibibilidade)
+
+> **Skill Evolver**: score 57/100 · evoluída em 2026-10-31T02:34:05.976551+00:00Z · versão evolver-1.0

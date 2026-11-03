@@ -1,0 +1,53 @@
+{
+  "codigo": "03-vsl",
+  "nome": "VSL com interface animada",
+  "familia": "interface-animada",
+  "nativa": {
+    "fontes": {
+      "destaque": {"familia": "Anybody", "peso": 900, "estilo": "normal", "caixa": "alta", "largura": "expandida"},
+      "texto":    {"familia": "Plus Jakarta Sans", "peso": 700, "estilo": "normal"},
+      "tecnica":  {"familia": "JetBrains Mono", "peso": 500, "estilo": "normal", "fixa": true, "uso": "HUD de filmadora e rótulos técnicos"}
+    },
+    "cores": {
+      "fundo": "#1f123d",
+      "texto": "#ffffff",
+      "destaque": "#8b5cf6",
+      "apoio": "#b9a3ff",
+      "acento2": "#a59cc4"
+    },
+    "cores_extra": {
+      "fundo_profundo": "#0e0b1e",
+      "fundo_claro": "#2d1f50",
+      "destaque_alt": "#9b63ff",
+      "botao_gradiente": ["#8b55ff", "#a47fff"]
+    },
+    "grading": "natural",
+    "grade_aprovada": {
+      "filtro": "saturate(1.04) contrast(1.05) brightness(0.97)",
+      "tinta1": 0.3,
+      "tinta2": 0.25,
+      "nota": "o 'suave' aprovado; a cor fica nos gráficos, não na pele (R4)"
+    },
+    "clima": "escuro"
+  },
+  "slots": {
+    "fontes": ["destaque", "texto"],
+    "cores": ["fundo", "texto", "destaque", "apoio", "acento2"]
+  },
+  "invariantes": [
+    "FULL (tela cheia com punch-in) alterna com SPLIT (conteúdo em cima, apresentador num card embaixo), sempre em troca animada de 0,45 s",
+    "cada palavra-chave falada ganha um elemento que entra exatamente na palavra; toda entrada é ancorada ao transcript e algo novo aparece a cada 1,5–3 s",
+    "interface verdadeira de vidro escuro com a cor no gráfico, não no rosto: fatos e logos de fontes oficiais ou ilustração declarada, rosto com cor natural"
+  ],
+  "legenda": {"modo": "palavra", "posicao": "abaixo-do-queixo", "troca": "seca", "segue_a_boca": true, "some_em_split": true},
+  "layouts": ["FULL", "SPLIT", "PIP", "TAKEOVER"],
+  "proporcao_alvo": {"FULL": 0.40, "SPLIT": 0.45, "PIP": 0.08, "TAKEOVER": 0.07},
+  "punch": {"base": 1.06, "impacto": [1.14, 1.20], "nota": "medir por vídeo"},
+  "sfx_por_segundo": [0.4, 0.85],
+  "sfx_volume": 0.55,
+  "sfx_modo": {"padrao": "enxuto", "opcoes": ["enxuto", "referencia"], "nota": "enxuto = R2 (≤ 0,8/s com a digitação; aprovado pelo verificar.py); referencia = o som exato do vídeo aprovado (~1,4/s), via vsl.json"},
+  "trilha": "nenhuma",
+  "precisa": ["rosto", "prints-reais", "boca (rastrear-boca.py)"],
+  "motor_embutido": {"modelo": "modelo/ (copiar para <P>/motor e seguir modelo/README.md)", "kit": "modelo/kit/ (intocado)", "exemplo": "modelo/exemplo/ (referência aprovada, remonta idêntica)"},
+  "opcional": ["recorte-do-apresentador"]
+}

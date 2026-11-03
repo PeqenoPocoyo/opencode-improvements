@@ -5,6 +5,8 @@ description: Detecta blocos de código visualizáveis na resposta do assistente 
 
 # Skill: artifacts-feature
 
+> **Triggers (auto)**: artifacts feature, artifacts-feature
+
 # Artifact Feature — Detector & Balloon
 
 ## Objetivo
@@ -76,3 +78,13 @@ Os balões devem ser criativos e contextuais:
 - **Dependências**: artifact-balloon, inline-artifacts, artifact-creator
 - **Versão**: 1.0
 - **Melhorado**: 2026-10-28 (balões criativos, regra de exibibilidade)
+
+## Exemplos de uso (auto-gerados)
+
+```text
+Use a skill 'artifacts-feature' para o cenário principal descrito na description.
+```
+
+> Exemplo gerado pelo Skill Evolver com base na descrição da skill.
+
+> **Skill Evolver**: score 66/100 · evoluída em 2026-10-31T02:34:05.887985+00:00Z · versão evolver-1.0

@@ -10,6 +10,8 @@ test_scenario: "Executar auto-upgrade em repo com 3 skills, verificar que pelo m
 
 # Self-Upgrade — Skill
 
+> **Triggers (auto)**: self upgrade, self-upgrade
+
 ## Princípio Central
 O agente deve ser capaz de **auto-aprimorar** seus recursos de forma **generativa** e **testável**.
 
@@ -251,3 +253,12 @@ Dispositivo A (manha)     Dispositivo B (tarde)     Dispositivo C (noite)
 - **Dependências**: Nenhuma (é a skill raiz)
 - **Versão**: 2.0
 - **Melhorado**: 2026-10-28 (feedback-driven improvement, multi-device contribution flow)
+
+## Anti-padrões (auto-evoluídos)
+
+- ❌ Usar a skill sem validar o contexto de entrada.
+- ❌ Ignorar os triggers documentados e forçar ativação manual.
+- ❌ Entregar resultado sem verificar se todos os elementos são funcionais.
+- ❌ Repetir o mesmo padrão de saída sem adaptar ao domínio.
+
+> **Skill Evolver**: score 66/100 · evoluída em 2026-10-31T02:34:06.373355+00:00Z · versão evolver-1.0
