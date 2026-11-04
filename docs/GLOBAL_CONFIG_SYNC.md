@@ -45,7 +45,14 @@ Copy-Item "$src\settings.json" "$dst\" -Force -ErrorAction SilentlyContinue
 
 Para exportar de uma maquina que ja tem tudo (origem), compactar `~/.config/opencode` e mover para `C:\backups\opencode-global` antes.
 
-## Observacoes
+## Comandos (slash commands) globais
+
+- Origem no repo: pasta `commands/*.md`.
+- Instalacao: `.\\scripts\\install-global-commands.ps1` (copia para `%USERPROFILE%\\.config\\opencode\\commands\\`).
+- Uso: `/refresh`, `/reload`, `/fix-nvidia`, etc.
+- Ver passo de `/refresh` para auto sync.
+
+## Observacoes"""
 
 - `Downloads\skills` contem copias individuais (nested) e pode ser usado para restaurar uma skill solta.
 - O indice `configs/skills-index.json` nao instala skills, serve para descoberta/roteamento proativo.
