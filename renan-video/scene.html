@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>renan-video-v2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="lab/fonts/fonts.css">
+<style>
+  body{margin:0;background:#000c0e}
+  #stage{font-family:'Outfit',sans-serif;color:#e3fbfc;width:1080px;height:1920px;overflow:hidden;position:relative}
+  .abs{position:absolute;left:0;top:0}
+  #world{width:1080px;height:1920px}
+  .beat{position:absolute;left:84px;right:84px;top:200px;height:1240px;display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none}
+  .num{font-size:170px;font-weight:900;line-height:.9;color:#22ecf7;letter-spacing:-.02em}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:30px;letter-spacing:.24em;color:#89c3c7;margin:0 0 10px 0}
+  h1{font-size:118px;font-weight:900;line-height:.95;letter-spacing:-.02em;margin:0 0 24px 0;color:#e3fbfc}
+  h1 .acc{color:#22ecf7}
+  .line{font-size:44px;line-height:1.25;color:#cdf3fe;margin:0 0 16px 0;font-weight:600}
+  .dim{font-size:32px;line-height:1.3;color:#89c3c7;margin:0}
+  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:28px;color:#000c0e;background:#22ecf7;border-radius:999px;padding:10px 20px;margin:0 8px 10px 0}
+  .viz{margin-top:26px}
+  .barT{font-family:'JetBrains Mono',monospace;font-size:26px;letter-spacing:.14em;color:#89c3c7;margin:0 0 8px 0}
+  .bar{height:30px;background:#012a2d;border-radius:15px;margin:0 0 18px 0;overflow:hidden}
+  .bar > i{display:block;height:30px;border-radius:15px;background:#22ecf7;transform-origin:0 50%}
+  .bar > i.d2{background:#cdf3fe}
+  .count{font-size:170px;font-weight:900;line-height:.95;color:#e3fbfc;letter-spacing:-.02em}
+  .count span{color:#22ecf7}
+  #timeline{position:absolute;left:64px;right:64px;top:1520px}
+  #timeline .track{height:10px;background:#012a2d;border-radius:5px;overflow:hidden}
+  #timeline .fill{display:block;height:10px;background:#22ecf7;border-radius:5px;transform-origin:0 50%}
+  #timeline .lbl{font-family:'JetBrains Mono',monospace;font-size:24px;letter-spacing:.2em;color:#89c3c7;margin-top:10px;text-align:center}
+  .foot{position:absolute;left:0;right:0;top:1820px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:.2em;color:#89c3c7}
+</style></head>
+<body>
+<div id="stage">
+  <div id="world" class="abs">
+    <canvas id="bg" class="abs" width="1080" height="1920"></canvas>
+
+    <section id="b0" class="beat">
+      <p class="kicker">A TESE EM 60 SEGUNDOS</p>
+      <div class="num">60</div>
+      <h1>RENAN<br><span class="acc">SANTOS</span></h1>
+      <p class="line">Como presidente, o país mudaria?</p>
+      <p class="dim">5 argumentos de quem defende — sem mito, com método.</p>
+    </section>
+
+    <section id="b1" class="beat">
+      <p class="kicker">O CONTEXTO</p>
+      <h1>O BRASIL<br><span class="acc">GIRA EM FALSO</span></h1>
+      <div class="viz">
+        <p class="barT">GASTO</p>
+        <div class="bar" style="width:820px"><i id="barGasto"></i></div>
+        <p class="barT">ENTREGA</p>
+        <div class="bar" style="width:820px"><i class="d2" id="barEntrega"></i></div>
+      </div>
+      <p class="dim">A tese: o problema não é falta de dinheiro — é desenho.</p>
+    </section>
+
+    <section id="b2" class="beat">
+      <p class="kicker">EIXO 01 / ESTADO</p>
+      <h1>FIM DO<br><span class="acc">PRIVILÉGIO</span></h1>
+      <p><span class="pill">teto rigoroso</span><span class="pill">menos cargos de confiança</span><span class="pill">estado digital</span></p>
+      <p class="line">Transparência total sobre cargos e salários.</p>
+      <div class="viz">
+        <p class="barT">BANCADA ANTIGA</p>
+        <div class="bar" style="width:820px"><i id="barAntiga"></i></div>
+        <p class="barT">ESTADO ENXUTO</p>
+        <div class="bar" style="width:820px"><i class="d2" id="barEnxuta"></i></div>
+      </div>
+    </section>
+
+    <section id="b3" class="beat">
+      <p class="kicker">EIXO 02 / EDUCAÇÃO</p>
+      <h1>ESCOLA<br><span class="acc">QUE FUNCIONA</span></h1>
+      <div class="count"><span id="countEd">0</span>%</div>
+      <p class="line">Meta de alfabetização até 2030</p>
+      <p class="dim">Mérito do professor + autonomia da escola.</p>
+    </section>
+
+    <section id="b4" class="beat">
+      <p class="kicker">EIXO 03 / TRIBUTOS</p>
+      <h1>IMPOSTO<br><span class="acc">SIMPLES</span></h1>
+      <p class="line">Uma alíquota. Fim das isenções setoriais.</p>
+      <div class="viz">
+        <p class="barT">BUROCRACIA HOJE</p>
+        <div class="bar" style="width:820px"><i id="barBuro"></i></div>
+        <p class="barT">DEPOIS DA REFORMA</p>
+        <div class="bar" style="width:820px"><i class="d2" id="barDepos"></i></div>
+      </div>
+      <p class="dim">Cobrar menos da burocracia, mais do que falta.</p>
+    </section>
+
+    <section id="b5" class="beat">
+      <p class="kicker">EIXO 04 / GESTÃO</p>
+      <h1>GESTÃO POR<br><span class="acc">METAS</span></h1>
+      <div class="viz">
+        <p class="barT">META CUMPRIDA</p>
+        <div class="bar" style="width:820px"><i id="barMeta"></i></div>
+      </div>
+      <p class="line">Cada pasta com meta pública e revisão anual.</p>
+      <p class="dim">Resultado primeiro — orçamento segue o desempenho.</p>
+    </section>
+
+    <section id="b6" class="beat">
+      <p class="kicker">CONCLUSÃO</p>
+      <h1 style="font-size:106px">NÃO É<br><span class="acc">SALVADOR.</span><br>É MÉTODO.</h1>
+      <p class="line">Dá para mudar o país. Começa mudando as regras.</p>
+      <p class="dim">Vídeo argumentativo — a tese dos defensores, não fatos garantidos.</p>
+    </section>
+
+    <div id="timeline"><div class="track"><i class="fill" id="tlFill"></i></div><div class="lbl" id="tlLbl">0s / 60s</div></div>
+    <div class="foot">RENAN SANTOS · A TESE EM 60 SEGUNDOS</div>
+  </div>
+  <canvas id="fx" class="abs" width="1080" height="1920" style="pointer-events:none"></canvas>
+</div>
+<script src="lab/lab.js"></script>
+<script>
+(function(){
+'use strict';
+const DNA = {
+  palette: { bg:'#000c0e', bg2:'#013b3e', ink:'#e3fbfc', ink2:'#89c3c7', accent:'#22ecf7', accent2:'#cdf3fe' },
+  texture: { grain:0.047, vignette:0.458 },
+  motion: { bpm:96 }
+};
+const W=1080, H=1920, DUR=60, FPS=30;
+const $=id=>document.getElementById(id);
+const cam=Lab.camera(document.getElementById('world'),{w:W,h:H});
+const noise=Lab.noise(11);
+const bg=$('bg').getContext('2d'), fx=$('fx').getContext('2d');
+const beats=[
+  {id:'b0',t0:0,t1:3},
+  {id:'b1',t0:3,t1:8},
+  {id:'b2',t0:8,t1:19},
+  {id:'b3',t0:19,t1:30},
+  {id:'b4',t0:30,t1:41},
+  {id:'b5',t0:41,t1:52},
+  {id:'b6',t0:52,t1:60}
+];
+Lab.ev(0.0,'whoosh',{dur:0.4,intensity:.7,label:'hook in'});
+Lab.ev(1.5,'impact',{intensity:1,label:'hero hit'});
+Lab.ev(3.0,'whoosh',{dur:.3,intensity:.5,label:'to contexto'});
+Lab.ev(4.2,'tick',{intensity:.4,label:'bar'});
+Lab.ev(8.0,'whoosh',{dur:.3,intensity:.6,label:'to eixo1'});
+Lab.ev(12.5,'impact',{intensity:.9,label:'eixo1 hit'});
+Lab.ev(19.0,'whoosh',{dur:.3,intensity:.6,label:'to eixo2'});
+Lab.ev(27.0,'impact',{intensity:.9,label:'eixo2 hit'});
+Lab.ev(30.0,'whoosh',{dur:.3,intensity:.6,label:'to eixo3'});
+Lab.ev(37.0,'impact',{intensity:.9,label:'eixo3 hit'});
+Lab.ev(41.0,'whoosh',{dur:.3,intensity:.6,label:'to eixo4'});
+Lab.ev(49.0,'impact',{intensity:.9,label:'eixo4 hit'});
+Lab.ev(52.0,'whoosh',{dur:.4,intensity:.7,label:'to fecho'});
+Lab.ev(53.0,'impact',{intensity:1,label:'payoff'});
+Lab.ev(57.0,'riser',{dur:2.2,intensity:.8,label:'end rise'});
+function px(el,v){ if(el){ el.style.width=v+'px'; } }
+function setBars(list){
+  for(let i=0;i<list.length;i++){ px($(list[i][0]), list[i][1]); }
+}
+const gasto=Lab.track(180,[[4.2,780,16,.85],[52,780,2,.9]]);
+const entrega=Lab.track(120,[[4.2,260,16,.85],[52,260,2,.9]]);
+const antiga=Lab.track(760,[[9,760,14,.8],[19,760,2,.9]]);
+const enxuta=Lab.track(200,[[9,320,14,.8],[19,320,2,.9]]);
+const buro=Lab.track(760,[[31,760,14,.8],[41,760,2,.9]]);
+const depos=Lab.track(300,[[31,240,14,.8],[41,240,2,.9]]);
+const meta=Lab.track(180,[[42,880,14,.85],[52,880,2,.9]]);
+const countEd=Lab.track(0,[[20,90,8,.7],[30,120,2,.9]]);
+const grainTiles=[];
+for(let k=0;k<6;k++){
+  const c=document.createElement('canvas');c.width=c.height=256;
+  const g=c.getContext('2d'),im=g.createImageData(256,256),r=Lab.rng(100+k);
+  for(let i=0;i<im.data.length;i+=4){const v=r()*255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255;}
+  g.putImageData(im,0,0);grainTiles.push(c);
+}
+function beatP(t,t0,t1){
+  const inn=Lab.seg(t,t0,t0+0.45);
+  const out=1-Lab.seg(t,t1-0.45,t1);
+  return Math.min(inn,out);
+}
+function render(t){
+  const g=bg.createRadialGradient(W/2+110*noise.n2(t*.14,1),H*.42,80,W/2,H/2,1550);
+  g.addColorStop(0,DNA.palette.bg2);g.addColorStop(1,DNA.palette.bg);
+  bg.fillStyle=g;bg.fillRect(0,0,W,H);
+  bg.strokeStyle='rgba(137,195,199,0.12)';bg.lineWidth=1;
+  const off=(t*26)%120;
+  for(let y=-120+off;y<H;y+=120){bg.beginPath();bg.moveTo(0,y);bg.lineTo(W,y);bg.stroke();}
+  for(let x=0;x<=W;x+=120){bg.beginPath();bg.moveTo(x,0);bg.lineTo(x,H);bg.stroke();}
+  const rings=5;
+  for(let k=0;k<rings;k++){
+    const rr=(t*70+k*220)%1100;
+    bg.strokeStyle='rgba(34,236,247,'+Math.max(0,0.16*(1-rr/1100))+')';
+    bg.lineWidth=2;
+    bg.beginPath();bg.arc(W/2,H*.55,rr,0,Math.PI*2);bg.stroke();
+  }
+  let glow=Lab.hit(t,1.5,.5)*.35+Lab.hit(t,12.5,.5)*.3+Lab.hit(t,27,.5)*.3+Lab.hit(t,37,.5)*.3+Lab.hit(t,49,.5)*.3+Lab.hit(t,53,.6)*.4;
+  bg.fillStyle='rgba(34,236,247,'+Math.min(.25,glow)+')';
+  bg.fillRect(0,0,W,Math.min(H,64));
+  beats.forEach((b)=>{
+    const el=$(b.id);
+    const p=beatP(t,b.t0,b.t1);
+    const yOff=(1-Lab.ease.outExpo(Lab.seg(t,b.t0,b.t0+0.6)))*76;
+    el.style.opacity=String(p);
+    el.style.transform='translateY('+yOff+'px) scale('+(0.95+0.05*Lab.ease.outExpo(Lab.seg(t,b.t0,b.t0+0.6)))+')';
+  });
+  setBars([['barGasto',Lab.clamp(gasto(t),0,820)],['barEntrega',Lab.clamp(entrega(t),0,820)],
+    ['barAntiga',Lab.clamp(antiga(t),0,820)],['barEnxuta',Lab.clamp(enxuta(t),0,820)],
+    ['barBuro',Lab.clamp(buro(t),0,820)],['barDepos',Lab.clamp(depos(t),0,820)],
+    ['barMeta',Lab.clamp(meta(t),0,820)]]);
+  const c=$('countEd');
+  if(c){ c.textContent=String(Math.round(Lab.clamp(countEd(t),0,999))); }
+  const tl=$('tlFill');
+  if(tl){ tl.style.width=Math.round(952*(t/DUR))+'px'; }
+  const lbl=$('tlLbl');
+  if(lbl){ lbl.textContent=Math.round(t)+'s / 60s'; }
+  const sh=Lab.shake(t,{t0:53,amp:22,decay:.4,freq:20});
+  const push=1+.05*Lab.ease.outExpo(Lab.seg(t,0,DUR))+.03*Lab.hit(t,53,.3);
+  const rot=Math.sin(t*.1)*.004;
+  cam.set({x:W/2+sh.x+40*noise.n2(t*.08,2),y:H/2+sh.y,zoom:push,rot:sh.r+rot});
+  fx.clearRect(0,0,W,H);
+  const v=fx.createRadialGradient(W/2,H/2,H*.25,W/2,H/2,H*.78);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,'+DNA.texture.vignette+')');
+  fx.fillStyle=v;fx.fillRect(0,0,W,H);
+  fx.globalAlpha=DNA.texture.grain;fx.globalCompositeOperation='overlay';
+  const tile=grainTiles[Math.floor(t*FPS)%grainTiles.length];
+  const ox=(Math.floor(t*FPS)*53)%256,oy=(Math.floor(t*FPS)*91)%256;
+  for(let x=-ox;x<W;x+=256)for(let y=-oy;y<H;y+=256)fx.drawImage(tile,x,y);
+  fx.globalAlpha=1;fx.globalCompositeOperation='source-over';
+}
+Lab.init({w:W,h:H,duration:DUR,fps:FPS,bg:DNA.palette.bg,render:render});
+})();
+</script>
+</body></html>

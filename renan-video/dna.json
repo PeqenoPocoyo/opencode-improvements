@@ -1,0 +1,129 @@
+{
+ "name": "glass-dark-mono-201-734",
+ "version": 1,
+ "family": "glass-dark",
+ "mood": [
+  "mono",
+  "dark"
+ ],
+ "constraint": "mono palette, hue 201 deg, dark base; one display family only",
+ "palette": {
+  "bg": "#000c0e",
+  "bg2": "#013b3e",
+  "ink": "#e3fbfc",
+  "ink2": "#89c3c7",
+  "accent": "#22ecf7",
+  "accent2": "#cdf3fe",
+  "support": [
+   "#01656a",
+   "#21b3bb"
+  ],
+  "mode": "mono",
+  "dark": true,
+  "hue": 201
+ },
+ "type": {
+  "display": "Outfit",
+  "body": "Outfit",
+  "mono": "JetBrains Mono",
+  "accentSerif": null,
+  "case": "sentence",
+  "tracking": {
+   "display": -0.02,
+   "body": 0.0,
+   "label": 0.24
+  },
+  "weights": {
+   "display": 700,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.047,
+  "vignette": 0.458,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0,
+  "bloom": 0.854,
+  "dust": 0.221,
+  "chromatic": 0.171,
+  "lightleak": 0.087
+ },
+ "motion": {
+  "ease": [
+   "outExpo",
+   "inOutSine"
+  ],
+  "curves": [
+   "glide",
+   "settle"
+  ],
+  "spring": {
+   "w": 9.9,
+   "z": 0.9
+  },
+  "stagger": 0.08,
+  "cutRate": 0.42,
+  "hitStyle": "glow-pulse",
+  "hold": [
+   0.7,
+   1.6
+  ],
+  "personality": "calm-precise"
+ },
+ "transitions": [
+  "glassRefract",
+  "ringFormation",
+  "crossfade"
+ ],
+ "camera": {
+  "move": "slow-dolly-dof",
+  "drift": 0.019,
+  "parallax": true,
+  "shake": 0.01,
+  "dof": true,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "center-stack",
+  "margins": 64,
+  "density": "dense",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "glass-dark"
+  ],
+  "bpm": 96,
+  "key": "F",
+  "scale": "minor-pentatonic",
+  "reverb": "large-dark",
+  "brightness": 0.46,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "icons float in a ring at different depths, far ones blurred",
+  "ring forms, dissolves, reforms as a single hero",
+  "coloured rim light gradient on every glass plate"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "hue outside 201 +/- 40 deg except neutrals"
+ ],
+ "refs": []
+}
