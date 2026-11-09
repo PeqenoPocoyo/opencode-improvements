@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><title>collage-film</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<link rel="stylesheet" href="../../kinetic-typography/fonts/fonts.css"></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../../motion-canvas-artwork/runtime/art.js"></script><script src="../../scene-runtime/runtime/fx.js"></script><script src="../runtime/collage.js"></script>
+<script>
+// 12 s vertical paper-cutout film, 4 beats, ONE idea ("make it by hand"). Every piece is data; events feed paper-slap / tape / stamp / whoosh sounds.
+// Beat grid: bpm 96 -> beat .625 s. boilFps 8 * 12 s = 96 (multiple of 3) -> loops exactly.
+const W=1080,H=1920,DUR=12,c=document.getElementById('c'),ctx=c.getContext('2d'); const B=60/96;
+const INK='#171310',RED='#e04a2f',YEL='#f4c542',BLU='#2f66d0',MINT='#7cc6a4',PINK='#f19ab8',CREAM='#f3ecd9';
+const P=[
+ // BEAT 1 (0-3): a big torn-yellow sun + headline strips slapped in
+ {shape:'circle',x:540,y:560,w:620,h:620,fill:YEL,edge:'torn',rough:9,t0:0.2,dur:.35,anim:'pop',z:1,label:'sun',t1:11.2,out:'shrink'},
+ {shape:'strip',x:540,y:520,w:900,h:210,fill:INK,edge:'scissors',rot:-4,t0:B*2,anim:'slap',z:3,text:'MADE',font:'900 190px "Anton"',ink:CREAM,tape:'both',label:'MADE',t1:11.2},
+ {shape:'strip',x:560,y:760,w:900,h:210,fill:RED,edge:'scissors',rot:3,t0:B*3,anim:'slap',z:4,text:'BY HAND',font:'900 170px "Anton"',ink:CREAM,tape:'tl',label:'BY HAND',t1:11.2},
+ // BEAT 2 (3-6): paper layers slide in, grid + news fills
+ {shape:'rect',x:300,y:1150,w:480,h:420,fill:{pattern:'grid',a:'#f6f0df',b:'#5f86c4'},rot:-6,t0:3.0,anim:'slideL',dur:.4,z:2,tape:'top',label:'grid note',text:'step 1\ncut',font:'700 64px "Caveat"',t1:11.2},
+ {shape:'rect',x:760,y:1190,w:430,h:520,fill:{pattern:'news',a:'#ece4cf',b:'#3a3a3a',bias:-.5},rot:5,t0:3.0+B*1.5,anim:'slideR',dur:.4,z:2,tape:'tr',label:'news',stamp:'PASTE',stampColor:'#b02a1e',t1:11.2},
+ {shape:'blob',x:150,y:1430,w:300,h:260,fill:MINT,edge:'torn',rough:7,t0:6.0,anim:'drop',dur:.4,z:5,label:'blob',t1:11.2},
+ // BEAT 3 (6-9): star + arrow + tag
+ {shape:'star',x:930,y:1060,w:230,h:230,fill:PINK,edge:'scissors',rot:12,t0:6.0+B,anim:'pop',z:6,label:'star',t1:11.2},
+ {shape:'arrow',x:540,y:1000,w:420,h:150,fill:BLU,edge:'scissors',rot:-8,t0:6.0+B*2,anim:'slideL',dur:.35,z:6,text:'next',font:'800 68px "Bricolage Grotesque"',ink:CREAM,label:'arrow',t1:11.2},
+ // BEAT 4 (9-12): closing tag
+ {shape:'tag',x:540,y:1640,w:760,h:190,fill:CREAM,edge:'torn',rough:6,rot:-2,t0:9.0,anim:'slap',z:8,text:'now you try',font:'800 96px "DM Serif Display"',ink:INK,tape:'both',label:'cta',t1:11.7,out:'fade'},
+];
+Collage.register(P);
+function render(t){
+  Collage.draw(ctx,t,P,{paper:'#e9dfc8',boilFps:8});
+  // stain + pin decorations sit on top of the paper but under nothing (static)
+  Collage.stain(ctx,930,300,95,'#6b3b17',3,.28); Collage.pin(ctx,540,130,'#d9382c',14);
+  // paper-grain on the whole frame (FX grain is a pure function of t)
+  ctx.save(); ctx.globalCompositeOperation='multiply'; ctx.globalAlpha=.18; ctx.fillStyle=ctx.createPattern(Collage.paperTile(1),'repeat'); ctx.fillRect(0,0,W,H); ctx.restore();
+}
+Lab.init({w:W,h:H,duration:DUR,fps:30,bg:'#e9dfc8',loop:true,render});
+</script></body></html>

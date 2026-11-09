@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><title>rig-gallery</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<link rel="stylesheet" href="../../kinetic-typography/fonts/fonts.css"></head><body>
+<canvas id="c" width="1600" height="1000"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/rig.js"></script>
+<script>
+// Every action of every rig on one sheet. Loop = 6 s. speed*loop is an integer so walk cycles loop exactly (1.2 * 5 = 6 -> use speed 1 or 1.5, 2).
+const W=1600,H=1000,c=document.getElementById('c'),ctx=c.getContext('2d'),DUR=6;
+const pal=Rig.pal({accent:'#e8553f',accent2:'#2f66d0',ink:'#1a1512',support:['#3a2418']});
+function render(t){
+  ctx.fillStyle='#efe6d2';ctx.fillRect(0,0,W,H);ctx.fillStyle='#d8caa8';ctx.fillRect(0,820,W,180);
+  const acts=['walk','run','idle','wave','jump','point','dance'];
+  acts.forEach((a,i)=>{ const x=130+i*215, y=900; Rig.biped(ctx,t,{x,y,scale:.62,action:a,speed:a=='run'?2:(a=='walk'?1:1),pal,style:i%3==0?'outline':(i%3==1?'cutout':'flat'),hat:['cap','hair','antenna','none','cap','hair','antenna'][i],t0:1,dur:1.2,target:[x+160,y-260],seed:i+1,mood:a=='point'?'neutral':'happy',mouth:a=='wave'?Rig.talk(t,.5,5,2):0}); ctx.fillStyle='#222';ctx.font='700 24px "Space Mono"';ctx.textAlign='center';ctx.fillText(a,x,950); });
+  Rig.blob(ctx,t,{x:240,y:560,scale:.8,action:'hop',period:1.2,pal:Rig.pal({accent:'#7cc6a4',accent2:'#2f7f5d',ink:'#10261c'}),loop:DUR});
+  Rig.blob(ctx,t,{x:620,y:560,scale:.8,action:'idle',pal:Rig.pal({accent:'#f19ab8',accent2:'#c4557f',ink:'#3b1226'}),seed:3,mouth:Rig.talk(t,1,4,5)});
+  Rig.bot(ctx,t,{x:1040,y:610,scale:.9,pal:Rig.pal({accent:'#9aa8b8',accent2:'#f4c542',ink:'#13181f'}),mouth:Rig.talk(t,.5,5.5,4),loop:DUR,hoverPeriod:2});
+  Rig.face(ctx,1400,200,150,{mood:'angry',look:[.5,0],blink:Rig.blink(t,2)}); Rig.face(ctx,1400,430,150,{mood:'sad',look:[-.5,.3],blink:Rig.blink(t,5)});
+}
+Lab.init({w:W,h:H,duration:DUR,fps:30,bg:'#efe6d2',loop:true,render});
+</script></body></html>

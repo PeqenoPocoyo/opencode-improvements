@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "description": "Configuracao global de hooks do OpenCode. Autocontidos em hooks/.",
+  "description": "Configuracao global de hooks do OpenCode + motion-lab (ver motion-lab/).",
   "hooks": {
     "SessionStart": [
       {
@@ -9,6 +9,16 @@
           {
             "type": "command",
             "command": "python <hooks>/session_start.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/motion-lab/motion_session_start.py",
             "timeout": 10
           }
         ]
@@ -39,6 +49,11 @@
           {
             "type": "command",
             "command": "python <hooks>/reasoning/skill-quality-gate.py",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python <hooks>/motion-lab/pre_write_guard.py",
             "timeout": 10
           }
         ]
@@ -74,6 +89,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/motion-lab/post_render_qa.py",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -94,6 +119,16 @@
             "type": "command",
             "command": "python <hooks>/reasoning/bias-tracker.py",
             "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/motion-lab/motion_prompt_router.py",
+            "timeout": 10
           }
         ]
       }
@@ -134,11 +169,23 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python <hooks>/motion-lab/stop_gate.py",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "_notes": {
     "security": "Nunca commitar caminhos absolutos ou segredos. Substitua <hooks> pelo caminho real.",
-    "updated": "2026-10-31",
-    "origin": "Evolucao auto (skill-evolver + bias-tracker)"
+    "updated": "2026-11-09",
+    "origin": "skill-evolver + motion-lab (motion hooks appended; ver motion-lab/)"
   }
 }

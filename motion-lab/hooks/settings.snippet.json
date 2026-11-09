@@ -1,0 +1,9 @@
+{
+  "hooks": {
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "python3 \"$MOTION_LAB_HOME/hooks/motion_session_start.py\"" }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "python3 \"$MOTION_LAB_HOME/hooks/motion_prompt_router.py\"" }] }],
+    "PreToolUse": [{ "matcher": "Write|Edit|MultiEdit", "hooks": [{ "type": "command", "command": "python3 \"$MOTION_LAB_HOME/hooks/pre_write_guard.py\"" }] }],
+    "PostToolUse": [{ "matcher": "Bash", "hooks": [{ "type": "command", "command": "python3 \"$MOTION_LAB_HOME/hooks/post_render_qa.py\"" }] }],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "python3 \"$MOTION_LAB_HOME/hooks/stop_gate.py\"" }] }]
+  }
+}

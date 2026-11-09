@@ -1,0 +1,3 @@
+# Prompt: vídeo grande com subagentes (estilo Claude)
+
+Use `skills/agent-orchestration`. 1) Você (diretor) faz concepto, DNA, beat sheet e a tabela de propriedade de arquivos (`manifest.py owners-template`). 2) Onda 1 (máx. 2–3 agentes): cada um com briefing de `templates/briefs/`, dono exclusivo de seus arquivos (ex.: scene-engineer A = cenas 1–2, B = cenas 3–4; sound-designer = audio/). 3) Verifique em disco (`manifest.py diff`) e rode lint + stills antes da onda 2. 4) Onda 2: integrador monta a timeline, QA-critic (olhos frescos) recebe só sheet + rubric + DNA. 5) Se bater rate limit: modo sequencial por personas (`sequential-persona-fallback.md`).

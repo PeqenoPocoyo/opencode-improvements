@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><title>ui-dashboard-film</title>
+<link rel="stylesheet" href="../../kinetic-typography/fonts/fonts.css">
+<style>html,body{margin:0;background:#000}#view{position:relative;width:1080px;height:1920px;overflow:hidden;background:radial-gradient(120% 80% at 30% 10%,#1d2a63 0%,#0b0d12 60%)}#stage{position:absolute;left:0;top:0;width:1080px;height:1920px}</style></head><body>
+<div id="view"><div id="stage"></div></div>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/ui-kit.js"></script>
+<script>
+// 10 s product film: dashboard builds, KPI zoom, command palette, chat with the assistant, success toast. All via UI.* + UI.camera. Timings absolute.
+UI.theme('dark', { accent: '#7c8cff', accent2: '#ff7ac6' });
+const stage = document.getElementById('stage'), S = UI.scene(stage);
+const win = S.add(UI.browser(stage, { x: 60, y: 260, w: 960, h: 1180, url: 'app.northwind.io/overview', t0: .2 }));
+const pageA = UI.h('div', '', win.body), pageB = UI.h('div', '', win.body);
+S.add(UI.pages([pageA, pageB], [{ t: 0, i: 0 }, { t: 5.3, i: 1 }], { dur: .6 }));
+const side = S.add(UI.sidebar(win.body, { x: 0, y: 0, w: 230, h: 1130, t0: .7, items: [{ icon: 'home', label: 'Overview' }, { icon: 'chart', label: 'Revenue' }, { icon: 'user', label: 'Customers' }, { icon: 'mail', label: 'Inbox' }, { icon: 'settings', label: 'Settings' }], active: [{ t: 0, i: 0 }, { t: 5.3, i: 3 }] }));
+const k1 = S.add(UI.kpi(pageA, { x: 260, y: 30, w: 330, label: 'Revenue', prefix: '$', from: 0, to: 128450, t0: 1.0, dur: 1.4, delta: '+18.2% vs last month' }));
+const k2 = S.add(UI.kpi(pageA, { x: 610, y: 30, w: 310, label: 'Active users', from: 0, to: 8420, t0: 1.15, dur: 1.4, delta: '+6.4%' }));
+const lc = S.add(UI.card(pageA, { x: 260, y: 250, w: 660, h: 400, t0: 1.4, html: '<div style="font-weight:800;font-size:22px">Growth</div>' }));
+S.add(UI.lineChart(lc.el, { x: 20, y: 60, w: 620, h: 310, data: [12, 18, 15, 26, 31, 29, 44, 52, 49, 68, 80, 96], t0: 1.7, dur: 1.8 }));
+const bc = S.add(UI.card(pageA, { x: 260, y: 680, w: 380, h: 360, t0: 1.7, html: '<div style="font-weight:800;font-size:22px">By channel</div>' }));
+S.add(UI.barChart(bc.el, { x: 20, y: 64, w: 340, h: 270, data: [42, 68, 35, 80, 55], labels: ['Web', 'iOS', 'API', 'Ads', 'Org'], hi: 3, t0: 2.0 }));
+const dc = S.add(UI.card(pageA, { x: 670, y: 680, w: 250, h: 360, t0: 1.9 })); S.add(UI.donut(dc.el, { x: 5, y: 60, size: 230, value: .72, t0: 2.2 }));
+// overlays
+const pal = S.add(UI.palette(stage, { x: 130, y: 380, w: 820, t0: 4.0, query: 'invite team', items: [{ icon: 'user', label: 'Invite team members', key: '⌘ I' }, { icon: 'chart', label: 'Open revenue report', key: '⌘ R' }, { icon: 'settings', label: 'Workspace settings', key: '⌘ ,' }], select: 0, selectT: 4.9, t1: 5.1 }));
+const chat = S.add(UI.chat(pageB, { x: 230, y: 40, w: 730, h: 1050, messages: [{ who: 'user', text: 'Summarize last month and draft an email to the team.', t: 5.9, cps: 34 }, { who: 'ai', text: 'Revenue grew 18.2% to $128,450, led by the Ads channel (+34%). Draft ready — want me to send it?', t: 7.4, cps: 48 }] }));
+const cur = S.add(UI.cursor(stage, [{ t: 0, x: 900, y: 1700 }, { t: 3.0, x: 560, y: 320 }, { t: 3.9, x: 120, y: 700 }, { t: 4.0, x: 120, y: 700, click: true }, { t: 5.0, x: 420, y: 690, click: true }, { t: 8.6, x: 760, y: 1210 }, { t: 9.0, x: 760, y: 1210, click: true }]));
+S.add(UI.toast(document.getElementById('view'), { x: 160, y: 120, w: 760, t0: 9.1, dur: 2, title: 'Email sent to 12 people', sub: 'Northwind Team · just now' }));
+const cam = UI.camera(stage, { w: 1080, h: 1920, keys: [{ t: 0, x: 540, y: 960, zoom: 1 }, { t: 1.0, x: 540, y: 960, zoom: 1 }, { t: 2.4, x: 430, y: 500, zoom: 1.45, ease: 'punch' }, { t: 3.8, x: 540, y: 960, zoom: 1, ease: 'punch' }, { t: 4.8, x: 540, y: 900, zoom: 1.1, ease: 'glide' }, { t: 6.2, x: 640, y: 760, zoom: 1.35, ease: 'punch' }, { t: 9.8, x: 640, y: 1000, zoom: 1.2, ease: 'glide' }] });
+const dim = document.createElement('div'); dim.style.cssText = 'position:absolute;inset:0;background:#000;opacity:0;pointer-events:none'; stage.appendChild(dim);
+function render(t) {
+  S.at(t); const hh = Lab.handheld(t, 3, 2); cam.at(t, { x: hh.x, y: hh.y });
+  dim.style.opacity = .55 * Lab.win(t, 3.95, 5.2, .15, .2) * 0 + 0;
+}
+Lab.ev(1.0, 'tick'); Lab.ev(2.0, 'whoosh'); Lab.ev(4.0, 'click'); Lab.ev(5.0, 'click'); Lab.ev(9.0, 'click'); Lab.ev(9.15, 'success');
+Lab.init({ w: 1080, h: 1920, duration: 10, fps: 30, bg: '#0b0d12', render, root: document.getElementById('view') });
+</script></body></html>

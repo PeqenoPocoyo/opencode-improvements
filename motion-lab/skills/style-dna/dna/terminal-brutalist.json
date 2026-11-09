@@ -1,0 +1,134 @@
+{
+ "name": "terminal-brutalist",
+ "family": "terminal-brutal",
+ "refs": [],
+ "mood": [
+  "technical",
+  "cold",
+  "urgent"
+ ],
+ "constraint": "monospace only; black + one acid colour; scanlines and RGB split; text is the interface",
+ "palette": {
+  "mode": "neutral-pop",
+  "dark": true,
+  "hue": 100,
+  "bg": "#0a0b09",
+  "bg2": "#161812",
+  "ink": "#e8ecd9",
+  "ink2": "#8a9078",
+  "accent": "#c8ff00",
+  "accent2": "#ff3b5c",
+  "support": [
+   "#2a2d22",
+   "#5d6450"
+  ]
+ },
+ "type": {
+  "display": "JetBrains Mono",
+  "body": "JetBrains Mono",
+  "mono": "JetBrains Mono",
+  "accentSerif": null,
+  "case": "upper",
+  "tracking": {
+   "display": 0.01,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 800,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.09,
+  "vignette": 0.35,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0.6,
+  "bloom": 0.5,
+  "dust": 0,
+  "chromatic": 0.25,
+  "lightleak": 0
+ },
+ "motion": {
+  "personality": "mechanical-steps",
+  "ease": [
+   "inOutQuart",
+   "linear"
+  ],
+  "curves": [
+   "snap",
+   "whip"
+  ],
+  "spring": {
+   "w": 20,
+   "z": 1.0
+  },
+  "stagger": 0.03,
+  "cutRate": 0.9,
+  "hitStyle": "tick-step",
+  "hold": [
+   0.3,
+   0.9
+  ]
+ },
+ "transitions": [
+  "glitchSwap",
+  "scanlineWipe",
+  "vhsRewind"
+ ],
+ "camera": {
+  "move": "locked",
+  "drift": 0,
+  "parallax": false,
+  "shake": 0.1,
+  "dof": false,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "12-col",
+  "margins": 48,
+  "density": "dense",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "default"
+  ],
+  "bpm": 108,
+  "key": "E",
+  "scale": "minor",
+  "reverb": "small-room",
+  "brightness": 0.55,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "text types out with a block cursor",
+  "scanline sweep wipes between beats",
+  "RGB split on every hit",
+  "monospace tables fill row by row",
+  "status chips flip OK/ERR"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "proportional fonts",
+  "soft shadows",
+  "rounded corners"
+ ],
+ "version": 1
+}

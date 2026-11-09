@@ -1,0 +1,788 @@
+{
+ "generated": "fontsource 5.3.0",
+ "note": "Use family names exactly as written. Load with <link rel=stylesheet href=fonts/fonts.css> (or the path relative to your page).",
+ "families": [
+  {
+   "family": "Inter Tight",
+   "slug": "inter-tight",
+   "category": "heavy-grotesk",
+   "mood": [
+    "modern",
+    "tech",
+    "clean",
+    "bold",
+    "editorial"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     100,
+     900
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "inter-tight-wght-normal.woff2",
+    "inter-tight-wght-italic.woff2"
+   ],
+   "cssStack": "'Inter Tight', system-ui, sans-serif",
+   "usage": "headline slams at 800-900, tight tracking -0.04em; UI-like body at 400-500",
+   "case": "works lowercase and ALL CAPS",
+   "pairsWith": [
+    "Instrument Serif",
+    "JetBrains Mono",
+    "Playfair Display"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Archivo",
+   "slug": "archivo",
+   "category": "heavy-grotesk",
+   "mood": [
+    "punchy",
+    "sports",
+    "poster",
+    "industrial",
+    "width-morph"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     100,
+     900
+    ],
+    "wdth": [
+     62,
+     125
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "archivo-wdth-normal.woff2"
+   ],
+   "cssStack": "'Archivo', system-ui, sans-serif",
+   "usage": "width axis lets a word stretch 62%->125% (font-stretch) for width-morph reveals; 800-900 for slams",
+   "case": "ALL CAPS at wdth 62-75 for condensed posters",
+   "pairsWith": [
+    "Instrument Serif",
+    "Space Mono",
+    "Caveat"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Anton",
+   "slug": "anton",
+   "category": "condensed-display",
+   "mood": [
+    "loud",
+    "poster",
+    "news",
+    "sport",
+    "impact"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "anton-400-normal.woff2"
+   ],
+   "cssStack": "'Anton', system-ui, sans-serif",
+   "usage": "giant stacked words, ALL CAPS, line-height .9, tracking 0 to .01em",
+   "case": "ALL CAPS only (lowercase is ok but weaker)",
+   "pairsWith": [
+    "Instrument Serif",
+    "Space Mono",
+    "Inter Tight"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Bebas Neue",
+   "slug": "bebas-neue",
+   "category": "condensed-display",
+   "mood": [
+    "cinematic",
+    "trailer",
+    "tall",
+    "clean-caps"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "bebas-neue-400-normal.woff2"
+   ],
+   "cssStack": "'Bebas Neue', system-ui, sans-serif",
+   "usage": "caps-only display, tracking .04-.12em for cinematic titles",
+   "case": "ALL CAPS (no lowercase glyphs)",
+   "pairsWith": [
+    "Montserrat",
+    "DM Serif Display",
+    "JetBrains Mono"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Oswald",
+   "slug": "oswald",
+   "category": "condensed-display",
+   "mood": [
+    "news",
+    "sport",
+    "strong",
+    "stencil-adjacent"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     200,
+     700
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "oswald-wght-normal.woff2"
+   ],
+   "cssStack": "'Oswald', system-ui, sans-serif",
+   "usage": "variable condensed; weight morph 200->700 reads as a punch; labels and tape strips",
+   "case": "caps or title case",
+   "pairsWith": [
+    "Playfair Display",
+    "Space Mono",
+    "Nunito"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Montserrat",
+   "slug": "montserrat",
+   "category": "geometric-sans",
+   "mood": [
+    "corporate",
+    "friendly",
+    "neutral",
+    "wide-caps"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     100,
+     900
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "montserrat-wght-normal.woff2",
+    "montserrat-wght-italic.woff2"
+   ],
+   "cssStack": "'Montserrat', system-ui, sans-serif",
+   "usage": "900 caps with .02em tracking, or 300 caps tracked .3em for taglines",
+   "case": "caps and lowercase both fine",
+   "pairsWith": [
+    "Playfair Display",
+    "DM Serif Display",
+    "Caveat"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Outfit",
+   "slug": "outfit",
+   "category": "geometric-sans",
+   "mood": [
+    "startup",
+    "soft-geometric",
+    "minimal",
+    "tech-friendly"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     100,
+     900
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "outfit-wght-normal.woff2"
+   ],
+   "cssStack": "'Outfit', system-ui, sans-serif",
+   "usage": "thin 200 large numerals; 700 headlines; round single-storey a-less shapes",
+   "case": "lowercase looks best",
+   "pairsWith": [
+    "Instrument Serif",
+    "JetBrains Mono",
+    "Fredoka"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Bricolage Grotesque",
+   "slug": "bricolage-grotesque",
+   "category": "quirky-grotesk",
+   "mood": [
+    "quirky",
+    "editorial",
+    "indie",
+    "warm",
+    "characterful"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     200,
+     800
+    ],
+    "wdth": [
+     75,
+     100
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "bricolage-grotesque-wdth-normal.woff2"
+   ],
+   "cssStack": "'Bricolage Grotesque', system-ui, sans-serif",
+   "usage": "800 at wdth 75 for tight quirky headlines; 300-400 for body",
+   "case": "lowercase and Title Case (quirks show in lowercase)",
+   "pairsWith": [
+    "Instrument Serif",
+    "Space Mono",
+    "Caveat"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Syne",
+   "slug": "syne",
+   "category": "quirky-grotesk",
+   "mood": [
+    "art-gallery",
+    "fashion",
+    "experimental",
+    "wide-at-800"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     400,
+     800
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "syne-wght-normal.woff2"
+   ],
+   "cssStack": "'Syne', system-ui, sans-serif",
+   "usage": "800 gets very wide and eccentric: single words, not paragraphs; 400 is a neutral small grotesk",
+   "case": "ALL CAPS at 800 for fashion, lowercase at 600",
+   "pairsWith": [
+    "Instrument Serif",
+    "JetBrains Mono",
+    "Inter Tight"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Instrument Serif",
+   "slug": "instrument-serif",
+   "category": "serif-italic",
+   "mood": [
+    "editorial",
+    "elegant",
+    "human",
+    "high-contrast",
+    "light"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "instrument-serif-400-normal.woff2",
+    "instrument-serif-400-italic.woff2"
+   ],
+   "cssStack": "'Instrument Serif', Georgia, serif",
+   "usage": "italic accent words inside grotesk sentences (ref v08); size 1.1-1.2x the grotesk because x-height is small",
+   "case": "lowercase italic",
+   "pairsWith": [
+    "Inter Tight",
+    "Archivo",
+    "Outfit",
+    "Bricolage Grotesque"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Playfair Display",
+   "slug": "playfair-display",
+   "category": "serif-italic",
+   "mood": [
+    "luxury",
+    "magazine",
+    "classic",
+    "dramatic-contrast"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     400,
+     900
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "playfair-display-wght-normal.woff2",
+    "playfair-display-wght-italic.woff2"
+   ],
+   "cssStack": "'Playfair Display', Georgia, serif",
+   "usage": "900 italic for fashion covers; 400 italic for subtitles",
+   "case": "Title Case, italic",
+   "pairsWith": [
+    "Montserrat",
+    "Oswald",
+    "Inter Tight"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "DM Serif Display",
+   "slug": "dm-serif-display",
+   "category": "serif-italic",
+   "mood": [
+    "warm",
+    "retro-editorial",
+    "bold-serif",
+    "book-cover"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "dm-serif-display-400-normal.woff2",
+    "dm-serif-display-400-italic.woff2"
+   ],
+   "cssStack": "'DM Serif Display', Georgia, serif",
+   "usage": "sturdy display serif for big headlines; italic for emphasis",
+   "case": "Title Case",
+   "pairsWith": [
+    "Bebas Neue",
+    "Montserrat",
+    "Nunito"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Nunito",
+   "slug": "nunito",
+   "category": "soft-rounded",
+   "mood": [
+    "friendly",
+    "kids",
+    "wellness",
+    "soft",
+    "approachable"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     200,
+     1000
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "nunito-wght-normal.woff2",
+    "nunito-wght-italic.woff2"
+   ],
+   "cssStack": "'Nunito', system-ui, sans-serif",
+   "usage": "800-1000 for friendly headlines; rounded terminals make bounce/elastic reveals feel natural",
+   "case": "lowercase / sentence case",
+   "pairsWith": [
+    "DM Serif Display",
+    "Caveat",
+    "Oswald"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Fredoka",
+   "slug": "fredoka",
+   "category": "soft-rounded",
+   "mood": [
+    "playful",
+    "toy",
+    "bubbly",
+    "kids",
+    "pop"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     300,
+     700
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "fredoka-wght-normal.woff2"
+   ],
+   "cssStack": "'Fredoka', system-ui, sans-serif",
+   "usage": "600-700 chunky bubbly headlines; scale-pop with overshoot",
+   "case": "lowercase",
+   "pairsWith": [
+    "Outfit",
+    "Caveat",
+    "Space Mono"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "JetBrains Mono",
+   "slug": "jetbrains-mono",
+   "category": "mono",
+   "mood": [
+    "code",
+    "terminal",
+    "tech",
+    "precise",
+    "hud"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     100,
+     800
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "jetbrains-mono-wght-normal.woff2",
+    "jetbrains-mono-wght-italic.woff2"
+   ],
+   "cssStack": "'JetBrains Mono', ui-monospace, monospace",
+   "usage": "HUD labels 500 at .08em tracking; code blocks 400; also display at 800 for tech posters",
+   "case": "caps for labels, lowercase for code",
+   "pairsWith": [
+    "Inter Tight",
+    "Instrument Serif",
+    "Archivo"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Space Mono",
+   "slug": "space-mono",
+   "category": "mono",
+   "mood": [
+    "retro-tech",
+    "quirky-mono",
+    "zine",
+    "geeky"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400,
+    700
+   ],
+   "styles": [
+    "normal",
+    "italic"
+   ],
+   "files": [
+    "space-mono-400-normal.woff2",
+    "space-mono-400-italic.woff2",
+    "space-mono-700-normal.woff2",
+    "space-mono-700-italic.woff2"
+   ],
+   "cssStack": "'Space Mono', ui-monospace, monospace",
+   "usage": "characterful mono for captions/kickers; 700 for stat labels",
+   "case": "caps for kickers",
+   "pairsWith": [
+    "Anton",
+    "Bricolage Grotesque",
+    "Archivo"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Rubik Mono One",
+   "slug": "rubik-mono-one",
+   "category": "stencil-slab",
+   "mood": [
+    "heavy",
+    "blocky",
+    "brutalist",
+    "pop",
+    "tape-label"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "rubik-mono-one-400-normal.woff2"
+   ],
+   "cssStack": "'Rubik Mono One', system-ui, sans-serif",
+   "usage": "very heavy monospaced caps on tape strips and stickers; 1-2 words only",
+   "case": "ALL CAPS only",
+   "pairsWith": [
+    "Space Mono",
+    "Inter Tight",
+    "Instrument Serif"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Alfa Slab One",
+   "slug": "alfa-slab-one",
+   "category": "stencil-slab",
+   "mood": [
+    "western",
+    "vintage",
+    "poster",
+    "heavy-slab",
+    "paper"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "alfa-slab-one-400-normal.woff2"
+   ],
+   "cssStack": "'Alfa Slab One', system-ui, sans-serif",
+   "usage": "vintage poster slab headlines; works with paper textures",
+   "case": "ALL CAPS or Title Case",
+   "pairsWith": [
+    "Montserrat",
+    "Caveat",
+    "Space Mono"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Black Ops One",
+   "slug": "black-ops-one",
+   "category": "stencil-slab",
+   "mood": [
+    "stencil",
+    "military",
+    "torn-paper",
+    "crate"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "black-ops-one-400-normal.woff2"
+   ],
+   "cssStack": "'Black Ops One', system-ui, sans-serif",
+   "usage": "true stencil caps for tape/label strips (ref v11 look); short words only",
+   "case": "ALL CAPS only",
+   "pairsWith": [
+    "Space Mono",
+    "Oswald",
+    "Permanent Marker"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Caveat",
+   "slug": "caveat",
+   "category": "handwritten",
+   "mood": [
+    "handwritten",
+    "personal",
+    "note",
+    "annotation"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     400,
+     700
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "caveat-wght-normal.woff2"
+   ],
+   "cssStack": "'Caveat', system-ui, sans-serif",
+   "usage": "annotations, margin notes, signatures; 700, size 1.3x neighbors because it is small",
+   "case": "lowercase",
+   "pairsWith": [
+    "Archivo",
+    "Inter Tight",
+    "Instrument Serif"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Permanent Marker",
+   "slug": "permanent-marker",
+   "category": "handwritten",
+   "mood": [
+    "marker",
+    "graffiti-lite",
+    "zine",
+    "loud-handwriting"
+   ],
+   "variable": false,
+   "axes": null,
+   "weights": [
+    400
+   ],
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "permanent-marker-400-normal.woff2"
+   ],
+   "cssStack": "'Permanent Marker', system-ui, sans-serif",
+   "usage": "scribbled emphasis words, tape-strip labels, hand-written headlines",
+   "case": "Title Case or caps",
+   "pairsWith": [
+    "Black Ops One",
+    "Space Mono",
+    "Oswald"
+   ],
+   "license": "Apache-2.0",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  },
+  {
+   "family": "Unbounded",
+   "slug": "unbounded",
+   "category": "wide-display",
+   "mood": [
+    "futuristic",
+    "wide",
+    "web3",
+    "bold",
+    "rounded-wide"
+   ],
+   "variable": true,
+   "axes": {
+    "wght": [
+     200,
+     900
+    ]
+   },
+   "weights": null,
+   "styles": [
+    "normal"
+   ],
+   "files": [
+    "unbounded-wght-normal.woff2"
+   ],
+   "cssStack": "'Unbounded', system-ui, sans-serif",
+   "usage": "wide rounded display; 300 for elegant wide, 800-900 for slams; needs 1.3x width budget",
+   "case": "ALL CAPS or lowercase",
+   "pairsWith": [
+    "Inter Tight",
+    "JetBrains Mono",
+    "Instrument Serif"
+   ],
+   "license": "OFL-1.1",
+   "ptBR": "verified: a-tilde c-cedilla e-acute o-tilde a-grave u-umlaut"
+  }
+ ]
+}

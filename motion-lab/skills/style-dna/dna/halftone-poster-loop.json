@@ -1,0 +1,135 @@
+{
+ "name": "halftone-poster-loop",
+ "family": "halftone-poster",
+ "refs": [
+  "v03"
+ ],
+ "mood": [
+  "loud",
+  "retro",
+  "kinetic"
+ ],
+ "constraint": "duotone (blue + red on cream) with halftone on every layer; the last frame equals the first",
+ "palette": {
+  "mode": "duotone",
+  "dark": false,
+  "hue": 255,
+  "bg": "#efe9dc",
+  "bg2": "#c9d4f2",
+  "ink": "#14206b",
+  "ink2": "#4b5aa8",
+  "accent": "#2a3fd6",
+  "accent2": "#e5372b",
+  "support": [
+   "#9fb2f0",
+   "#f19b92"
+  ]
+ },
+ "type": {
+  "display": "Alfa Slab One",
+  "body": "Archivo",
+  "mono": "JetBrains Mono",
+  "accentSerif": "Permanent Marker",
+  "case": "upper",
+  "tracking": {
+   "display": 0.0,
+   "body": 0.0,
+   "label": 0.1
+  },
+  "weights": {
+   "display": 400,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.12,
+  "vignette": 0.15,
+  "halftone": 0.9,
+  "paper": 0.2,
+  "scan": 0,
+  "bloom": 0,
+  "dust": 0.1,
+  "chromatic": 0,
+  "lightleak": 0
+ },
+ "motion": {
+  "personality": "snappy-punchy",
+  "ease": [
+   "outQuart",
+   "outBack"
+  ],
+  "curves": [
+   "punch",
+   "snap"
+  ],
+  "spring": {
+   "w": 16,
+   "z": 0.55
+  },
+  "stagger": 0.035,
+  "cutRate": 1.1,
+  "hitStyle": "scale-punch+shake",
+  "hold": [
+   0.25,
+   0.7
+  ]
+ },
+ "transitions": [
+  "zoomThrough",
+  "whiteFlash",
+  "halftoneDissolve"
+ ],
+ "camera": {
+  "move": "push-through",
+  "drift": 0.015,
+  "parallax": true,
+  "shake": 0.2,
+  "dof": false,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "layer-stack",
+  "margins": 64,
+  "density": "dense",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "halftone-collage"
+  ],
+  "bpm": 100,
+  "key": "D",
+  "scale": "minor-pentatonic",
+  "reverb": "small-room",
+  "brightness": 0.52,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "camera pushes THROUGH a stack of cutout layers",
+  "signs fly in with rotation overshoot, then settle",
+  "white sticker border + hard shadow on every cutout",
+  "duotone map on every layer",
+  "loop: end frame == first frame"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "more than two ink colours",
+  "smooth gradients"
+ ],
+ "version": 1
+}

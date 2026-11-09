@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>scene</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  /* Fonts: embed or serve from ./assets/fonts (npm i @fontsource/<family> then copy the .woff2). NEVER rely on system fonts. */
+  /* @font-face{font-family:'Display';src:url(assets/fonts/display.woff2) format('woff2');font-weight:100 900} */
+  #stage{font-family:system-ui,'Helvetica Neue',Arial,sans-serif;color:var(--ink)}
+  .abs{position:absolute;left:0;top:0}
+  #title{position:absolute;left:0;right:0;top:760px;text-align:center;font-size:150px;font-weight:900;letter-spacing:-.03em;line-height:.95;text-transform:uppercase}
+  #sub{position:absolute;left:0;right:0;top:1010px;text-align:center;font-size:38px;letter-spacing:.35em;text-transform:uppercase;opacity:.8}
+  #bar{position:absolute;left:140px;top:1180px;height:10px;border-radius:5px}
+</style></head>
+<body>
+<div id="stage">
+  <div id="world" class="abs" style="width:1080px;height:1920px">
+    <canvas id="bg" class="abs" width="1080" height="1920"></canvas>
+    <div id="title">Replace me</div>
+    <div id="sub">one idea per scene</div>
+    <div id="bar"></div>
+  </div>
+  <canvas id="fx" class="abs" width="1080" height="1920" style="pointer-events:none"></canvas>
+</div>
+<script src="../runtime/lab.js"></script>
+<script>
+/* ============ 1. DNA (inline copy of dna.json so the file works standalone; replace with the project's DNA) ============ */
+const DNA = {
+  palette: { bg: '#0b0d10', ink: '#f2efe9', accent: '#ff4d2e', accent2: '#2e6bff' },
+  texture: { grain: 0.07, vignette: 0.55 },
+  motion:  { bpm: 120, hitTau: 0.22 }
+};
+document.getElementById('stage').style.setProperty('--ink', DNA.palette.ink);
+
+/* ============ 2. Layout constants ============ */
+const W = 1080, H = 1920, DUR = 6, FPS = 30, BEAT = 60 / DNA.motion.bpm;
+const $ = id => document.getElementById(id);
+const chars = Lab.split($('title'), 'chars');                // per-letter control
+const cam = Lab.camera($('world'), { w: W, h: H });
+const noise = Lab.noise(11);
+const bg = $('bg').getContext('2d'), fx = $('fx').getContext('2d');
+
+/* ============ 3. Timeline numbers (all times on the beat grid) ============ */
+const T = { title: 1 * BEAT, slam: 3 * BEAT, out: 5 * BEAT };
+Lab.ev(T.title - 0.06, 'whoosh', { dur: 0.35, intensity: .6, label: 'title in' });   // events registered at BUILD time
+Lab.ev(T.slam, 'impact', { intensity: 1, label: 'slam' });
+const barW = Lab.track(0, [[T.slam, 800, 18, .7]]);
+
+/* ============ 4. Grain tiles (seeded, pre-generated) ============ */
+const grainTiles = Array.from({ length: 6 }, (_, k) => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), im = g.createImageData(256, 256), r = Lab.rng(100 + k);
+  for (let i = 0; i < im.data.length; i += 4) { const v = r() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; } g.putImageData(im, 0, 0); return c; });
+
+/* ============ 5. The frame function: PURE in t ============ */
+function render(t) {
+  // background: slow noise-driven gradient (never a flat fill)
+  const g = bg.createRadialGradient(W / 2 + 120 * noise.n2(t * .2, 1), H * .45, 100, W / 2, H / 2, 1400);
+  g.addColorStop(0, Lab.mixColor(DNA.palette.bg, DNA.palette.accent2, .22)); g.addColorStop(1, DNA.palette.bg);
+  bg.fillStyle = g; bg.fillRect(0, 0, W, H);
+
+  // title: chars stagger in with overshoot, then the slam shakes the camera
+  chars.forEach((c, i) => {
+    const p = Lab.ease.outBack(Lab.seg(t, T.title + i * 0.035, T.title + i * 0.035 + 0.5), 1.9);
+    c.style.opacity = Lab.seg(t, T.title + i * 0.035, T.title + i * 0.035 + 0.12);
+    c.style.transform = `translateY(${(1 - p) * 90}px) scale(${.6 + .4 * p})`;
+    c.style.color = t > T.slam ? Lab.mixColor(DNA.palette.ink, DNA.palette.accent, Lab.hit(t, T.slam + i * .02, .5)) : DNA.palette.ink;
+  });
+  const sh = Lab.shake(t, { t0: T.slam, amp: 26, decay: .35, freq: 22 });
+  const push = 1 + .06 * Lab.ease.outExpo(Lab.seg(t, 0, T.slam)) + .05 * Lab.hit(t, T.slam, .3);
+  cam.set({ x: W / 2 + sh.x, y: H / 2 + sh.y, zoom: push, rot: sh.r });
+  $('sub').style.opacity = Lab.seg(t, T.slam + .1, T.slam + .5) * .8;
+  $('bar').style.width = barW(t) + 'px'; $('bar').style.background = DNA.palette.accent;
+
+  // post (cheap 2D version): vignette + grain
+  fx.clearRect(0, 0, W, H);
+  const v = fx.createRadialGradient(W / 2, H / 2, H * .25, W / 2, H / 2, H * .75); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, `rgba(0,0,0,${DNA.texture.vignette})`);
+  fx.fillStyle = v; fx.fillRect(0, 0, W, H);
+  fx.globalAlpha = DNA.texture.grain; fx.globalCompositeOperation = 'overlay';
+  const tile = grainTiles[Math.floor(t * FPS) % grainTiles.length]; const ox = (Math.floor(t * FPS) * 53) % 256, oy = (Math.floor(t * FPS) * 91) % 256;
+  for (let x = -ox; x < W; x += 256) for (let y = -oy; y < H; y += 256) fx.drawImage(tile, x, y);
+  fx.globalAlpha = 1; fx.globalCompositeOperation = 'source-over';
+}
+Lab.init({ w: W, h: H, duration: DUR, fps: FPS, bg: DNA.palette.bg, render });
+</script>
+</body></html>

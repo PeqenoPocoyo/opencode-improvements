@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><title>projection-demo</title>
+<style>html,body{margin:0;background:#111}canvas{display:block}#dom{position:absolute;left:0;top:0;width:600px;height:400px;transform-origin:0 0;background:linear-gradient(135deg,#2e6bff,#ff4d2e);color:#fff;font:900 90px sans-serif;display:flex;align-items:center;justify-content:center;border-radius:20px}</style></head><body>
+<canvas id="c" width="1200" height="800"></canvas><div id="dom">DOM</div>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/transitions.js"></script>
+<script>
+// left: WebGL warp of a canvas onto a quad (phone-like tilt); right: DOM element placed with matrix3dFromQuad onto the same kind of quad.
+const src = document.createElement('canvas'); src.width = 600; src.height = 400; const s = src.getContext('2d');
+const g = s.createLinearGradient(0, 0, 600, 400); g.addColorStop(0, '#2e6bff'); g.addColorStop(1, '#ff4d2e'); s.fillStyle = g; s.fillRect(0, 0, 600, 400);
+s.fillStyle = '#fff'; s.font = '900 90px sans-serif'; s.textAlign = 'center'; s.textBaseline = 'middle'; s.fillText('CANVAS', 300, 200); s.strokeStyle = '#fff'; s.lineWidth = 6; s.strokeRect(3, 3, 594, 394);
+const wp = Trans.warp(600, 800), c = document.getElementById('c').getContext('2d'), dom = document.getElementById('dom');
+const quadA = [40, 120, 560, 60, 540, 600, 60, 700], quadB = [640, 100, 1150, 150, 1100, 640, 700, 520];
+function render(t) {
+  c.fillStyle = '#111'; c.fillRect(0, 0, 1200, 800);
+  const k = Math.sin(t * 6.283) * 20; const qa = quadA.map((v, i) => v + (i % 2 ? 0 : k * (i < 4 ? 1 : -1)));
+  wp.draw(src, qa, [.07, .07, .07, 1]); c.drawImage(wp.canvas, 0, 0);
+  dom.style.transform = Trans.matrix3dFromQuad(600, 400, quadB); 
+}
+Lab.init({ w: 1200, h: 800, duration: 1, fps: 30, bg: '#111', render });
+</script></body></html>

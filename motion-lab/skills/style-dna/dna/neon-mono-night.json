@@ -1,0 +1,136 @@
+{
+ "name": "neon-mono-night",
+ "family": "neon-mono",
+ "refs": [
+  "v01",
+  "v07"
+ ],
+ "mood": [
+  "focused",
+  "nocturnal",
+  "earnest"
+ ],
+ "constraint": "ONE hue (green) on near-black; every other colour is neutral; figures are flat silhouettes lit only by a rim",
+ "palette": {
+  "mode": "mono",
+  "dark": true,
+  "hue": 150,
+  "bg": "#04120a",
+  "bg2": "#0c4a22",
+  "ink": "#eafff1",
+  "ink2": "#9fd9b4",
+  "accent": "#39ff7a",
+  "accent2": "#b9ffd2",
+  "support": [
+   "#0e5a2a",
+   "#6fe39a"
+  ]
+ },
+ "type": {
+  "display": "Anton",
+  "body": "Inter Tight",
+  "mono": "JetBrains Mono",
+  "accentSerif": null,
+  "case": "upper",
+  "tracking": {
+   "display": 0.01,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 400,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.06,
+  "vignette": 0.5,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0.1,
+  "bloom": 0.85,
+  "dust": 0.35,
+  "chromatic": 0.1,
+  "lightleak": 0
+ },
+ "motion": {
+  "personality": "calm-precise",
+  "ease": [
+   "outExpo",
+   "inOutSine"
+  ],
+  "curves": [
+   "glide",
+   "settle"
+  ],
+  "spring": {
+   "w": 9,
+   "z": 0.85
+  },
+  "stagger": 0.07,
+  "cutRate": 0.5,
+  "hitStyle": "glow-pulse",
+  "hold": [
+   0.7,
+   1.6
+  ]
+ },
+ "transitions": [
+  "focusPull",
+  "frameCarry",
+  "dipToColor"
+ ],
+ "camera": {
+  "move": "slow-push",
+  "drift": 0.012,
+  "parallax": true,
+  "shake": 0.15,
+  "dof": false,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "center-stack",
+  "margins": 64,
+  "density": "sparse",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "neon-mono"
+  ],
+  "bpm": 70,
+  "key": "A",
+  "scale": "minor",
+  "reverb": "large-dark",
+  "brightness": 0.4,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "numerals bigger than the figure, glowing, half-covered by the subject",
+  "vertical single-hue gradient with floor reflection",
+  "dashed frame rotates to open the next scene",
+  "word-by-word captions that scale in on the voice",
+  "dust motes drifting through the light cone"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "a second hue",
+  "photographic images"
+ ],
+ "version": 1
+}

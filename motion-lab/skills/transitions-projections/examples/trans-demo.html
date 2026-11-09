@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><title>trans-demo</title>
+<style>html,body{margin:0;background:#222}canvas{display:block}</style></head><body>
+<canvas id="c"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/transitions.js"></script>
+<script>
+// Test sheet: every transition at progress P (URL ?p=0.5) between two procedural scenes A (dark, grid, "A") and B (bright, circles, "B").
+const TW = 270, TH = 360, COLS = 8, names = Trans.names, ROWS = Math.ceil(names.length / COLS);
+const P = parseFloat(new URLSearchParams(location.search).get('p') || '0.5');
+const tr = Trans.create(TW, TH);
+function scene(kind) {
+  const c = document.createElement('canvas'); c.width = TW; c.height = TH; const s = c.getContext('2d');
+  if (kind === 'A') {
+    s.fillStyle = '#0d1226'; s.fillRect(0, 0, TW, TH); s.strokeStyle = '#2e6bff'; s.lineWidth = 1;
+    for (let x = 0; x < TW; x += 30) { s.beginPath(); s.moveTo(x, 0); s.lineTo(x, TH); s.stroke(); }
+    for (let y = 0; y < TH; y += 30) { s.beginPath(); s.moveTo(0, y); s.lineTo(TW, y); s.stroke(); }
+    s.fillStyle = '#ff4d2e'; s.font = '900 200px sans-serif'; s.textAlign = 'center'; s.textBaseline = 'middle'; s.fillText('A', TW / 2, TH / 2);
+  } else {
+    const g = s.createLinearGradient(0, 0, TW, TH); g.addColorStop(0, '#ffe9a8'); g.addColorStop(1, '#ff9ac2'); s.fillStyle = g; s.fillRect(0, 0, TW, TH);
+    s.fillStyle = 'rgba(30,20,80,.18)'; for (let i = 0; i < 9; i++) { s.beginPath(); s.arc(40 + (i * 97) % 230, 40 + (i * 131) % 300, 24 + (i * 7) % 30, 0, 7); s.fill(); }
+    s.fillStyle = '#1c1250'; s.font = '900 200px sans-serif'; s.textAlign = 'center'; s.textBaseline = 'middle'; s.fillText('B', TW / 2, TH / 2);
+  }
+  return c;
+}
+const SA = scene('A'), SB = scene('B');
+const out = document.getElementById('c'); out.width = COLS * TW; out.height = ROWS * TH; const o = out.getContext('2d');
+window.TRANS_ERRORS = [];
+function render(t) {
+  o.fillStyle = '#222'; o.fillRect(0, 0, out.width, out.height);
+  names.forEach((n, i) => {
+    const x = (i % COLS) * TW, y = Math.floor(i / COLS) * TH;
+    try { tr.render(SA, SB, P, n, {}); o.drawImage(tr.canvas, x, y); } catch (e) { window.TRANS_ERRORS.push(n + ': ' + e.message); o.fillStyle = '#a00'; o.fillRect(x, y, TW, TH); }
+    o.fillStyle = 'rgba(0,0,0,.7)'; o.fillRect(x, y, 150, 16); o.fillStyle = '#fff'; o.font = '12px monospace'; o.textAlign = 'left'; o.textBaseline = 'alphabetic'; o.fillText(n, x + 4, y + 12);
+  });
+  if (window.TRANS_ERRORS.length) console.error('TRANS_ERRORS ' + JSON.stringify(window.TRANS_ERRORS.slice(0, 50)));
+}
+Lab.init({ w: out.width, h: out.height, duration: 1, fps: 30, bg: '#222', render });
+</script></body></html>

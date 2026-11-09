@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><title>art-poster</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<link rel="stylesheet" href="../../kinetic-typography/fonts/fonts.css"></head><body>
+<canvas id="c" width="1080" height="1350"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/art.js"></script><script src="../../scene-runtime/runtime/fx.js"></script>
+<script>
+// Animated loop poster (6 s): art layers + art INSIDE the headline (clip) + one accent + FX grain/vignette. All pure functions of t.
+const W = 1080, H = 1350, DUR = 6, c = document.getElementById('c'), ctx = c.getContext('2d');
+const pal = ['#0e0a1f', '#ff5d8f', '#ffb86b', '#6be3ff', '#fff6ea'];
+const layer = document.createElement('canvas'); layer.width = W; layer.height = H; const lc = layer.getContext('2d');
+const txt = document.createElement('canvas'); txt.width = W; txt.height = H; const tc = txt.getContext('2d');
+const fx = FX.create(W, H);
+function render(t) {
+  // 1. base field
+  Art.draw(ctx, 'gradientBlobs', t, { w: W, h: H, pal: [pal[0], pal[1], pal[3], pal[2], pal[4]], seed: 5, loop: DUR, count: 4 });
+  Art.draw(ctx, 'contours', t, { w: W, h: H, pal: [pal[0], pal[4], pal[4], pal[2], pal[4]], bg: false, seed: 9, loop: DUR, levels: 9, alpha: .22 });
+  // 2. headline filled with moving art (art clipped to glyphs)
+  tc.clearRect(0, 0, W, H); tc.fillStyle = '#fff'; tc.textAlign = 'center'; tc.textBaseline = 'middle'; tc.font = '900 330px "Anton", "Archivo Black", Impact, sans-serif';
+  tc.fillText('FLOW', W / 2, H * .38); tc.fillText('STATE', W / 2, H * .38 + 300);
+  lc.clearRect(0, 0, W, H); Art.draw(lc, 'flowField', t, { w: W, h: H, pal: [pal[4], pal[0], pal[1], pal[3], pal[2]], bg: true, seed: 2, loop: DUR, count: 900, width: 1.6 });
+  lc.globalCompositeOperation = 'destination-in'; lc.drawImage(txt, 0, 0); lc.globalCompositeOperation = 'source-over';
+  ctx.drawImage(layer, 0, 0);
+  // 3. accent ring + orbit
+  Art.draw(ctx, 'orbits', t, { x: 0, y: H * .72, w: W, h: H * .28, pal: pal, bg: false, seed: 4, loop: DUR, rings: 5 });
+  // 4. finish
+  fx.apply(c, [{ pass: 'grain', amount: .12 }, { pass: 'vignette', amount: .45 }], t, 30); ctx.drawImage(fx.canvas, 0, 0);
+}
+Lab.init({ w: W, h: H, duration: DUR, fps: 30, bg: '#0e0a1f', loop: true, render });
+</script></body></html>

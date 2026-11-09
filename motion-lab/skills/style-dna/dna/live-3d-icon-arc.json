@@ -1,0 +1,134 @@
+{
+ "name": "live-3d-icon-arc",
+ "family": "live-3d",
+ "refs": [
+  "v02"
+ ],
+ "mood": [
+  "tactile",
+  "premium",
+  "quiet"
+ ],
+ "constraint": "the footage owns the colour; CG objects are glossy neutrals with one rim hue; no text except one tiny label",
+ "palette": {
+  "mode": "neutral-pop",
+  "dark": false,
+  "hue": 250,
+  "bg": "#d7dbe0",
+  "bg2": "#aeb6c0",
+  "ink": "#101418",
+  "ink2": "#4c5560",
+  "accent": "#3a6bff",
+  "accent2": "#9cc0ff",
+  "support": [
+   "#f4f6f8",
+   "#7c8794"
+  ]
+ },
+ "type": {
+  "display": "Inter Tight",
+  "body": "Inter Tight",
+  "mono": "JetBrains Mono",
+  "accentSerif": null,
+  "case": "lower",
+  "tracking": {
+   "display": -0.03,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 700,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.05,
+  "vignette": 0.2,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0,
+  "bloom": 0.15,
+  "dust": 0,
+  "chromatic": 0.03,
+  "lightleak": 0
+ },
+ "motion": {
+  "personality": "fluid-liquid",
+  "ease": [
+   "inOutSine",
+   "outCirc"
+  ],
+  "curves": [
+   "glide",
+   "whip"
+  ],
+  "spring": {
+   "w": 7,
+   "z": 0.9
+  },
+  "stagger": 0.06,
+  "cutRate": 0.3,
+  "hitStyle": "soft-ripple",
+  "hold": [
+   0.8,
+   2.0
+  ]
+ },
+ "transitions": [
+  "objectCarry",
+  "whipPan",
+  "crossfade"
+ ],
+ "camera": {
+  "move": "static-shallow-dof",
+  "drift": 0.004,
+  "parallax": false,
+  "shake": 0,
+  "dof": true,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "arc-over-subject",
+  "margins": 64,
+  "density": "sparse",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "live-3d"
+  ],
+  "bpm": 90,
+  "key": "C",
+  "scale": "minor-pentatonic",
+  "reverb": "medium-room",
+  "brightness": 0.5,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "glossy objects ride a parametric arc above the footage",
+  "scroll-linked index with a velocity curve and motion blur",
+  "contact shadow + shallow DoF + grain match the footage",
+  "the next icon set slides in along the same arc"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "flat icons without highlight",
+  "CG without a shadow on the real surface"
+ ],
+ "version": 1
+}

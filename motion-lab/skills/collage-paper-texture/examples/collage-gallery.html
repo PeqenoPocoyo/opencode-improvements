@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><title>collage-gallery</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<link rel="stylesheet" href="../../kinetic-typography/fonts/fonts.css"></head><body>
+<canvas id="c" width="1200" height="1600"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../../motion-canvas-artwork/runtime/art.js"></script><script src="../runtime/collage.js"></script>
+<script>
+// Contact sheet of every shape / edge / fill / decoration. Use it to pick, not to copy blindly.
+const W=1200,H=1600,c=document.getElementById('c'),ctx=c.getContext('2d'); const DUR=6;
+const P=[]; const cell=(i,j)=>({x:200+i*270,y:190+j*250});
+const shapes=['rect','circle','blob','star','arrow','tag','strip','torn'];
+shapes.forEach((s,k)=>{const q=cell(k%4,Math.floor(k/4));P.push({shape:s,x:q.x,y:q.y,w:200,h:150,fill:['#e8553f','#f2c744','#3f7fe8','#6cc08b','#f08fb3','#ffffff','#b7e1ee','#d9d1ff'][k],rot:(k%3-1)*5,t0:0,anim:'none',seed:k+2,text:s,font:'700 34px "Bricolage Grotesque"'})});
+const fills=[{pattern:'grid',a:'#f5efe0',b:'#6a8fbf'},{pattern:'lined',a:'#fbf7e8',b:'#6a8fbf'},{pattern:'dots',a:'#ffd24a',b:'#c23b22'},{pattern:'stripes',a:'#fff',b:'#1b1b1b'},{pattern:'halftone',a:'#f5efe0',b:'#d03a28'},{pattern:'news',a:'#e6dfcb',b:'#2a2a2a'},{pattern:'kraft'},{art:'flowField',pal:['#10122a','#ff6b4a','#ffd166','#4ad6c0','#fff4e0'],a:'#10122a'}];
+fills.forEach((f,k)=>{const q=cell(k%4,2+Math.floor(k/4));P.push({shape:k%2?'rect':'tag',x:q.x,y:q.y,w:210,h:170,fill:f,rot:(k%3-1)*4,t0:0,anim:'none',seed:k+9,edge:k%3==0?'scissors':'torn',text:f.pattern||f.art,font:'800 30px "Space Mono"',ink:[3,4,5,7].includes(k)?'#fff':'#111',tx:0,shadow:.6})});
+// decorations row
+const dec=cell(0,4.1); 
+const decos=[(ctx)=>Collage.tape(ctx,200,1450,180,56,-8,null,2),(ctx)=>Collage.staple(ctx,370,1450,-8),(ctx)=>Collage.pin(ctx,470,1450),(ctx)=>Collage.stain(ctx,600,1450,60,'#6b3b17',3),(ctx)=>Collage.stamp(ctx,'APPROVED',820,1450,{size:56,rot:-8,seed:2}),(ctx)=>Collage.stitch(ctx,[[930,1480],[1000,1420],[1100,1480]])];
+function render(t){ Collage.draw(ctx,t,P,{paper:'#e8dfca',boilFps:8}); decos.forEach(f=>f(ctx)); Collage.ransom(ctx,'CUT & PASTE',W/2,1330,{size:80,seed:4,t,t0:0,boil:true});
+ ctx.fillStyle='#2a2217';ctx.font='700 26px "Space Mono"';ctx.textAlign='left';ctx.fillText('shapes · fills · tape staple pin stain stamp stitch ransom',30,40); }
+Lab.init({w:W,h:H,duration:DUR,fps:30,bg:'#e8dfca',loop:true,render});
+</script></body></html>

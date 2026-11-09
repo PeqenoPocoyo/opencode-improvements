@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><title>shader-gallery</title>
+<style>html,body{margin:0;background:#222}canvas{display:block}</style></head><body>
+<canvas id="c"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script>
+<script src="../runtime/bg3d.js"></script><script src="../runtime/shaders.js"></script><script src="../runtime/shaders2.js"></script><script src="../runtime/shaders3.js"></script>
+<script>
+// Contact sheet of every Bg3D shader at its default palette. Compile errors show as magenta tiles + console error.
+const names = Bg3D.list(), TW = 270, TH = 480, COLS = 8, ROWS = Math.ceil(names.length / COLS);
+const out = document.getElementById('c'); out.width = COLS * TW; out.height = ROWS * TH; const o = out.getContext('2d');
+const bg = Bg3D.create(TW, TH);
+const TT = parseFloat(new URLSearchParams(location.search).get('t') || '2.5');
+function render(t) {
+  o.fillStyle = '#222'; o.fillRect(0, 0, out.width, out.height);
+  names.forEach((n, i) => {
+    const x = (i % COLS) * TW, y = Math.floor(i / COLS) * TH;
+    bg.draw(n, TT + t, { seed: 3 }); o.drawImage(bg.canvas, x, y);
+    o.fillStyle = 'rgba(0,0,0,.7)'; o.fillRect(x, y, 190, 16); o.fillStyle = '#fff'; o.font = '12px monospace'; o.fillText(n, x + 4, y + 12);
+  });
+}
+Lab.init({ w: out.width, h: out.height, duration: 1, fps: 30, bg: '#222', render });
+</script></body></html>

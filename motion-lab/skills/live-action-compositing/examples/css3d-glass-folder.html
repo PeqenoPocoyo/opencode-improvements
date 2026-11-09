@@ -1,0 +1,36 @@
+<!doctype html><html><head><meta charset="utf-8"><title>css3d-glass-folder</title>
+<link rel="stylesheet" href="../../kinetic-typography/fonts/fonts.css">
+<style>
+html,body{margin:0;background:transparent;overflow:hidden}
+#stage{position:absolute;inset:0;perspective:1600px;perspective-origin:50% 38%}
+#rig{position:absolute;left:50%;top:56%;width:0;height:0;transform-style:preserve-3d}
+.card,.back,.front{position:absolute;left:-300px;top:-210px;width:600px;height:420px;border-radius:26px;transform-style:preserve-3d;backface-visibility:visible}
+.back{background:linear-gradient(160deg,rgba(255,255,255,.28),rgba(255,255,255,.08));border:2px solid rgba(255,255,255,.55);box-shadow:0 30px 80px rgba(0,0,0,.35),inset 0 0 40px rgba(255,255,255,.12)}
+.front{overflow:hidden;background:linear-gradient(200deg,rgba(255,255,255,.42),rgba(255,255,255,.10) 55%,rgba(255,255,255,.22));border:2px solid rgba(255,255,255,.7);box-shadow:inset 0 2px 0 rgba(255,255,255,.8),0 40px 90px rgba(0,0,0,.35);transform-origin:50% 100%}
+.tab{position:absolute;left:30px;top:-34px;width:190px;height:44px;border-radius:16px 16px 0 0;background:rgba(255,255,255,.34);border:2px solid rgba(255,255,255,.6);border-bottom:none}
+.card{background:#fff8ec;color:#171310;box-shadow:0 14px 30px rgba(0,0,0,.28);font-family:'Bricolage Grotesque',sans-serif;padding:26px;box-sizing:border-box}
+.card b{display:block;font-size:46px;letter-spacing:-.02em;font-weight:800}.card i{display:block;margin-top:10px;font-style:normal;font-size:22px;opacity:.6}
+.bar{height:12px;border-radius:6px;margin-top:14px}
+.sheen{position:absolute;inset:0;border-radius:24px;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);mix-blend-mode:screen}
+</style></head><body>
+<div id="stage"><div id="rig">
+ <div class="back"><div class="tab"></div></div>
+ <div class="card" id="c1" style="background:#f4c542"><b>Q3 report</b><i>draft 4</i><div class="bar" style="background:#171310;width:70%"></div><div class="bar" style="background:#171310;width:50%"></div></div>
+ <div class="card" id="c2" style="background:#e8553f;color:#fff8ec"><b>Invoices</b><i>42 files</i><div class="bar" style="background:#fff8ec;width:60%"></div></div>
+ <div class="card" id="c3"><b>Notes</b><i>updated today</i><div class="bar" style="background:#2f66d0;width:80%"></div><div class="bar" style="background:#2f66d0;width:40%"></div></div>
+ <div class="front" id="fr"><div class="sheen" id="sh"></div></div>
+</div></div>
+<script src="../../scene-runtime/runtime/lab.js"></script>
+<script>
+// Transparent overlay (render with --alpha) that sits over live footage. A glass folder opens, cards rise one by one on beats. Pure function of t. Use with track_points.py: wrap #stage in matrix3d from the tracked quad.
+const DUR=6,BEAT=.625; const $=id=>document.getElementById(id);
+const ease=x=>1-Math.pow(1-Math.min(1,Math.max(0,x)),3), back=x=>{x=Math.min(1,Math.max(0,x));return 1+2.2*Math.pow(x-1,3)+1.7*Math.pow(x-1,2)};
+[1.2,2.0,2.8].forEach((t,i)=>Lab.ev(t,'paper-slap',{intensity:.6,label:'card '+(i+1)})); Lab.ev(.4,'whoosh',{dur:.5}); Lab.ev(.9,'click',{intensity:.5,label:'folder open'});
+function seek(t){
+  const enter=ease((t-.1)/.8), open=ease((t-.9)/.7), rig=$('rig'); const yaw=-18+Math.sin(t/DUR*Math.PI*2)*4, pitch=12;
+  rig.style.transform=`translateY(${(1-enter)*700}px) rotateX(${pitch}deg) rotateY(${yaw}deg) scale(${.8+.2*enter})`;
+  $('fr').style.transform=`translateZ(40px) rotateX(${-open*72}deg)`; $('sh').style.transform=`translateX(${(t*160)%900-300}px)`;
+  [['c1',1.2],['c2',2.0],['c3',2.8]].forEach(([id,t0],i)=>{const k=back((t-t0)/.55), up=Math.max(0,k)*(150+i*30), z=10+i*6; $(id).style.transform=`translateZ(${z}px) translateY(${-up}px) rotateZ(${(i-1)*5*Math.max(0,k)}deg)`; $(id).style.opacity=t<t0?0:1;});
+}
+window.VIDEO={w:1080,h:1920,duration:DUR,fps:30}; window.seek=seek; window.__ready=true; document.fonts&&document.fonts.ready.then(()=>seek(0));
+</script></body></html>

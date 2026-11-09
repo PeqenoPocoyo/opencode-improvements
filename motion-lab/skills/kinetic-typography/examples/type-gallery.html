@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><title>type-gallery</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>html,body{margin:0;background:#101015}#g{display:grid;grid-template-columns:repeat(6,360px);width:2160px}
+.c{height:230px;position:relative;border:1px solid #2a2a33;display:flex;align-items:center;justify-content:center;color:#f4f1ea;font:800 74px 'Archivo','Inter Tight',sans-serif;overflow:hidden}
+.c small{position:absolute;left:8px;top:6px;font:600 14px monospace;color:#9a9aa8}</style></head><body><div id="g"></div>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/type.js"></script>
+<script>
+// Gallery: every style frozen at early in the reveal (t = ?t=0.2). Use ?t=2 to see rest state.
+const TT = parseFloat(new URLSearchParams(location.search).get('t') || '0.2'), g = document.getElementById('g'), items = [];
+Type.list().forEach(n => { const c = document.createElement('div'); c.className = 'c'; const lab = document.createElement('small'); lab.textContent = n; c.appendChild(lab); const el = document.createElement('div'); el.style.cssText = 'white-space:nowrap'; c.appendChild(el); g.appendChild(c);
+  const m = Type.meta[n]; const by = m.by === 'lines' ? 'lines' : (n === 'cascadeSides' || n === 'swing' || n === 'stampDown') ? 'words' : 'chars'; const T = Type.make(el, n === 'cascadeSides' ? 'MOVE FAST NOW' : n === 'trackIn' ? 'SHIP' : 'FLOW', { by, mask: !!m.needsMask }); items.push([T, n]); });
+function render(t) { items.forEach(([T, n]) => Type.apply(T, n, TT + t, { t0: 0, dur: .7, stagger: .05, seed: 2 })); }
+Lab.init({ w: 2160, h: 1380, duration: 6, fps: 30, bg: '#101015', render });
+</script></body></html>

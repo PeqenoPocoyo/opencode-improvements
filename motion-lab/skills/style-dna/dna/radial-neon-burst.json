@@ -1,0 +1,133 @@
+{
+ "name": "radial-neon-burst",
+ "family": "radial-burst",
+ "refs": [
+  "v07"
+ ],
+ "mood": [
+  "focused",
+  "kinetic",
+  "minimal"
+ ],
+ "constraint": "black, one glow hue + white; a single node and rays; words ride the rays",
+ "palette": {
+  "mode": "mono",
+  "dark": true,
+  "hue": 150,
+  "bg": "#000000",
+  "bg2": "#04170c",
+  "ink": "#ffffff",
+  "ink2": "#9aa8a0",
+  "accent": "#3dff7a",
+  "accent2": "#7fffe0",
+  "support": [
+   "#0c5a2c",
+   "#d8fff0"
+  ]
+ },
+ "type": {
+  "display": "Outfit",
+  "body": "Outfit",
+  "mono": "Space Mono",
+  "accentSerif": null,
+  "case": "lower",
+  "tracking": {
+   "display": 0.0,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 300,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.04,
+  "vignette": 0.4,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0,
+  "bloom": 0.9,
+  "dust": 0,
+  "chromatic": 0.06,
+  "lightleak": 0
+ },
+ "motion": {
+  "personality": "mechanical-steps",
+  "ease": [
+   "inOutQuart",
+   "linear"
+  ],
+  "curves": [
+   "snap",
+   "whip"
+  ],
+  "spring": {
+   "w": 20,
+   "z": 1.0
+  },
+  "stagger": 0.12,
+  "cutRate": 0.9,
+  "hitStyle": "tick-step",
+  "hold": [
+   0.3,
+   0.9
+  ]
+ },
+ "transitions": [
+  "loopRing",
+  "dipToColor"
+ ],
+ "camera": {
+  "move": "locked",
+  "drift": 0,
+  "parallax": false,
+  "shake": 0,
+  "dof": false,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "radial",
+  "margins": 64,
+  "density": "sparse",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "radial-burst"
+  ],
+  "bpm": 124,
+  "key": "D",
+  "scale": "minor-pentatonic",
+  "reverb": "medium-room",
+  "brightness": 0.5,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "one node, twelve rays drawn with outExpo",
+  "words fly along rays rotated to the ray angle, clockwise stagger 0.12 s",
+  "one ray extends and carries the key word",
+  "ends where it began (loop)"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "a second node",
+  "filled shapes"
+ ],
+ "version": 1
+}

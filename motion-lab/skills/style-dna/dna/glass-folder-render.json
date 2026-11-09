@@ -1,0 +1,133 @@
+{
+ "name": "glass-folder-render",
+ "family": "glass-dark",
+ "refs": [
+  "v09"
+ ],
+ "mood": [
+  "glossy",
+  "satisfying",
+  "slow"
+ ],
+ "constraint": "dark radial green studio; one glossy translucent object; no text; slow orbit with a moving specular sweep",
+ "palette": {
+  "mode": "mono",
+  "dark": true,
+  "hue": 150,
+  "bg": "#031009",
+  "bg2": "#0a3a22",
+  "ink": "#e8fff2",
+  "ink2": "#8fc9a5",
+  "accent": "#27e07a",
+  "accent2": "#9dffcb",
+  "support": [
+   "#0b6a3a",
+   "#d9ffe9"
+  ]
+ },
+ "type": {
+  "display": "Outfit",
+  "body": "Inter Tight",
+  "mono": "JetBrains Mono",
+  "accentSerif": null,
+  "case": "sentence",
+  "tracking": {
+   "display": 0.0,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 400,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.04,
+  "vignette": 0.5,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0,
+  "bloom": 0.5,
+  "dust": 0,
+  "chromatic": 0.1,
+  "lightleak": 0.1
+ },
+ "motion": {
+  "personality": "heavy-cinematic",
+  "ease": [
+   "inOutCubic",
+   "outQuint"
+  ],
+  "curves": [
+   "drop",
+   "glide"
+  ],
+  "spring": {
+   "w": 6,
+   "z": 1.0
+  },
+  "stagger": 0.09,
+  "cutRate": 0.25,
+  "hitStyle": "slow-slam",
+  "hold": [
+   1.2,
+   2.4
+  ]
+ },
+ "transitions": [
+  "lightLeakWipe",
+  "crossfade"
+ ],
+ "camera": {
+  "move": "orbit-slow",
+  "drift": 0.02,
+  "parallax": true,
+  "shake": 0,
+  "dof": true,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "hero-center",
+  "margins": 64,
+  "density": "sparse",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "glass-dark"
+  ],
+  "bpm": 92,
+  "key": "F#",
+  "scale": "major-pentatonic",
+  "reverb": "large-hall",
+  "brightness": 0.65,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "front plate + back plate with cards sandwiched and parallaxed",
+  "light-sweep gradient mask travelling across the glass",
+  "one controller group owns the rotation",
+  "cards pop up with a spring when the lid opens"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "opaque materials",
+  "text"
+ ],
+ "version": 1
+}

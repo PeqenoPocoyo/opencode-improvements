@@ -1,0 +1,134 @@
+{
+ "name": "torn-paper-collage",
+ "family": "torn-paper",
+ "refs": [
+  "v11"
+ ],
+ "mood": [
+  "raw",
+  "loud",
+  "handmade"
+ ],
+ "constraint": "off-white paper + black ink + ONE red; everything is paper, tape or ink; halftone for photos",
+ "palette": {
+  "mode": "paper-ink",
+  "dark": false,
+  "hue": 25,
+  "bg": "#ece6d8",
+  "bg2": "#dcd3bf",
+  "ink": "#15130f",
+  "ink2": "#5b564b",
+  "accent": "#e2331f",
+  "accent2": "#15130f",
+  "support": [
+   "#bfb6a2",
+   "#35c7e0"
+  ]
+ },
+ "type": {
+  "display": "Alfa Slab One",
+  "body": "Archivo",
+  "mono": "JetBrains Mono",
+  "accentSerif": "Permanent Marker",
+  "case": "upper",
+  "tracking": {
+   "display": 0.0,
+   "body": 0.0,
+   "label": 0.12
+  },
+  "weights": {
+   "display": 400,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.1,
+  "vignette": 0.2,
+  "halftone": 0.55,
+  "paper": 0.9,
+  "scan": 0,
+  "bloom": 0,
+  "dust": 0.25,
+  "chromatic": 0,
+  "lightleak": 0.1
+ },
+ "motion": {
+  "personality": "jittery-handmade",
+  "ease": [
+   "outCubic",
+   "steps"
+  ],
+  "curves": [
+   "snap"
+  ],
+  "spring": {
+   "w": 14,
+   "z": 0.5
+  },
+  "stagger": 0.045,
+  "cutRate": 1.4,
+  "hitStyle": "slap+flash",
+  "hold": [
+   0.2,
+   0.6
+  ]
+ },
+ "transitions": [
+  "whiteFlash",
+  "paperTear",
+  "slidePush"
+ ],
+ "camera": {
+  "move": "handheld",
+  "drift": 0.01,
+  "parallax": true,
+  "shake": 0.35,
+  "dof": false,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "off-axis",
+  "margins": 64,
+  "density": "dense",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "torn-paper"
+  ],
+  "bpm": 96,
+  "key": "A",
+  "scale": "blues",
+  "reverb": "small-room",
+  "brightness": 0.56,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "window-blind shadows drift across the paper",
+  "words on tape/label strips at slight angles",
+  "hand-drawn scribble circle around the key word",
+  "torn edge reveal and a 3-frame white flash cut",
+  "stepped handheld jitter at 12 Hz"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "smooth vector gradients",
+  "perfectly aligned elements"
+ ],
+ "version": 1
+}

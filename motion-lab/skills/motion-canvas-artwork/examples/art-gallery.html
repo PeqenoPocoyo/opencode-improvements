@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><title>art-gallery</title>
+<style>html,body{margin:0;background:#222}canvas{display:block}</style></head><body>
+<canvas id="c"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script><script src="../runtime/art.js"></script>
+<script>
+// Contact sheet of every Art generator (t = ?t=2.0). Odd generators use a light palette to test both polarities.
+const names = Art.list(), TW = 270, TH = 400, COLS = 8, ROWS = Math.ceil(names.length / COLS);
+const out = document.getElementById('c'); out.width = COLS * TW; out.height = ROWS * TH; const o = out.getContext('2d');
+const DARK = ['#0b0d14', '#ff4d2e', '#ffb02e', '#2ee6a6', '#fff4e0'], LIGHT = ['#f3ead8', '#e2442f', '#2250d8', '#14a36b', '#161616'];
+const TT = parseFloat(new URLSearchParams(location.search).get('t') || '2');
+function render(t) {
+  o.fillStyle = '#222'; o.fillRect(0, 0, out.width, out.height);
+  names.forEach((n, i) => {
+    const x = (i % COLS) * TW, y = Math.floor(i / COLS) * TH; const t0 = performance.now();
+    const extra = n === 'confetti' ? { t0: 1.5 } : n === 'lightning' ? {} : {};
+    Art.draw(o, n, TT + t, Object.assign({ x, y, w: TW, h: TH, pal: (i % 3 === 1) ? LIGHT : DARK, seed: 3, loop: 6 }, extra));
+    o.fillStyle = 'rgba(0,0,0,.7)'; o.fillRect(x, y, 150, 16); o.fillStyle = '#fff'; o.font = '12px monospace'; o.textAlign = 'left'; o.fillText(n + ' ' + Math.round(performance.now() - t0) + 'ms', x + 4, y + 12);
+  });
+}
+Lab.init({ w: out.width, h: out.height, duration: 6, fps: 30, bg: '#222', render });
+</script></body></html>

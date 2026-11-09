@@ -1,0 +1,135 @@
+{
+ "name": "editorial-explainer",
+ "family": "editorial",
+ "refs": [
+  "v08"
+ ],
+ "mood": [
+  "smart",
+  "playful",
+  "clear"
+ ],
+ "constraint": "light grid paper; three accents only (purple, orange, lime); grotesk + serif-italic mixed in ONE sentence",
+ "palette": {
+  "mode": "tri-accent",
+  "dark": false,
+  "hue": 285,
+  "bg": "#f6f5f0",
+  "bg2": "#e9e7df",
+  "ink": "#14121a",
+  "ink2": "#8a8794",
+  "accent": "#6a2cf0",
+  "accent2": "#ff7a1a",
+  "support": [
+   "#b8f03a",
+   "#d6d3ca"
+  ]
+ },
+ "type": {
+  "display": "Inter Tight",
+  "body": "Inter Tight",
+  "mono": "JetBrains Mono",
+  "accentSerif": "Instrument Serif",
+  "case": "mixed",
+  "tracking": {
+   "display": -0.03,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 800,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.03,
+  "vignette": 0.08,
+  "halftone": 0,
+  "paper": 0.35,
+  "scan": 0,
+  "bloom": 0.12,
+  "dust": 0,
+  "chromatic": 0,
+  "lightleak": 0
+ },
+ "motion": {
+  "personality": "elastic-pop",
+  "ease": [
+   "outBack",
+   "outElastic"
+  ],
+  "curves": [
+   "settle",
+   "punch"
+  ],
+  "spring": {
+   "w": 13,
+   "z": 0.4
+  },
+  "stagger": 0.05,
+  "cutRate": 0.8,
+  "hitStyle": "overshoot-pop",
+  "hold": [
+   0.4,
+   1.0
+  ]
+ },
+ "transitions": [
+  "sparkleSweep",
+  "arcWipe",
+  "crossfade"
+ ],
+ "camera": {
+  "move": "gentle-push",
+  "drift": 0.01,
+  "parallax": true,
+  "shake": 0,
+  "dof": false,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "12-col",
+  "margins": 64,
+  "density": "medium",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "editorial"
+  ],
+  "bpm": 108,
+  "key": "G",
+  "scale": "major-pentatonic",
+  "reverb": "small-bright",
+  "brightness": 0.55,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "grotesk + serif-italic inside one sentence",
+  "dashed selection box with corner handles around a label",
+  "count-up numbers with a soft glow",
+  "4-point sparkle stars sweep in with a big arc",
+  "bars rise while a line draws across"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "a fourth accent",
+  "dark backgrounds"
+ ],
+ "version": 1
+}

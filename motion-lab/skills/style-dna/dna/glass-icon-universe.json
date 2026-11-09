@@ -1,0 +1,134 @@
+{
+ "name": "glass-icon-universe",
+ "family": "glass-dark",
+ "refs": [
+  "v05"
+ ],
+ "mood": [
+  "premium",
+  "futuristic",
+  "calm"
+ ],
+ "constraint": "pure black; every object is dark glass with a thin coloured gradient rim and bloom; text is thin and small",
+ "palette": {
+  "mode": "complementary",
+  "dark": true,
+  "hue": 25,
+  "bg": "#020204",
+  "bg2": "#10121c",
+  "ink": "#f3f4f8",
+  "ink2": "#8f93a5",
+  "accent": "#ff7a2f",
+  "accent2": "#6a4bff",
+  "support": [
+   "#2a6bff",
+   "#1b1d29"
+  ]
+ },
+ "type": {
+  "display": "Outfit",
+  "body": "Inter Tight",
+  "mono": "JetBrains Mono",
+  "accentSerif": null,
+  "case": "sentence",
+  "tracking": {
+   "display": -0.02,
+   "body": 0.0,
+   "label": 0.18
+  },
+  "weights": {
+   "display": 300,
+   "body": 400
+  },
+  "scale": [
+   1,
+   1.6,
+   2.6
+  ]
+ },
+ "texture": {
+  "grain": 0.04,
+  "vignette": 0.55,
+  "halftone": 0,
+  "paper": 0,
+  "scan": 0,
+  "bloom": 0.7,
+  "dust": 0.2,
+  "chromatic": 0.2,
+  "lightleak": 0.1
+ },
+ "motion": {
+  "personality": "fluid-liquid",
+  "ease": [
+   "inOutSine",
+   "outCirc"
+  ],
+  "curves": [
+   "glide",
+   "whip"
+  ],
+  "spring": {
+   "w": 7,
+   "z": 0.9
+  },
+  "stagger": 0.06,
+  "cutRate": 0.45,
+  "hitStyle": "soft-ripple",
+  "hold": [
+   0.8,
+   1.8
+  ]
+ },
+ "transitions": [
+  "glassRefract",
+  "ringFormation",
+  "blurSwap"
+ ],
+ "camera": {
+  "move": "slow-dolly-dof",
+  "drift": 0.01,
+  "parallax": true,
+  "shake": 0,
+  "dof": true,
+  "overscan": 0.04
+ },
+ "layout": {
+  "grid": "ring-around-title",
+  "margins": 64,
+  "density": "sparse",
+  "aspect": "9:16"
+ },
+ "sound": {
+  "palette": [
+   "glass-dark"
+  ],
+  "bpm": 96,
+  "key": "F#",
+  "scale": "major-pentatonic",
+  "reverb": "large-hall",
+  "brightness": 0.68,
+  "mix": {
+   "music": -18,
+   "sfx": -9,
+   "voice": -6
+  },
+  "profile": "social"
+ },
+ "signatureMoves": [
+  "icons float in a ring at different depths, far ones blurred",
+  "coloured rim light gradient on every glass plate",
+  "text swaps with a blur cross-fade",
+  "ring forms, dissolves, reforms around a single hero"
+ ],
+ "forbidden": [
+  "Math.random / Date.now / CSS transitions in scene code",
+  "system fonts",
+  "centered card on a purple-blue gradient",
+  "the same easing on everything",
+  "more than one new idea per beat",
+  "text outside the 9:16 safe area",
+  "flat fills without rim light",
+  "bright backgrounds"
+ ],
+ "version": 1
+}

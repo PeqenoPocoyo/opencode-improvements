@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><title>three-clay</title>
+<style>html,body{margin:0;background:#111}canvas{display:block}</style></head><body>
+<canvas id="c" width="1080" height="960"></canvas>
+<script src="../../scene-runtime/runtime/lab.js"></script>
+<script type="module">
+import * as THREE from '../runtime/vendor/three.module.min.js';
+import { Stage, clay, glass, metal, plastic, roundedBox, iconFromPath, ICONS, ring } from '../runtime/three-kit.mjs';
+const W = 1080, H = 960, out = document.getElementById('c').getContext('2d');
+const st = new Stage(THREE, { w: W, h: H, bg: '#d9cdb8', fov: 30, env: { top: '#fff7ea', mid: '#cdbfa6', bottom: '#6b5b49' } });
+st.cam([0, 1.6, 14], [0, .1, 0]);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), clay(THREE, '#e6dac4', .9)); floor.rotation.x = -Math.PI / 2; floor.position.y = -1.6; st.add(floor);
+const cube = new THREE.Mesh(roundedBox(THREE, 1.6, 1.6, 1.6, .22), clay(THREE, '#e2603f', .6)); cube.position.set(-2.2, -.6, 0); st.add(cube);
+const bolt = new THREE.Mesh(iconFromPath(THREE, ICONS.bolt, { depth: .3, bevel: .09, size: 2 }), glass(THREE, '#9fd0ff')); bolt.position.set(0, .2, 0); st.add(bolt);
+const torus = new THREE.Mesh(ring(THREE, .8, .28), metal(THREE, '#d8dbe4', .18)); torus.position.set(2.3, -.4, 0); st.add(torus);
+const heart = new THREE.Mesh(iconFromPath(THREE, ICONS.heart, { depth: .3, bevel: .1, size: 1.4 }), plastic(THREE, '#ff6fa3', .25)); heart.position.set(-1., 1.7, -1); st.add(heart);
+function render(t) {
+  cube.rotation.set(.4 * Math.sin(t * Math.PI * 2 / 4), t * Math.PI * 2 / 4, 0); cube.position.y = -.6 + .15 * Math.sin(t * Math.PI * 2 / 4 * 2);
+  bolt.rotation.y = .6 * Math.sin(t * Math.PI * 2 / 4); bolt.rotation.x = .15 * Math.sin(t * Math.PI * 2 / 2);
+  torus.rotation.set(t * Math.PI * 2 / 4, .5, 0); heart.rotation.y = -t * Math.PI * 2 / 4;
+  st.render(); out.drawImage(st.canvas, 0, 0, W, H);
+}
+Lab.init({ w: W, h: H, duration: 4, fps: 30, bg: '#d9cdb8', loop: true, render });
+</script></body></html>
