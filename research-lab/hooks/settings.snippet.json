@@ -1,0 +1,48 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$RESEARCH_LAB_HOME/hooks/researchlab_session_start.py\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$RESEARCH_LAB_HOME/hooks/researchlab_budget_guard.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$RESEARCH_LAB_HOME/hooks/researchlab_claim_gate.py\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$RESEARCH_LAB_HOME/hooks/researchlab_stop_gate.py\""
+          }
+        ]
+      }
+    ]
+  },
+  "_notes": {
+    "origin": "research-lab pack (device-W1500CTE85RRJ93)",
+    "all_fail_open": true
+  }
+}
