@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content
+    </button>
+  </div>
+  <div class="meta" id="meta">MARRONNE LAGER · AD 06 · 4.8% · 350ml · NOTA SAGRADA</div>
+  <div class="flash" id="flash"></div>
+  <div class="shock" id="shock"></div>
+  <div class="controls">
+    <button id="playBtn">pause</button>
+    <button id="muteBtn">mute</button>
+    <button id="restartBtn">restart</button>
+    <button id="recBtn">record 22s</button>
+    <button id="fullscreenBtn">fs</button>
+  </div>
+  <div class="contact-sheet" id="sheet">
+    <div class="ks">CONTACT SHEET — KEY FRAMES</div>
+    <div class="sheet-grid" id="sheetGrid"></div>
+  </div>
+  <div class="footnote">Marronne prop/global · motion-design applied · 60fps</div>
+</div>
+<script>
+(function () {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = document.getElementById('stage');
+  const c = document.getElementById('c');
+  const ctx = c.getContext('2d');
+  let dpr = window.devicePixelRatio || 1;
+  let W = 0, H = 0;
+  function resize() { dpr = window.devicePixelRatio || 1; W = c.width = stage.clientWidth * dpr; H = c.height = stage.clientHeight * dpr; }
+  window.addEventListener('resize', resize); resize();
+
+  const CFG = { duration: 22, fps: 60 };
+  let t = 0, playing = true, muted = false, last = performance.now(), tPrev = 0, renderedOnce = false;
+  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+  const pct   = (a,b,x) => clamp((x-a)/(b-a), 0, 1);
+  const easeOut = (x) => x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(1-x, 3.2);
+  const easeIn  = (x) => x <= 0 ? 0 : x >= 1 ? 1 : x*x*x;
+  const easeInOut = (x) => x <= 0 ? 0 : x >= 1 ? 1 : x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x+2,3)/2;
+  const elastic = (x) => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    return 1 + 2.70158*Math.pow(x-1,3) + 1.70158*Math.pow(x-1,2);
+  };
+  const lerp = (a,b,x) => a + (b-a)*x;
+
+  // periodic dot/string forest with seeds (rewriting each tick for ambient)
+  const bubbles = [];
+  for (let i=0;i<68;i++) bubbles.push({
+    u: Math.random(), x: lerp(.28,.72,Math.random()), y: lerp(.92,.44,Math.random()),
+    r: lerp(1.4,5.6,Math.random()), speed: lerp(.018,.072,Math.random()), phase: Math.random()*10
+  });
+  const sparkles = [];
+  for (let i=0;i<22;i++) sparkles.push({ x: Math.random(), y: Math.random(), phase: Math.random()*Math.PI*2 });
+
+  const els = {
+    brand: document.getElementById('brand'),
+    hero: document.getElementById('hero'),
+    sub: document.getElementById('sub'),
+    cta: document.getElementById('cta'),
+    tag: document.getElementById('tag'),
+    meta: document.getElementById('meta'),
+    beer: document.getElementById('beer'),
+    foam: document.getElementById('foam'),
+    flash: document.getElementById('flash'),
+    shock: document.getElementById('shock'),
+    glow: document.getElementById('glow'),
+    features: document.getElementById('features')
+  };
+
+  // off-center film grain particle drift handled by canvas dot grid
+
+  let actx = null, gainBus = null, hissGainNode = null, mutedMaster = false;
+  function startAudio() {
+    if (actx) return;
+    try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+    gainBus = actx.createGain(); gainBus.gain.value = 1;
+    gainBus.connect(actx.destination);
+    const bufSize = 2 * actx.sampleRate;
+    const buf = actx.createBuffer(1, bufSize, actx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i=0;i<bufSize;i++) d[i] = Math.random()*2-1;
+    const noise = actx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+    const f = actx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=3800; f.Q.value=1.5;
+    const g = actx.createGain(); g.gain.value = 0.03;
+    noise.connect(f); f.connect(g); g.connect(gainBus);
+    noise.start();
+  }
+  function blip(freq=659, dur=.3) {
+    if (!actx || muted) return;
+    const o = actx.createOscillator(); o.type='triangle'; o.frequency.value=freq;
+    const og = actx.createGain(); og.gain.value=.14;
+    og.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime+dur);
+    const ftr = actx.createBiquadFilter(); ftr.type='lowpass'; ftr.frequency.value=2200;
+    o.connect(ftr).connect(og).connect(gainBus);
+    o.start(); o.stop(actx.currentTime+dur);
+  }
+  function riser(now, dur) {
+    if (!actx || muted) return;
+    const osc = actx.createOscillator(); osc.type='sawtooth';
+    const og = actx.createGain();
+    const ftr = actx.createBiquadFilter(); ftr.type='lowpass'; ftr.frequency.value=500;
+    osc.frequency.setValueAtTime(90, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now+dur);
+    og.gain.setValueAtTime(0.0001, now);
+    og.gain.exponentialRampToValueAtTime(.16, now+dur*.82);
+    og.gain.exponentialRampToValueAtTime(0.0001, now+dur);
+    osc.connect(ftr).connect(og).connect(gainBus);
+    osc.start(now); osc.stop(now+dur+0.05);
+  }
+  function impact(now) {
+    if (!actx || muted) return;
+    const o = actx.createOscillator(); o.type='sine'; o.frequency.value=55;
+    const og = actx.createGain(); og.gain.setValueAtTime(.48, now); og.gain.exponentialRampToValueAtTime(.0001, now+.55);
+    o.connect(og).connect(gainBus); o.start(now); o.stop(now+.6);
+    const pi = actx.createOscillator(); pi.type='triangle'; pi.frequency.value=880;
+    const pg = actx.createGain(); pg.gain.setValueAtTime(.18, now); pg.gain.exponentialRampToValueAtTime(.0001, now+.38);
+    const pf = actx.createBiquadFilter(); pf.type='highpass'; pf.frequency.value=1300;
+    pi.connect(pf).connect(pg).connect(gainBus); pi.start(now); pi.stop(now+.4);
+    [523,659,784].forEach((f,i) => {
+      const o2 = actx.createOscillator(); o2.type='sine'; o2.frequency.value=f;
+      const g2 = actx.createGain(); g2.gain.setValueAtTime(.11, now+i*.09); g2.gain.exponentialRampToValueAtTime(.0001, now+i*.09+.6);
+      o2.connect(g2).connect(gainBus); o2.start(now+i*.09); o2.stop(now+i*.09+.7);
+    });
+  }
+
+  let HERO_FIRED = false;
+  let CONTACT_STILLS = false;
+
+  function renderFrame(time) {
+    const W = c.width, H = c.height;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#05070e'; ctx.fillRect(0,0,W,H);
+    // radial glow
+    const gr = ctx.createRadialGradient(W*.5, H*.42, 0, W*.5, H*.42, Math.min(W,H)*.65);
+    gr.addColorStop(0, 'rgba(240,162,51,.16)'); gr.addColorStop(.42, 'rgba(240,162,51,.05)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = gr; ctx.fillRect(0,0,W,H);
+    // dot grid with slow drift and oscillating alpha
+    const driftX = (time*28) % 48, driftY = (time*12)%48;
+    ctx.globalAlpha = .18 + .05*Math.sin(time*.5);
+    ctx.fillStyle = 'rgba(235,230,215,.55)';
+    for (let y=-1;y< (H/48)+1; y++) {
+      for (let x=-1;x< (W/48)+1; x++) {
+        const px = x*48 + driftX, py = y*48 + driftY;
+        ctx.beginPath(); ctx.arc(px, py, 1.0*dpr, 0, Math.PI*2); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    // horizon line
+    ctx.strokeStyle = 'rgba(240,162,51,.16)'; ctx.lineWidth = 1*dpr;
+    ctx.beginPath(); ctx.moveTo(W*.12, H*.74); ctx.lineTo(W*.88, H*.74); ctx.stroke();
+    // sparkles
+    for (const s of sparkles) {
+      const sa = .35 + .4*Math.sin(time*1.7 + s.phase);
+      ctx.globalAlpha = sa;
+      ctx.beginPath(); ctx.arc(s.x*W, s.y*H, 1.6*dpr, 0, Math.PI*2); ctx.fillStyle = 'rgba(240,162,51,1)'; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    // bubbles
+    for (const b of bubbles) {
+      b.y -= b.speed * .32; b.x += Math.sin(time*1.9+b.phase)*.0012;
+      if (b.y < .34) { b.y = .9; b.x = .3+Math.random()*.4; }
+      const sx = W*b.x, sy = H*b.y;
+      const a = .14 + .22*(.6+.4*Math.sin(time*5+b.phase));
+      ctx.beginPath(); ctx.arc(sx, sy, b.r*dpr, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(245,239,230,'+a+')'; ctx.fill();
+    }
+
+    function set(el, vals) { if (vals.o !== undefined) el.style.opacity = vals.o; if (vals.t) el.style.transform = vals.t; }
+    const tSec = time % CFG.duration;
+
+    // brand tag
+    const tagP = easeOut(clamp(tSec/.9, 0, 1));
+    els.tag.style.opacity = String(tagP*.78); els.tag.style.transform = `translateX(-50%) translateY(${(1-tagP)*10}px)`;
+    els.tag.textContent = 'MAISON MARRONNE · AD 06 · BRAZIL';
+
+    // beer enters 0.4..2.2
+    const beerP = elastic(clamp((tSec-0.4)/(2.2-0.4),0,1));
+    els.beer.style.opacity = String(.95*beerP);
+    els.beer.style.transform = `translate(-50%,-50%) scale(${0.55+0.35*beerP}) rotate(${(1-beerP)*-10}deg)`;
+
+    // hero title 1.8..2.9
+    const heroP = elastic(clamp((tSec-1.8)/(2.9-1.8),0,1));
+    els.hero.style.opacity = String(Math.min(1, heroP*1.05));
+    els.hero.style.transform = `translateY(${(1-heroP)*36}px) scale(${1 + .05*(1-heroP)})`;
+    // brand line
+    const brandP = easeOut(clamp((tSec-2.6)/(3.4-2.6),0,1));
+    els.brand.style.opacity = String(brandP*.9); els.brand.style.transform = `translateY(${(1-brandP)*14}px)`;
+    // sub
+    const subP = easeOut(clamp((tSec-3.3)/(3.9-3.3),0,1));
+    els.sub.style.opacity = String(subP*.85); els.sub.style.transform = `translateY(${(1-subP)*12}px)`;
+    // features stagger 4.0..4.9
+    const featP = easeInOut(clamp((tSec-4.0)/(4.9-4.0),0,1));
+    els.features.style.opacity = String(featP*.95); els.features.style.transform = `translateY(${(1-featP)*22}px)`;
+    // glow
+    els.glow.style.opacity = String(.35 + subP*.15 + (tSec>17? pct(17,18.5,tSec)*.55 : 0));
+
+    // hero action (17.2..18.6)
+    const flashP = pct(17.2, 17.55, tSec);
+    const flashV = clamp(1-flashP*1.15, 0, 1) * .88;
+    els.flash.style.opacity = String(flashV);
+    const shk = pct(17.4, 18.4, tSec);
+    els.shock.style.width = (shk*260)+'vw'; els.shock.style.height = (shk*260)+'vw';
+    els.shock.style.opacity = String(clamp((1-shk)*1.6-.12,0,1));
+    if (tSec > 17.2 && tSec < 18.0 && !HERO_FIRED) { HERO_FIRED = true; if (actx && !muted) impact(actx.currentTime); }
+    if (tSec < 17.0) HERO_FIRED = false;
+
+    // riser trigger
+    if (tSec > 16.2 && tSec < 16.3 && actx && !muted) { riser(actx.currentTime, .9); }
+
+    // audio beats spread
+    if (tSec < .1) scheduled = false;
+    // meta
+    const metaP = easeOut(clamp((tSec-12)/(13-12),0,1));
+    els.meta.style.opacity = String(metaP*.75);
+
+    // contact sheet
+    const sheet = document.getElementById('sheet');
+    sheet.classList.toggle('show', CONTACT_STILLS);
+
+    // Restart if over
+    if (tSec < .05) els.beer.style.opacity = String(0);
+  }
+
+  // build contact sheet once
+  async function buildSheet() {
+    if (CONTACT_STILLS) return;
+    const grid = document.getElementById('sheetGrid');
+    grid.innerHTML = '';
+    const frames = [0.6, 2.2, 4.0, 6.0, 9.0, 12.5, 16.4, 17.6, 19.5, 21.3];
+    let i = -1;
+    // stop playback, render each still
+    const wasPlaying = playing; playing = false;
+    // capture sequentially
+    for (const fr of frames) {
+      renderFrame(fr); await new Promise(r=>requestAnimationFrame(r));
+      const url = c.toDataURL('image/jpeg', .82);
+      const img = new Image();
+      img.src = url;
+      img.loading = 'lazy';
+      grid.appendChild(img);
+    }
+    CONTACT_STILLS = true;
+    playing = wasPlaying;
+    last = performance.now();
+    if (playing) requestAnimationFrame(loop);
+  }
+
+  let scheduled = false, lastFrame = -1;
+  function loop(now) {
+    if (!playing) { last = now; requestAnimationFrame(loop); return; }
+    const dt = Math.min(0.05, (now-last)/1000); last = now;
+    t += dt;
+    if (t > CFG.duration) { t -= CFG.duration; HERO_FIRED = false; scheduled = false; }
+    renderFrame(t);
+    if (!scheduled && t < .1) { scheduled = true; startAudio(); }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // controls
+  const playBtn = document.getElementById('playBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const recBtn = document.getElementById('recBtn');
+  const fsBtn = document.getElementById('fullscreenBtn');
+  playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? 'pause' : 'play'; };
+  muteBtn.onclick = () => { muted = !muted; muteBtn.textContent = muted ? 'unmute' : 'mute'; if (actx) actx.resume(); };
+  restartBtn.onclick = () => { t = 0; HERO_FIRED = false; };
+  fsBtn.onclick = () => { if (!document.fullscreenElement) stage.requestFullscreen(); else document.exitFullscreen(); };
+  const sheetBtn = null;
+
+  // recording (webM via MediaRecorder)
+  let recording = false, mediaRecorder = null, recordedChunks = [];
+  async function startRecording() {
+    if (recording) return;
+    startAudio();
+    try {
+      const canvas = document.getElementById('c');
+      const stream = canvas.captureStream(30);
+      if (!actx) startAudio();
+      if (actx) {
+        const dest = actx.createMediaStreamDestination();
+        // route bus into recording destination
+        try { gainBus.connect(dest); } catch(e){}
+        stream.addTrack(dest.stream.getAudioTracks()[0]);
+      }
+      mediaRecorder = new MediaRecorder(stream, { mimeType: determineMime() });
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = e => { if (e.data.size>0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'marronne-ad-22s.webm'; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        document.querySelector('.recording-dot')?.remove();
+      };
+      mediaRecorder.start(100);
+      recording = true;
+      recBtn.textContent = 'stop record';
+      const dot = document.createElement('span'); dot.className='recording-dot'; recBtn.appendChild(dot);
+      setTimeout(stopRecording, CFG.duration*1000);
+    } catch (e) { alert('Falha ao gravar: ' + e.message + ' (captura requires cod/atualizador).'); }
+  }
+  function stopRecording() { if (mediaRecorder && recording) { mediaRecorder.stop(); recording=false; recBtn.textContent='record 22s'; } }
+  function determineMime() {
+    for (const m of ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']) {
+      if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
+    }
+    return 'video/webm';
+  }
+  recBtn.onclick = () => { if (!recording) startRecording(); else stopRecording(); };
+
+  // keyboard
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') { e.preventDefault(); playBtn.click(); }
+    else if (e.key === 'm' || e.key === 'M') muteBtn.click();
+    else if (e.key === 'r' || e.key === 'R') restartBtn.click();
+    else if (e.key === 's' || e.key === 'S') recBtn.click();
+    else if (e.key === 'f' || e.key === 'F') fsBtn.click();
+    else if (e.key === 'c' || e.key === 'C') buildSheet();
+    else if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen();
+  });
+
+  document.addEventListener('click', () => startAudio(), { once: true });
+  // build sheet 1.2s after load
+  setTimeout(buildSheet, 1200);
+  // safety: mark first frame
+  renderFrame(0);
+})();
+</script>
+</body>
+</html>
