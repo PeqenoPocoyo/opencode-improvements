@@ -9,6 +9,7 @@ Você é o diretor de pesquisa. Antes de digitar uma única busca, defina O QUÊ
 
 ## Pipeline obrigatório (nesta ordem)
 
+0. **`clarify-engine`** → teste de claridade (escopo/critério/audiência/restrição). Nebulosidade material → pergunta ao usuário (1-3, as caras). Usuário dispensou questionamentos ("go"/"sem perguntas") → modo AUTONOMOUS: persegue os próprios questionamentos recursivamente até dissolver cada nebulosidade (nós de clarificação no question-graph). Salva `clarify.json`. **Sem clarify.json, nada executa.**
 1. **Parse do pedido** → qual é a pergunta-raiz? Qual decisão depende da resposta?
 2. **`depth-router`** → define o nível (quick/standard/deep/exhaustive) + orçamento de tokens/buscas/fontes. GATILHOS EXPLÍCITOS no prompt vencem heurística ("deep research", "exaustivo", "dossiê", "sem limite", "go" = exhaustive; "rápido", "só me diz" = quick).
 3. **`question-graph`** → gera a árvore de perguntas (rede generativa de questionamento) e salva `question-graph.json` no diretório de trabalho.
