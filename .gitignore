@@ -21,3 +21,7 @@ _segs.txt
 Thumbs.db
 __pycache__/
 *.pyc
+
+# research-lab runtime logs
+.research-lab/
+.claude/
