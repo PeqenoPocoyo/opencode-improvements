@@ -1,0 +1,2 @@
+## Lens: tutorial / screen recording
+Look for: which app/site, which screen, what the cursor/focus points at, each step the presenter performs (in order), values typed or selected, errors/dialogs, final state vs initial state. Transcribe on-screen text exactly (UI labels, menu paths, code, numbers) — request `crop` zooms for anything small. Write the steps as a numbered procedure with the timestamp of each.
