@@ -6,6 +6,9 @@ from lib_motion import *
 
 def main():
     inp = read_input(); p = inp.get("prompt") or inp.get("user_prompt") or ""
+    if ANALYZE_WORDS.search(p) and FILE_VIDEO.search(p):
+        context("[motion-lab router] This is a VIDEO ANALYSIS task. Use skills/video-analysis: 1. python3 skills/video-analysis/scripts/va_run.py <video> --question \"<the user's question>\" --lens <general|motion|tutorial|ad|talk|sport|surveillance|film>. 2. Judge each brief+sheet (read every tile, write reports/*.json). 3. va_merge.py -> va_zoom.py --followups -> verify -> synth. Never answer from numbers alone; cite tile ids; no sound/motion claims from stills.")
+        sys.exit(0)
     if not VIDEO_WORDS.search(p) and not SOUND_WORDS.search(p): sys.exit(0)
     steps = ["1. Read skills/motion-director/SKILL.md (concept + DNA gates). 2. skills/style-dna: generate 3 DNA candidates, choose one, write dna.json."]
     if UI_WORDS.search(p): steps.append("3. UI in the video -> skills/ui-in-video (components, cursor, camera). Use real copy and numbers.")

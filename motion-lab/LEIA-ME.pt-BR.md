@@ -37,6 +37,8 @@ Modo "sem briefing / quero ser surpreendido": `python skills/generative-play/scr
 - `vector-characters` — bípede com IK (andar, correr, acenar, pular, apontar, dançar), blob com squash & stretch, robô, rosto (pisca, olha, fala), eventos de passos.
 - `live-action-compositing` — para quando você manda a SUA filmagem: `prep_footage`, `track_points` (tracking planar), `grade_match`, `grain_measure`, `light_direction`, `plan_cutaways` (a partir de legenda .srt) e `render.mjs --alpha` (overlay ProRes 4444 para compor no ffmpeg).
 
+- `video-analysis` — análise de **qualquer vídeo, de qualquer duração**, do jeito que o Claude faz (olhando quadros): scripts medem e escolhem os quadros (orçamento fixo de *imagens*, não de segundos), geram contact sheets com timestamp e linha do tempo, e entregam **briefs** para os agentes (difusos) julgarem; um "árbitro" (`va_merge.py`) valida os relatórios e pede zoom (`va_zoom.py --burst` mostra movimento, `--crop` lê texto, `--pair` mostra diferença). Comece com `python skills/video-analysis/scripts/va_run.py video.mp4 --question "..."`. Teste: `python skills/video-analysis/scripts/selftest.py`.
+
 ## Limites honestos
 - Nenhum modelo (nem eu) **ouve áudio**. O som é construído por receitas procedurais e checado por números; você precisa ouvir os 5 timestamps do relatório.
 - O limiar do `fingerprint` (0,18) é heurístico — não tive os 11 vídeos de referência em disco ao calibrar. Ajuste depois de comparar saídas reais.

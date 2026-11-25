@@ -21,6 +21,7 @@ skills/
   vector-characters            biped (IK), blob, bot, faces (blink/look/talk), footsteps events      (new)
   live-action-compositing      graphics over real footage: prep, tracking, grade/grain/light match, alpha overlay (new)
   sound-design-pro             events -> layered procedural SFX + music + mix (-14 LUFS social), qa_audio
+  video-analysis               analyse ANY video of ANY length: fixed image budget, labelled sheets, judging-agent briefs, referee + zoom (new)
   qa-critique                  lint, qa_video, contact sheet, frame_diff, fingerprint, rubric, slop kill list
   generative-play              "no brief" mode: crossbreed -> 8 pieces -> choose -> deepen
   video-orchestration / agent-orchestration   big jobs split across <=3 sub-agents, verified on disk

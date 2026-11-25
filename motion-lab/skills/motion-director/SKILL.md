@@ -63,6 +63,7 @@ Beat sheet by length (`reference/beat-sheets.md`), table in `reference/storyboar
 | paper, halftone, collage, torn edges | `collage-paper-texture` |
 | stylised people and props, silhouettes | `vector-characters` |
 | real footage + CG, talking head + cutaways | `live-action-compositing` |
+| study a reference video / review a render / describe any video | `video-analysis` |
 | edit grammar, pacing, captions planning | `video-orchestration` |
 | free creative exploration, series, mutations | `generative-play` |
 | sound | `sound-design-pro` |

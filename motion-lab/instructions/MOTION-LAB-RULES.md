@@ -26,6 +26,7 @@ Run `hooks/guard.sh start` (or read the hook output). Read `skills/motion-direct
 | No brief / "surprise me" / recreational | `generative-play` |
 | Screen effects (bloom, grain, halftone, glitch, lens…) | `fx.js` chains |
 | Sound | `sound-design-pro` (`Lab.ev` events -> `sync_cues.py`) |
+| Analyse/describe/review any video (any length) | `video-analysis` (`va_run.py`, then judge the sheets) |
 | Several agents | `agent-orchestration` |
 
 ## 3. Hard constraints

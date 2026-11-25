@@ -12,6 +12,7 @@ def check(name, cond, info=""):
 with tempfile.TemporaryDirectory() as d:
     c, o, e = run("motion_session_start.py", {"cwd": d}); check("session_start prints rules", c == 0 and "CONCEPT BEFORE CODE" in o and "MISSING" in o, o)
     c, o, e = run("motion_prompt_router.py", {"prompt": "faz um vídeo de reels com interface de app", "cwd": d}); check("router fires on video prompt", c == 0 and "ui-in-video" in o and "motion-director" in o, o)
+    c, o, e = run("motion_prompt_router.py", {"prompt": "analise esse vídeo referencia.mp4 e me diga o que acontece", "cwd": d}); check("router fires video-analysis", c == 0 and "video-analysis" in o, o)
     c, o, e = run("motion_prompt_router.py", {"prompt": "qual a capital da França", "cwd": d}); check("router silent otherwise", c == 0 and o == "", o)
     bad = "<script>var x=Math.random();setInterval(f,1)</script>"
     c, o, e = run("pre_write_guard.py", {"cwd": d, "tool_name": "Write", "tool_input": {"file_path": d + "/scene.html", "content": "<html>window.VIDEO={};window.seek=t=>{};" + bad + "</html>"}}); check("guard blocks Math.random + no dna", c == 2 and "RANDOM" in e and "dna.json" in e, e)

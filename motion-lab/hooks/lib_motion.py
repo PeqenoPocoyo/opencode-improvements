@@ -55,3 +55,6 @@ def safe_main(fn):
     except SystemExit: raise
     except Exception as e:
         sys.stderr.write(f"[motion hook error, ignored] {e}\n"); sys.exit(0)
+
+ANALYZE_WORDS = re.compile(r"\b(analis[ae]r?|analyze|analyse|an[aá]lise de v[ií]deo|assist(?:a|ir)|descreva|describe|resuma|summari[sz]e|review|critique|refer[eê]ncia|reference video|quadros|frames|o que acontece)\b", re.I)
+FILE_VIDEO = re.compile(r"\.(mp4|mov|webm|mkv|avi|m4v)\b|\bv[ií]deo\b|\bvideo\b", re.I)
